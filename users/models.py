@@ -27,13 +27,13 @@ class User(models.Model):
     id = models.AutoField(primary_key=True)
     last_name = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
-    patronymic = models.CharField(max_length=50, blank=True)
+    patronymic = models.CharField(max_length=50, blank=True, null=True)
     birthday = models.DateField()
     biography = models.CharField(max_length=500)
     projects_num = models.IntegerField()
     tasks_num = models.IntegerField()
-    faculty_id = models.ForeignKey(Faculty, on_delete=models.SET_NULL)
-    group_id = models.ForeignKey(Group, on_delete=models.SET_NULL)
+    faculty_id = models.ForeignKey(Faculty, null=True, on_delete=models.SET_NULL)
+    group_id = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ["last_name"]
