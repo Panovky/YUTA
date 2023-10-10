@@ -9,6 +9,8 @@ class Team(models.Model):
     leader = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     class Meta:
+        verbose_name = 'Команда'
+        verbose_name_plural = 'Команды'
         ordering = ["name"]
 
     def __str__(self):
@@ -17,5 +19,5 @@ class Team(models.Model):
 
 class TeamMember(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    team_id = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
