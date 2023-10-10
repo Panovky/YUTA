@@ -6,9 +6,11 @@ class Account(models.Model):
     id = models.AutoField(primary_key=True)
     login = models.CharField()
     password = models.CharField()
-    user_id = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     class Meta:
+        verbose_name = 'Аккаунт'
+        verbose_name_plural = 'Аккаунты'
         ordering = ["login"]
 
     def __str__(self):
