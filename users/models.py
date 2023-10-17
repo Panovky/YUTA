@@ -3,7 +3,7 @@ from django.db import models
 
 class Faculty(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField()
+    name = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = 'Факультет'
@@ -16,8 +16,8 @@ class Faculty(models.Model):
 
 class Direction(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.CharField()
-    name = models.CharField()
+    code = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = 'Направление подготовки'
@@ -30,7 +30,7 @@ class Direction(models.Model):
 
 class Group(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField()
+    name = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = 'Группа'
@@ -43,10 +43,10 @@ class Group(models.Model):
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
-    login = models.CharField()
-    last_name = models.CharField()
-    first_name = models.CharField()
-    patronymic = models.CharField(blank=True, null=True)
+    login = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50)
+    patronymic = models.CharField(max_length=50, blank=True, null=True)
     birthday = models.DateField()
     biography = models.CharField(max_length=500, blank=True, null=True)
     faculty = models.ForeignKey(Faculty, null=True, on_delete=models.SET_NULL)
