@@ -3,7 +3,7 @@ from django.db import models
 
 class Faculty(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField()
 
     class Meta:
         verbose_name = 'Факультет'
@@ -14,9 +14,23 @@ class Faculty(models.Model):
         return self.name
 
 
+class Direction(models.Model):
+    id = models.AutoField(primary_key=True)
+    code = models.CharField()
+    name = models.CharField()
+
+    class Meta:
+        verbose_name = 'Направление подготовки'
+        verbose_name_plural = 'Направления подготовки'
+        ordering = ["name"]
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+
+
 class Group(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField()
 
     class Meta:
         verbose_name = 'Группа'
@@ -29,14 +43,14 @@ class Group(models.Model):
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
-    last_name = models.CharField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    patronymic = models.CharField(max_length=50, blank=True, null=True)
+    login = models.CharField()
+    last_name = models.CharField()
+    first_name = models.CharField()
+    patronymic = models.CharField(blank=True, null=True)
     birthday = models.DateField()
-    biography = models.CharField(max_length=500)
-    projects_num = models.IntegerField()
-    tasks_num = models.IntegerField()
+    biography = models.CharField(max_length=500, blank=True, null=True)
     faculty = models.ForeignKey(Faculty, null=True, on_delete=models.SET_NULL)
+    direction = models.ForeignKey(Direction, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
 
     class Meta:
