@@ -17,8 +17,8 @@ class Migration(migrations.Migration):
             name='Account',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('login', models.CharField()),
-                ('password', models.CharField()),
+                ('login', models.CharField(max_length=50)),
+                ('password', models.CharField(max_length=50)),
                 ('user_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='users.user')),
             ],
             options={

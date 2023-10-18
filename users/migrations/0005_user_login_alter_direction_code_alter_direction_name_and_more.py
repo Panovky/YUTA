@@ -13,41 +13,41 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='login',
-            field=models.CharField(null=True),
+            field=models.CharField(max_length=50, null=True),
         ),
         migrations.AlterField(
             model_name='direction',
             name='code',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='direction',
             name='name',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='faculty',
             name='name',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='group',
             name='name',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='user',
             name='first_name',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='user',
             name='last_name',
-            field=models.CharField(),
+            field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
             model_name='user',
             name='patronymic',
-            field=models.CharField(blank=True, null=True),
+            field=models.CharField(max_length=50, blank=True, null=True),
         ),
     ]
