@@ -43,7 +43,7 @@ class Group(models.Model):
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
-    photo = models.ImageField(blank=True, null=True, upload_to='images/users_photos')
+    photo = models.ImageField(blank=True, null=True, upload_to='images/users_photos', default='images/default.png')
     login = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
@@ -52,7 +52,7 @@ class User(models.Model):
     phone_number = models.CharField(max_length=50, blank=True, null=True)
     e_mail = models.CharField(max_length=50, blank=True, null=True)
     vk = models.CharField(max_length=50, blank=True, null=True)
-    biography = models.CharField(max_length=500, blank=True, null=True)
+    biography = models.CharField(max_length=200, blank=True, null=True)
     faculty = models.ForeignKey(Faculty, null=True, on_delete=models.SET_NULL)
     direction = models.ForeignKey(Direction, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
