@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 import requests
-from bs4 import BeautifulSoup
-from users.models import User, Faculty, Group, Direction
+from YUTA.scripts import parse_lk
+from users.models import User
 
 
 class MainView(View):
@@ -25,54 +25,19 @@ class MainView(View):
                 if User.objects.filter(login=login).exists():
                     user = User.objects.get(login=login)
                 else:
-                    response.encoding = 'windows-1251'
-                    html_text = BeautifulSoup(response.text, 'html.parser')
-
-                    fio = html_text.find('h1').text.strip().split()
-                    last_name = fio[0]
-                    first_name = fio[1]
-                    if len(fio) == 3:
-                        patronymic = fio[2]
-                    else:
-                        patronymic = None
-
-                    faculty_name = html_text.find_all('table')[1].find_all('tr')[2].find_all('td')[1].text.strip()
-                    if Faculty.objects.filter(name=faculty_name).exists():
-                        faculty = Faculty.objects.get(name=faculty_name)
-                    else:
-                        faculty = Faculty.objects.create(name=faculty_name)
-
-                    direction_full = html_text.find_all('table')[1].find_all('tr')[4].find_all('td')[1].text.strip()
-                    direction_code, direction_name = direction_full.split('-')
-                    if Direction.objects.filter(code=direction_code).exists():
-                        direction = Direction.objects.get(code=direction_code)
-                    else:
-                        direction = Direction.objects.create(name=direction_name, code=direction_code)
-
-                    group_name = html_text.find_all('table')[1].find_all('tr')[3].find_all('td')[1].text.strip()
-                    if Group.objects.filter(name=group_name).exists():
-                        group = Group.objects.get(name=group_name)
-                    else:
-                        group = Group.objects.create(name=group_name)
-
-                    birthday = html_text.find_all('table')[3].find_all('tr')[3].find('td').text.strip()
-                    birthday = birthday.split('.')
-                    birthday.reverse()
-                    birthday = '-'.join(birthday)
-
+                    data = parse_lk(response)
                     user = User.objects.create(
                         login=login,
-                        last_name=last_name,
-                        first_name=first_name,
-                        patronymic=patronymic,
-                        birthday=birthday,
-                        faculty=faculty,
-                        direction=direction,
-                        group=group
+                        last_name=data.get('last_name'),
+                        first_name=data.get('first_name'),
+                        patronymic=data.get('patronymic'),
+                        birthday=data.get('birthday'),
+                        faculty=data.get('faculty'),
+                        direction=data.get('direction'),
+                        group=data.get('group')
                     )
 
                 request.session['user_id'] = user.id
-
                 return redirect('tasks')
 
 

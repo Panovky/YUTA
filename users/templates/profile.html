@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <img src="{{ photo.url }}" height="500px">
+    <img src="{{ photo_url }}" height="200px">
 
     {% if patronymic is not None %}
         <p>{{ last_name }} {{ first_name }} {{ patronymic }}</p>
@@ -30,5 +30,122 @@
 
     {% if vk is not None %}
         <a href="{{ vk }}">{{ vk }}</a>
+    {% endif %}
+
+    {% if is_owner %}
+        <br>
+        <br>
+        <button>Обновить фотографию</button>
+
+        <form method="POST" enctype="multipart/form-data"
+              style="border: 1px solid black; width: 30%; margin-top: 10px;">
+            {% csrf_token %}
+
+            <p>Загрузка новой фотографии</p>
+            <p>Вы можете загрузить изображение в формате JPEG, JPG или PNG.</p>
+
+            <input type="file" multiple accept="image/jpeg, image/jpg, image/png" name="photo" required/>
+
+            <input type="hidden" name="action" value="update_photo">
+
+            <br>
+            <br>
+            <button>Отмена</button>
+            <button type="submit">Обновить фотографию</button>
+        </form>
+
+        <br>
+        <button>Удалить фотографию</button>
+        <form method="POST"
+              style="border: 1px solid black; width: 30%; margin-top: 10px;">
+            {% csrf_token %}
+
+            <p>Предупреждение</p>
+            <p>Вы уверены, что хотите удалить фотографию?</p>
+
+            <input type="hidden" name="action" value="delete_photo">
+
+            <button>Отмена</button>
+            <button type="submit">Да, удалить</button>
+        </form>
+
+        <br>
+        <button>Редактировать</button>
+
+        <form method="POST" enctype="multipart/form-data"
+              style="border: 1px solid black; width: 30%; margin-top: 10px;">
+            {% csrf_token %}
+
+            <p>Редактирование данных</p>
+
+            {% if biography is not None %}
+                <label>Обо мне</label>
+                <br><textarea name="biography" maxlength="200">{{ biography }}</textarea>
+                <br>
+            {% else %}
+                <br><label>Обо мне</label>
+                <br><textarea name="biography" maxlength="200"></textarea>
+                <br>
+            {% endif %}
+
+            {% if phone_number is not None %}
+                <br><label>Телефон</label>
+                <br><input type="text" name="phone_number" value="{{ phone_number }}">
+                <br>
+            {% else %}
+                <br><label>Телефон</label>
+                <br><input type="text" name="phone_number">
+                <br>
+            {% endif %}
+
+            {% if e_mail is not None %}
+                <br><label>E-mail</label>
+                <br><input type="text" name="e_mail" value="{{ e_mail }}">
+                <br>
+            {% else %}
+                <br><label>E-mail</label>
+                <br><input type="text" name="e_mail">
+                <br>
+            {% endif %}
+
+            {% if vk is not None %}
+                <br><label>VK</label>
+                <br><input type="text" name="vk" value="{{ vk }}">
+                <br>
+            {% else %}
+                <br><label>VK</label>
+                <br><input type="text" name="vk">
+                <br>
+            {% endif %}
+
+            <input type="hidden" name="action" value="edit_data">
+
+            <br>
+            <button>Отмена</button>
+            <button type="submit">Сохранить изменения</button>
+        </form>
+
+        <br>
+        <button>Обновить данные</button>
+        <form method="POST"
+              style="border: 1px solid black; width: 30%; margin-top: 10px;">
+            {% csrf_token %}
+
+            <p>Обновление данных</p>
+            <p>Чтобы синхронизировать данные личного кабинета на сайте ЯГТУ и данные в YUTA, введите свой пароль:</p>
+
+            <input type="password" name="password" required/>
+
+            <input type="hidden" name="action" value="update_data">
+
+            {% if message %}
+                <br>
+                <p>{{ message }}</p>
+            {% endif %}
+
+            <br><br>
+            <button>Отмена</button>
+            <button type="submit">Обновить данные</button>
+        </form>
     {% endif %}
 {% endblock content %}
