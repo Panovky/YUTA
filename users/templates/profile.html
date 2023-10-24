@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% block logo %}<img src="{% static 'images/orange-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
+
 {% block content %}
 
     <img src="{{ photo_url }}" height="200px">
