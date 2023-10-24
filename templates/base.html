@@ -15,7 +15,7 @@
     {% block logo %}{% endblock logo %}
     {% block menu %}
         <a href="{% url 'profile' menu_user_id %}">Профиль</a>
-        <a href="#">Проекты</a>
+        <a href="{% url 'projects' %}">Проекты</a>
         <a href="{% url 'tasks' %}">Задачи</a>
         <a href="#">Команды</a>
     {% endblock menu %}
