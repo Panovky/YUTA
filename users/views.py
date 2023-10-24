@@ -9,11 +9,12 @@ from users.models import User
 
 class ProfileView(View):
 
-    def get(self, request, user_id):
+    def get(self, request, url_user_id):
         if request.method == 'GET':
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=url_user_id)
             age = get_age(user.birthday)
-            is_owner = user_id == request.session['user_id']
+            session_user_id = request.session['user_id']
+            is_owner = url_user_id == session_user_id
 
             return render(
                 request,
@@ -32,12 +33,13 @@ class ProfileView(View):
                     'e_mail': user.e_mail,
                     'vk': user.vk,
                     'is_owner': is_owner,
+                    'menu_user_id': session_user_id
                 }
             )
 
-    def post(self, request, user_id):
+    def post(self, request, url_user_id):
         if request.method == 'POST':
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=url_user_id)
 
             if request.POST.get('action') == 'update_photo':
                 photo = request.FILES['photo']
@@ -79,7 +81,8 @@ class ProfileView(View):
                 if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
                     message = 'неправильный пароль'
                     age = get_age(user.birthday)
-                    is_owner = user_id == request.session['user_id']
+                    session_user_id = request.session['user_id']
+                    is_owner = url_user_id == session_user_id
                     return render(
                         request,
                         'profile.html',
@@ -97,7 +100,8 @@ class ProfileView(View):
                             'e_mail': user.e_mail,
                             'vk': user.vk,
                             'is_owner': is_owner,
-                            'message': message
+                            'message': message,
+                            'menu_user_id': session_user_id
                         }
                     )
 
@@ -113,4 +117,4 @@ class ProfileView(View):
 
             user.save()
 
-            return redirect(f'/profile/{user_id}')
+            return redirect(f'/profile/{url_user_id}')

@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% block logo %}<img src="{% static 'images/blue-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
+
+{% block menu %}
+    <p>Добро пожаловать в YUTA!</p>
+    <button>Войти</button>
+{% endblock menu %}
+
 {% block content %}
     <form method="POST">
         {% csrf_token %}
