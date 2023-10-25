@@ -1,24 +1,194 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% block logo %}<img src="{% static 'images/blue-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
 
 {% block menu %}
-    <p>Добро пожаловать в YUTA!</p>
-    <button>Войти</button>
+<div class="header-top">
+    <div class="container-xxl">
+        <div class="d-flex justify-content-between">
+            <div class="logo">
+                {% block logo %}<img src="{% static 'images/blue-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
+            </div>
+            <p class="align-self-center header-title d-lg-block d-md-block d-sm-block d-none">Добро пожаловать в YUTA!</p>
+            <div class="align-self-center">
+                <button type="button" class="orange-btn" data-bs-toggle="modal" data-bs-target="#autorization">Войти</button>
+            </div>
+        </div>
+        <div class="modal fade modal-custom" id="autorization" tabindex="-1" aria-labelledby="Autorization" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header position-relative">
+                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <svg style="width: 28px; height: 28px;">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="modal-title text-center">Авторизация</p>
+                    <div class="modal-devider"></div>
+                    <form method="POST" class="mt-2">
+                        {% csrf_token %}
+                        <div class="text-field__icon mb-3 text-field__icon_person">
+                            <input id="Login" type="text" name="login" placeholder="Логин" maxlength="30">
+                        </div>
+                        <div class="text-field__icon mb-3 text-field__icon_password">
+                            <input id="Password" type="password" name="password" placeholder="Пароль" maxlength="30">
+                        </div>
+                        {% if message %}
+                        <p>{{ message }}</p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <div class="ms-1 align-self-center">
+                                <input type="checkbox" class="autorization-checkbox" id="remember">
+                                <label class="autorization-checkbox-label" for="remember">Запомнить</label>
+                            </div>
+                            <button type="submit" href="lk.html" class="orange-btn modal-btn">
+                                Войти
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="background-image: url({% static 'images/main-bg.png' %});" class="header">
+    <div class="d-flex justify-content-between align-items-center header-main">
+        <div class="header-text animate__animated animate__fadeInLeft">
+            <p class="header-text__title">
+                <span>Единое приложение</span> ЯГТУ для планирования задач
+            </p>
+            <p class="header-text__subtitle">
+                Чтобы выполнить большой и важный труд, необходимы две вещи: ясный план и ограниченное время.
+            </p>
+        </div>
+        <div class="header-foto animate__animated animate__fadeInRight">
+            <img src="{% static 'images/notebook.png' %}" alt="notebook">
+        </div>
+    </div>
+</div>
 {% endblock menu %}
 
+
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
+<div class="my-5">
+    <div class="container-xxl">
+        <div class="orange-block">
+            <p class="orange-block-title text-center py-3">Выбирай наше приложение!</p>
+            <div class="advantages d-flex justify-content-center align-items-start">
+                <div class="advantages-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-offset="250">
+                    <div class="icon">
+                        <svg>
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#star"></use>
+                        </svg>
+                    </div>
+                    <div class="advantages-title">
+                        Уникальность
+                    </div>
+                    <p class="advantages-text">
+                        Не существует приложения для управления проектами и задачами именно для студентов ЯГТУ
+                    </p>
+                </div>
+                <div class="advantages-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-offset="250" data-wow-delay="0.2s">
+                    <div class="icon">
+                        <svg>
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#smartphone"></use>
+                        </svg>
+                    </div>
+                    <div class="advantages-title">
+                        Адаптивность
+                    </div>
+                    <p class="advantages-text">
+                        Приложением удобно пользоваться и на компьютере, и на мобильном устройстве
+                    </p>
+                </div>
+                <div class="advantages-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-offset="250" data-wow-delay="0.4s">
+                    <div class="icon">
+                        <svg>
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown"></use>
+                        </svg>
+                    </div>
+                    <div class="advantages-title">
+                        Простота
+                    </div>
+                    <p class="advantages-text">
+                        YUTA не нагружена лишним функционалом, что позволит быстро начать работу
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        {% if message %}
-            <p>{{ message }}</p>
-        {% endif %}
+<div class="my-5">
+    <div class="container-xxl">
+        <div class="orange-block">
+            <p class="orange-block-title text-center py-3">Мобильная версия</p>
+            <div class="d-flex justify-content-around align-items-center px-5 py-4">
+                <div class="mobile-text">
+                    <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250">
+                        <div class="counter">1</div>
+                        <p class="align-self-center">Работайте там, где Вам удобно! Из любого места и любого устройства!</p>
+                    </div>
+                    <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250" data-wow-delay="0.2s">
+                        <div class="counter">2</div>
+                        <p class="align-self-center">Вы сами выбираете удобный формат - мобильное приложение или веб-версия</p>
+                    </div>
+                    <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250" data-wow-delay="0.4s">
+                        <div class="counter">3</div>
+                        <p class="align-self-center">Один раз установив приложение, пользователь сможет возвращаться в него по одному нажатию на экран телефона</p>
+                    </div>
+                </div>
+                <div class="mobile-foto wow animate__animated animate__fadeInRight" data-wow-offset="250">
+                    <img src="{% static 'images/phone.png' %}" alt="смартфон">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <input type="text" name="login" placeholder="login" required>
-        <input type="password" name="password" placeholder="password" required>
-
-        <button type="submit">Войти</button>
-    </form>
+<div class="my-5">
+    <div class="container-xxl">
+        <div class="orange-block">
+            <p class="orange-block-title text-center py-3">О нас</p>
+            <div class="d-flex justify-content-between px-lg-5 px-md-2 px-sm-2 py-4">
+                <div class="about-item">
+                    <div class="hover-image-scale">
+                        <img src="{% static 'images/3.jpg' %}" alt="аватарка">
+                    </div>
+                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Панова Ксения</p>
+                    <p class="role mt-1">Backend-разработчик</p>
+                </div>
+                <div class="about-item">
+                    <div class="hover-image-scale">
+                        <img src="{% static 'images/5.jpg' %}" alt="аватарка">
+                    </div>
+                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Аристов Даниил</p>
+                    <p class="role mt-1">Frontend-разработчик</p>
+                </div>
+                <div class="about-item">
+                    <div class="hover-image-scale">
+                        <img src="{% static 'images/1.jpg' %}" alt="аватарка">
+                    </div>
+                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Матюшанова Дарина</p>
+                    <p class="role mt-1">Дизайнер</p>
+                </div>
+                <div class="about-item">
+                    <div class="hover-image-scale">
+                        <img src="{% static 'images/2.jpg' %}" alt="аватарка">
+                    </div>
+                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Сальникова Екатерина</p>
+                    <p class="role mt-1">Дизайнер</p>
+                </div>
+                <div class="about-item">
+                    <div class="hover-image-scale">
+                        <img src="{% static 'images/4.jpg' %}" alt="аватарка">
+                    </div>
+                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Пухов Илья</p>
+                    <p class="role mt-1">Android-разработчик</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
