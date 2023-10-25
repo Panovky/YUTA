@@ -1,5 +1,5 @@
 from django.db import models
-from projects.models import Project, Column
+from projects.models import Project
 from users.models import User
 
 
@@ -9,10 +9,9 @@ class Task(models.Model):
     description = models.CharField(max_length=500)
     creation_datetime = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField()
-    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
-    column = models.ForeignKey(Column, null=True, on_delete=models.SET_NULL)
-    appointed = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='appointed_task_set')
-    responsible = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='responsible_task_set')
+    project = models.ForeignKey(Project, related_name='project_tasks', null=True, on_delete=models.SET_NULL)
+    appointed = models.ForeignKey(User, related_name='appointed_tasks', null=True, on_delete=models.SET_NULL)
+    responsible = models.ForeignKey(User, related_name='responsible_tasks', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Задача'
