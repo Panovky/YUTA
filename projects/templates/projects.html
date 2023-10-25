@@ -2,40 +2,40 @@
 
 {% block content %}
     {% if user_projects %}
-        <p>Проекты, которыми Вы руководите:</p>
-        <div class="d-flex align-items-center">
-            {% for project in user_projects %}
-                <div class="card" style="width: 18rem;">
-                    <img src="{{ project.photo.url }}" class="card-img-top" alt="Обложка проекта">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ project.name }}</h5>
-                        <p class="card-text">{{ project.get_deadline }}</p>
-                        <a href="#" class="btn btn-primary">Подробнее</a>
-                    </div>
-                </div>
-            {% endfor %}
+    <p>Проекты, которыми Вы руководите:</p>
+    <div class="d-flex align-items-center">
+        {% for project in user_projects %}
+        <div class="card" style="width: 18rem;">
+            <img src="{{ project.photo.url }}" class="card-img-top" alt="Обложка проекта">
+            <div class="card-body">
+                <h5 class="card-title">{{ project.name }}</h5>
+                <p class="card-text">{{ project.get_deadline }}</p>
+                <a href="#" class="btn btn-primary">Подробнее</a>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>К сожалению, Вы еще не руководите ни одним проектом. Хотите создать новый проект?</p>
+    <p class="fs-4 text-center mt-4">К сожалению, Вы еще не руководите ни одним проектом. Хотите создать новый проект?</p>
     {% endif %}
 
     <br>
 
     {% if others_projects %}
-        <p>Проекты, в которых вы участвуете:</p>
-        <div class="d-flex align-items-center">
-            {% for project in others_projects %}
-                <div class="card" style="width: 18rem;">
-                    <img src="{{ project.photo.url }}" class="card-img-top" alt="Обложка проекта">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ project.name }}</h5>
-                        <p class="card-text">{{ project.get_deadline }}</p>
-                        <a href="#" class="btn btn-primary">Подробнее</a>
-                    </div>
-                </div>
-            {% endfor %}
+    <p>Проекты, в которых вы участвуете:</p>
+    <div class="d-flex align-items-center">
+        {% for project in others_projects %}
+        <div class="card" style="width: 18rem;">
+            <img src="{{ project.photo.url }}" class="card-img-top" alt="Обложка проекта">
+            <div class="card-body">
+                <h5 class="card-title">{{ project.name }}</h5>
+                <p class="card-text">{{ project.get_deadline }}</p>
+                <a href="#" class="btn btn-primary">Подробнее</a>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>К сожалению, Вы еще не участвуете ни одном в проекте. Хотите создать новый проект?</p>
+    <p class="fs-4 text-center mt-4">К сожалению, Вы еще не участвуете ни одном в проекте. Хотите создать новый проект?</p>
     {% endif %}
 {% endblock content %}
