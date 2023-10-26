@@ -4,63 +4,6 @@
 
 {% block logo %}<img src="{% static 'images/orange-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
 
-
-
-        <button>Редактировать</button>
-        <form method="POST" enctype="multipart/form-data"
-              style="border: 1px solid black; width: 30%; margin-top: 10px;">
-            {% csrf_token %}
-
-            <p>Редактирование данных</p>
-
-            {% if biography is not None %}
-            <label>Обо мне</label>
-            <br><textarea name="biography" maxlength="200">{{ biography }}</textarea>
-            <br>
-            {% else %}
-            <br><label>Обо мне</label>
-            <br><textarea name="biography" maxlength="200"></textarea>
-            <br>
-            {% endif %}
-
-            {% if phone_number is not None %}
-            <br><label>Телефон</label>
-            <br><input type="text" name="phone_number" value="{{ phone_number }}">
-            <br>
-            {% else %}
-            <br><label>Телефон</label>
-            <br><input type="text" name="phone_number">
-            <br>
-            {% endif %}
-
-            {% if e_mail is not None %}
-            <br><label>E-mail</label>
-            <br><input type="text" name="e_mail" value="{{ e_mail }}">
-            <br>
-            {% else %}
-            <br><label>E-mail</label>
-            <br><input type="text" name="e_mail">
-            <br>
-            {% endif %}
-
-            {% if vk is not None %}
-            <br><label>VK</label>
-            <br><input type="text" name="vk" value="{{ vk }}">
-            <br>
-            {% else %}
-            <br><label>VK</label>
-            <br><input type="text" name="vk">
-            <br>
-            {% endif %}
-
-            <input type="hidden" name="action" value="edit_data">
-
-            <br>
-            <button>Отмена</button>
-            <button type="submit">Сохранить изменения</button>
-        </form>
-
-
 {% block content %}
 <div class="text-center avatar-block">
     <div class="container-xxl">
@@ -163,242 +106,255 @@
                         <p class="text-center fs-5 mb-1">Выберите область для маленьких фотографий.</p>
                         <p class="text-center fs-5 mb-4">Выбранная миниатюра будет использоваться в профиле.</p>
 
-                        <div>
-                            <div class="d-flex justify-content-center align-items-center gap-5">
-                                <div class="inputImg-wrapper">
-                                    <img class="inputImg" src="{{ photo_url }}" id="image">
+                                <div>
+                                    <div class="d-flex justify-content-center align-items-center gap-5">
+                                        <div class="inputImg-wrapper">
+                                            <img class="inputImg" src="{{ photo_url }}" id="image">
+                                        </div>
+                                        <div class="exampleThumb">
+                                            <img src="" id="outputThumb">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="crop-btn" id="cropImageBtn">Обрезать</button>
+                                    </div>
                                 </div>
-                                <div class="exampleThumb">
-                                    <img src="" id="outputThumb">
-                                </div>
-                            </div>
-                            <div>
-                                <button type="button" class="crop-btn" id="cropImageBtn">Обрезать</button>
-                            </div>
-                        </div>
 
-                        <input type="hidden" name="action" value="update_thumb">
-                        <button type="submit" class="orange-btn modal-btn mt-5">
-                            Обновить
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade modal-custom" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                            <svg style="width: 28px; height: 28px;">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                            </svg>
-                        </button>
+                                <input type="hidden" name="action" value="update_thumb">
+                                <button type="submit" class="orange-btn modal-btn mt-5">
+                                    Обновить
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <p class="modal-title text-center">Предупреждение</p>
-                    <div class="modal-devider"></div>
-                    <form method="POST" class="mt-2">
-                        {% csrf_token %}
-                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить фотографию?</p>
-                        <input type="hidden" name="action" value="delete_photo">
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                <svg style="width: 19px; height: 17px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
-                                </svg>
-                                <p>Да, удалить</p>
-                            </button>
-                        </div>
-                    </form>
                 </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</div>
-<div class="container-xxl">
-    <div class="position-relative text-center">
-        {% if patronymic is not None %}
-        <p class="person-name">{{ last_name }} {{ first_name }} {{ patronymic }}</p>
-        {% else %}
-        <p class="person-name">{{ last_name }} {{ first_name }}</p>
-        {% endif %}
-        <p class="person-age mt-2">{{ age }}</p>
-        {% if biography is not None %}
-        <p class="person-about mt-4">{{ biography }}</p>
-        {% endif %}
-
-        {% if is_owner %}
-        <div class="person-icons">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#edit">
-                <svg id="editButton" style="width: 30px; height: 30px;">
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit"></use>
-                </svg>
-            </button>
-            <div class="modal fade modal-custom" id="edit" tabindex="-1" aria-labelledby="Edit" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header position-relative">
-                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                                <svg style="width: 28px; height: 28px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="modal-title text-center">Редактирование профиля</p>
-                        <div class="modal-devider"></div>
-                        <form method="POST" enctype="multipart/form-data" class="mt-2">
-                            {% csrf_token %}
-
-                            {% if biography is not None %}
-                            <div class="text-field__noticon mb-3">
-                                <textarea name="biography" maxlength="200">{{ biography }}</textarea>
-                            </div>
-                            {% else %}
-                            <div class="text-field__noticon mb-3">
-                                <textarea name="biography" maxlength="200" placeholder="O cебе"></textarea>
-                            </div>
-                            {% endif %}
-
-                            {% if phone_number is not None %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="phone_number" value="{{ phone_number }}">
-                            </div>
-                            {% else %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="phone_number" placeholder="Телефон">
-                            </div>
-                            {% endif %}
-
-                            {% if e_mail is not None %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="e_mail" value="{{ e_mail }}">
-                            </div>
-                            {% else %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="e_mail" placeholder="E-mail">
-                            </div>
-                            {% endif %}
-
-                            {% if vk is not None %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="vk" value="{{ vk }}">
-                            </div>
-                            {% else %}
-                            <div class="text-field__noticon mb-3">
-                                <input type="text" name="vk" placeholder="Ссылка на ВК">
-                            </div>
-                            {% endif %}
-
-                            <input type="hidden" name="action" value="edit_data">
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                    <svg style="width: 19px; height: 17px;">
-                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
+                <div class="modal fade modal-custom" id="delete" tabindex="-1" aria-labelledby="delete"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header position-relative">
+                                <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                        aria-label="Закрыть">
+                                    <svg style="width: 28px; height: 28px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
                                     </svg>
-                                    <p>Сохранить</p>
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#reload">
-                <svg id="reloadButton" style="width: 30px; height: 30px;">
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#reload"></use>
-                </svg>
-            </button>
-            <div class="modal fade modal-custom" id="reload" tabindex="-1" aria-labelledby="Reload" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header position-relative">
-                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                                <svg style="width: 28px; height: 28px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                                </svg>
-                            </button>
+                            <p class="modal-title text-center">Предупреждение</p>
+                            <div class="modal-devider"></div>
+                            <form method="POST" class="mt-2">
+                                {% csrf_token %}
+                                <p class="text-start fs-5 my-3">Вы действительно хотите удалить фотографию?</p>
+                                <input type="hidden" name="action" value="delete_photo">
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit"
+                                            class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                        <svg style="width: 19px; height: 17px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                        </svg>
+                                        <p>Да, удалить</p>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <p class="modal-title text-center">Обновление информации</p>
-                        <div class="modal-devider"></div>
-                        <p class="text-start fs-5 mt-2 mb-3">Чтобы синхронизировать данные личного кабинета на сайте ЯГТУ и данные в YUTA, введите свой пароль:</p>
-                        <form method="POST" class="mt-2">
-                            {% csrf_token %}
-                            <div class="text-field__icon mb-3 text-field__icon_password">
-                                <input id="Password" type="password" name="password" placeholder="Пароль" maxlength="30">
-                                <input type="hidden" name="action" value="update_data">
-                            </div>
-                            {% if message %}
-                            <p>{{ message }}</p>
-                            {% endif %}
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                    <svg style="width: 23px; height: 19px;">
-                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#update"></use>
-                                    </svg>
-                                    <p>Обновить</p>
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container-xxl">
+        <div class="position-relative text-center">
+            {% if patronymic is not None %}
+                <p class="person-name">{{ last_name }} {{ first_name }} {{ patronymic }}</p>
+            {% else %}
+                <p class="person-name">{{ last_name }} {{ first_name }}</p>
+            {% endif %}
+            <p class="person-age mt-2">{{ age }}</p>
+            {% if biography is not None %}
+                <p class="person-about mt-4">{{ biography }}</p>
+            {% endif %}
+
+            {% if is_owner %}
+                <div class="person-icons">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#edit">
+                        <svg id="editButton" style="width: 30px; height: 30px;">
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit"></use>
+                        </svg>
+                    </button>
+                    <div class="modal fade modal-custom" id="edit" tabindex="-1" aria-labelledby="Edit"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header position-relative">
+                                    <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                            aria-label="Закрыть">
+                                        <svg style="width: 28px; height: 28px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="modal-title text-center">Редактирование профиля</p>
+                                <div class="modal-devider"></div>
+                                <form method="POST" enctype="multipart/form-data" class="mt-2">
+                                    {% csrf_token %}
+
+                                    {% if biography is not None %}
+                                        <div class="text-field__noticon mb-3">
+                                            <textarea name="biography" maxlength="200">{{ biography }}</textarea>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-field__noticon mb-3">
+                                            <textarea name="biography" maxlength="200" placeholder="O cебе"></textarea>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if phone_number is not None %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="phone_number" value="{{ phone_number }}">
+                                        </div>
+                                    {% else %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="phone_number" placeholder="Телефон">
+                                        </div>
+                                    {% endif %}
+
+                                    {% if e_mail is not None %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="e_mail" value="{{ e_mail }}">
+                                        </div>
+                                    {% else %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="e_mail" placeholder="E-mail">
+                                        </div>
+                                    {% endif %}
+
+                                    {% if vk is not None %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="vk" value="{{ vk }}">
+                                        </div>
+                                    {% else %}
+                                        <div class="text-field__noticon mb-3">
+                                            <input type="text" name="vk" placeholder="Ссылка на ВК">
+                                        </div>
+                                    {% endif %}
+
+                                    <input type="hidden" name="action" value="edit_data">
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit"
+                                                class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                            <svg style="width: 19px; height: 17px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
+                                            </svg>
+                                            <p>Сохранить</p>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#reload">
+                        <svg id="reloadButton" style="width: 30px; height: 30px;">
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#reload"></use>
+                        </svg>
+                    </button>
+                    <div class="modal fade modal-custom" id="reload" tabindex="-1" aria-labelledby="Reload"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header position-relative">
+                                    <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                            aria-label="Закрыть">
+                                        <svg style="width: 28px; height: 28px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="modal-title text-center">Обновление информации</p>
+                                <div class="modal-devider"></div>
+                                <p class="text-start fs-5 mt-2 mb-3">Чтобы синхронизировать данные личного кабинета на
+                                    сайте ЯГТУ и данные в YUTA, введите свой пароль:</p>
+                                <form method="POST" class="mt-2">
+                                    {% csrf_token %}
+                                    <div class="text-field__icon mb-3 text-field__icon_password">
+                                        <input id="Password" type="password" name="password" placeholder="Пароль"
+                                               maxlength="30">
+                                        <input type="hidden" name="action" value="update_data">
+                                    </div>
+                                    {% if message %}
+                                        <p>{{ message }}</p>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit"
+                                                class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                            <svg style="width: 23px; height: 19px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#update"></use>
+                                            </svg>
+                                            <p>Обновить</p>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+        <div class="lk-devider my-4"></div>
+        <div class="text-center study-info">
+            <svg style="width: 60px; height: 60px;">
+                <use xlink:href="{% static 'images/svg/sprite.svg' %}#study"></use>
+            </svg>
+            <p>Факультет: {{ faculty }}</p>
+            <p>Направление: {{ direction }}</p>
+            <p>Группа: {{ group }}</p>
+        </div>
+        <div class="statistic d-flex align-items-center justify-content-center">
+            <div class="statistic-item text-center animate__animated animate__fadeInUp animate__faster">
+                <p class="item-title">Проекты</p>
+                <p class="item-meaning">10/12</p>
+            </div>
+            <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
+                 data-wow-delay="0.2s">
+                <p class="item-title">Задачи</p>
+                <p class="item-meaning">35/36</p>
+            </div>
+            <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
+                 data-wow-delay="0.4s">
+                <p class="item-title">Команды</p>
+                <p class="item-meaning">5</p>
             </div>
         </div>
-        {% endif %}
 
+        <div class="contacts d-flex align-items-center justify-content-center">
+
+            {% if phone_number is not None %}
+                <div class="contacts-item d-flex align-items-center justify-content-center">
+                    <svg>
+                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#phone"></use>
+                    </svg>
+                    <p>{{ phone_number }}</p>
+                </div>
+            {% endif %}
+
+            {% if e_mail is not None %}
+                <div class="contacts-item d-flex align-items-center justify-content-center">
+                    <svg>
+                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#message"></use>
+                    </svg>
+                    <p>{{ e_mail }}</p>
+                </div>
+            {% endif %}
+
+            {% if vk is not None %}
+                <div class="contacts-item d-flex align-items-center justify-content-center">
+                    <svg>
+                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#vk"></use>
+                    </svg>
+                    <p><a href="{{ vk }}">{{ vk }}</a></p>
+                </div>
+            {% endif %}
+
+        </div>
     </div>
-    <div class="lk-devider my-4"></div>
-    <div class="text-center study-info">
-        <svg style="width: 60px; height: 60px;">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#study"></use>
-        </svg>
-        <p>Факультет: {{ faculty }}</p>
-        <p>Направление: {{ direction }}</p>
-        <p>Группа: {{ group }}</p>
-    </div>
-    <div class="statistic d-flex align-items-center justify-content-center">
-        <div class="statistic-item text-center animate__animated animate__fadeInUp animate__faster">
-            <p class="item-title">Проекты</p>
-            <p class="item-meaning">10/12</p>
-        </div>
-        <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-delay="0.2s">
-            <p class="item-title">Задачи</p>
-            <p class="item-meaning">35/36</p>
-        </div>
-        <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-delay="0.4s">
-            <p class="item-title">Команды</p>
-            <p class="item-meaning">5</p>
-        </div>
-    </div>
-
-    <div class="contacts d-flex align-items-center justify-content-center">
-
-        {% if phone_number is not None %}
-        <div class="contacts-item d-flex align-items-center justify-content-center">
-            <svg>
-                <use xlink:href="{% static 'images/svg/sprite.svg' %}#phone"></use>
-            </svg>
-            <p>{{ phone_number }}</p>
-        </div>
-        {% endif %}
-
-        {% if e_mail is not None %}
-        <div class="contacts-item d-flex align-items-center justify-content-center">
-            <svg>
-                <use xlink:href="{% static 'images/svg/sprite.svg' %}#message"></use>
-            </svg>
-            <p>{{ e_mail }}</p>
-        </div>
-        {% endif %}
-
-        {% if vk is not None %}
-        <div class="contacts-item d-flex align-items-center justify-content-center">
-            <svg>
-                <use xlink:href="{% static 'images/svg/sprite.svg' %}#vk"></use>
-            </svg>
-            <p><a href="{{ vk }}">{{ vk }}</a></p>
-        </div>
-        {% endif %}
-
-    </div>
-</div>
 {% endblock content %}
