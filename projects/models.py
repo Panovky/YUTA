@@ -4,6 +4,13 @@ from teams.models import Team
 import datetime
 
 
+STATUS_CHOICES = (
+    ('в работе', 'в работе'),
+    ('приостановлен', 'приостановлен'),
+    ('завершен', 'завершен')
+)
+
+
 class Project(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
@@ -12,6 +19,7 @@ class Project(models.Model):
     technical_task = models.FileField(blank=True, null=True)
     creation_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
+    status = models.CharField(choices=STATUS_CHOICES, null=True)
     manager = models.ForeignKey(User, related_name='manager_projects', null=True, on_delete=models.SET_NULL)
     team = models.ForeignKey(Team, related_name='team_projects', null=True, on_delete=models.SET_NULL)
 
@@ -24,16 +32,21 @@ class Project(models.Model):
         return self.name
 
     def get_deadline(self):
+        if self.status == 'приостановлен':
+            return 'Разработка проекта приостановлена'
+        if self.status == 'завершен':
+            return 'Проект успешно завершен'
+
         deadline = self.deadline
         today = datetime.date.today()
         days = (deadline - today).days
 
         if days < 0:
-            return 'сдача проекта просрочена'
+            return 'Сдача проекта просрочена'
         elif days == 0:
-            return 'срок сдачи проекта: сегодня'
+            return 'Срок сдачи проекта: сегодня'
         else:
-            return f'дней до сдачи проекта: {days}'
+            return f'Дней до сдачи проекта: {days}'
 
 
 
