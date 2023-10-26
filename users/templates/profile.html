@@ -314,17 +314,17 @@
         <div class="statistic d-flex align-items-center justify-content-center">
             <div class="statistic-item text-center animate__animated animate__fadeInUp animate__faster">
                 <p class="item-title">Проекты</p>
-                <p class="item-meaning">10/12</p>
+                <p class="item-meaning">{{ done_projects_count }}/{{ all_projects_count }}</p>
             </div>
             <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
                  data-wow-delay="0.2s">
                 <p class="item-title">Задачи</p>
-                <p class="item-meaning">35/36</p>
+                <p class="item-meaning">{{ done_tasks_count }}/{{ all_tasks_count }}</p>
             </div>
             <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
                  data-wow-delay="0.4s">
                 <p class="item-title">Команды</p>
-                <p class="item-meaning">5</p>
+                <p class="item-meaning">{{ teams_count }}</p>
             </div>
         </div>
 

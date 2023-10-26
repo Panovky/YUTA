@@ -3,10 +3,10 @@
 {% block title %}<title>Проекты</title>{% endblock title %}
 
 {% block content %}
-    {% if user_projects %}
+    {% if managed_projects %}
     <p>Проекты, которыми Вы руководите:</p>
     <div class="d-flex align-items-center">
-        {% for project in user_projects %}
+        {% for project in managed_projects %}
         <div class="card" style="width: 18rem;">
             <img src="{{ project.photo.url }}" class="card-img-top" alt="Обложка проекта">
             <div class="card-body">

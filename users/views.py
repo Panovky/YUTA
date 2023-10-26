@@ -16,6 +16,28 @@ class ProfileView(View):
             session_user_id = request.session['user_id']
             is_owner = url_user_id == session_user_id
 
+            all_projects_count = user.manager_projects.count() + len(
+                [
+                    project
+                    for team in user.teams.all()
+                    for project in team.team_projects.all()
+                ]
+            )
+
+            done_projects_count = user.manager_projects.filter(status='завершен').count() + len(
+                [
+                    project
+                    for team in user.teams.all()
+                    for project in team.team_projects.filter(status='завершен')
+                ]
+
+            )
+
+            all_tasks_count = user.responsible_tasks.count()
+            done_tasks_count = user.responsible_tasks.filter(status='выполнена').count()
+
+            teams_count = user.teams.count() + user.leader_teams.count()
+
             return render(
                 request,
                 'profile.html',
@@ -32,6 +54,11 @@ class ProfileView(View):
                     'phone_number': user.phone_number,
                     'e_mail': user.e_mail,
                     'vk': user.vk,
+                    'done_projects_count': done_projects_count,
+                    'all_projects_count': all_projects_count,
+                    'done_tasks_count': done_tasks_count,
+                    'all_tasks_count': all_tasks_count,
+                    'teams_count': teams_count,
                     'is_owner': is_owner,
                     'menu_user_id': session_user_id
                 }
@@ -40,6 +67,7 @@ class ProfileView(View):
     def post(self, request, url_user_id):
         if request.method == 'POST':
             user = User.objects.get(id=url_user_id)
+            teams_count = user.teams.count() + user.leader_teams.count()
 
             if request.POST.get('action') == 'update_photo':
                 photo = request.FILES['photo']
@@ -99,6 +127,7 @@ class ProfileView(View):
                             'phone_number': user.phone_number,
                             'e_mail': user.e_mail,
                             'vk': user.vk,
+                            'teams_count': teams_count,
                             'is_owner': is_owner,
                             'message': message,
                             'menu_user_id': session_user_id
