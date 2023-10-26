@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}<title>{{ last_name }} {{ first_name }}</title>{% endblock title %}
+
 {% load static %}
 
 {% block logo %}<img src="{% static 'images/orange-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}<title>Задачи</title>{% endblock title %}
+
 {% block content %}
 <p class="fs-3 text-center mt-4">Доска задач пользователя "{{ user.last_name }} {{ user.first_name }}"</p>
 {% endblock %}
