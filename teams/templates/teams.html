@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-around">
+        <div>
+            <p>Команды, которыми Вы руководите</p>
+            {% if managed_teams %}
+                {% for team_name, leader_photo, leader_last_name, leader_first_name, members in managed_teams %}
+                    <br>
+                    <div style="border: 1px solid blue">
+                        <p class="text-center">{{ team_name }}</p>
+                        <br>
+                        <div class="d-flex">
+                            <div class="card" style="width: 10rem;">
+                                <img src="{{ leader_photo.url }}" class="card-img-top"
+                                     alt="Фотография руководителя команды">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Руководитель команды: {{ leader_last_name }} {{ leader_first_name }}</h5>
+                                </div>
+                            </div>
+                            {% for photo, last_name, first_name in members %}
+                                <div class="card" style="width: 10rem;">
+                                    <img src="{{ photo.url }}" class="card-img-top" alt="Фотография участника команды">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">{{ last_name }} {{ first_name }}</h5>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>К сожалению, Вы не руководите ни одной командой.</p>
+            {% endif %}
+        </div>
+        <div>
+            <p>Команды, в которых Вы состоите</p>
+            {% if others_teams %}
+                {% for team_name, leader_photo, leader_last_name, leader_first_name, members in others_teams %}
+                    <br>
+                    <div style="border: 1px solid blue">
+                        <br>
+                        <p class="text-center">{{ team_name }}</p>
+                        <br>
+                        <div class="d-flex">
+                            <div class="card" style="width: 10rem;">
+                                <img src="{{ leader_photo.url }}" class="card-img-top"
+                                     alt="Фотография руководителя команды">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Руководитель команды: {{ leader_last_name }} {{ leader_first_name }}</h5>
+                                </div>
+                            </div>
+                            {% for photo, last_name, first_name in members %}
+                                <div class="card" style="width: 10rem;">
+                                    <img src="{{ photo.url }}" class="card-img-top" alt="Фотография участника команды">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">{{ last_name }} {{ first_name }}</h5>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>К сожалению, Вы не состоите ни одной командой.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
