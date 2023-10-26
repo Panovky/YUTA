@@ -26,5 +26,6 @@ urlpatterns = [
     path('profile/', include('users.urls')),
     path('projects/', include('projects.urls')),
     path('tasks/', include('tasks.urls')),
+    path('teams', include('teams.urls')),
     path('', RedirectView.as_view(url='main/')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

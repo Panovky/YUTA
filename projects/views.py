@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from projects.models import Project
-from teams.models import TeamMember
+# from teams.models import TeamMember
 from users.models import User
 
 
@@ -11,7 +11,8 @@ class ProjectsView(View):
             session_user_id = request.session['user_id']
             user = User.objects.get(id=session_user_id)
             user_projects = Project.objects.filter(manager=user)
-            teams = [team_member.team for team_member in TeamMember.objects.filter(user=user)]
+            teams = []
+            #teams = [team_member.team for team_member in TeamMember.objects.filter(user=user)]
             others_projects = []
             for team in teams:
                 others_projects.extend(Project.objects.filter(team=team))
