@@ -3,6 +3,11 @@
 {% block title %}<title>Команды</title>{% endblock title %}
 
 {% block content %}
+    <br>
+    <a href="{% url 'new_team' 'choose-team-name' %}"><button class="orange-btn">Создать команду</button></a>
+    <br>
+    <br>
+
     <div class="d-flex justify-content-around">
         <div>
             <p>Команды, которыми Вы руководите</p>
