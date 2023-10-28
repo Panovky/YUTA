@@ -71,3 +71,37 @@ def get_age(birthday):
                 age = f'{age} года'
 
     return age
+
+
+def get_profile_statistic(user):
+    all_projects_count = user.manager_projects.count() + len(
+        [
+            project
+            for team in user.teams.all()
+            for project in team.team_projects.all()
+        ]
+    )
+
+    done_projects_count = user.manager_projects.filter(status='завершен').count() + len(
+        [
+            project
+            for team in user.teams.all()
+            for project in team.team_projects.filter(status='завершен')
+        ]
+
+    )
+
+    all_tasks_count = user.responsible_tasks.count()
+    done_tasks_count = user.responsible_tasks.filter(status='выполнена').count()
+
+    teams_count = user.teams.count() + user.leader_teams.count()
+
+    data = {
+        'done_projects_count': done_projects_count,
+        'all_projects_count': all_projects_count,
+        'done_tasks_count': done_tasks_count,
+        'all_tasks_count': all_tasks_count,
+        'teams_count': teams_count,
+    }
+
+    return data

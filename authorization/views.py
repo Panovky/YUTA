@@ -8,38 +8,31 @@ from users.models import User
 class MainView(View):
 
     def get(self, request):
-        if request.method == 'GET':
-            return render(request, 'main.html')
+        return render(request, 'main.html')
 
     def post(self, request):
-        if request.method == 'POST':
-            login = request.POST.get('login')
-            password = request.POST.get('password')
-            response = requests.post('https://www.ystu.ru/WPROG/auth1.php', data={'login': login, 'password': password})
+        login = request.POST.get('login')
+        password = request.POST.get('password')
+        response = requests.post('https://www.ystu.ru/WPROG/auth1.php', data={'login': login, 'password': password})
 
-            if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
-                message = 'неправильный логин или пароль'
-                return render(request, 'main.html', context={'message': message})
+        if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
+            return render(request, 'main.html', context={'message': 'Неправильный логин или пароль.'})
 
-            if response.url == 'https://www.ystu.ru/WPROG/lk/lkstud.php':
-                if User.objects.filter(login=login).exists():
-                    user = User.objects.get(login=login)
-                else:
-                    data = parse_lk(response)
-                    user = User.objects.create(
-                        login=login,
-                        last_name=data.get('last_name'),
-                        first_name=data.get('first_name'),
-                        patronymic=data.get('patronymic'),
-                        birthday=data.get('birthday'),
-                        faculty=data.get('faculty'),
-                        direction=data.get('direction'),
-                        group=data.get('group')
-                    )
+        if response.url == 'https://www.ystu.ru/WPROG/lk/lkstud.php':
+            if User.objects.filter(login=login).exists():
+                user = User.objects.get(login=login)
+            else:
+                data = parse_lk(response)
+                user = User.objects.create(
+                    login=login,
+                    last_name=data.get('last_name'),
+                    first_name=data.get('first_name'),
+                    patronymic=data.get('patronymic'),
+                    birthday=data.get('birthday'),
+                    faculty=data.get('faculty'),
+                    direction=data.get('direction'),
+                    group=data.get('group')
+                )
 
-                request.session['user_id'] = user.id
-                return redirect('tasks')
-
-
-
-
+            request.session['user_id'] = user.id
+            return redirect('tasks')
