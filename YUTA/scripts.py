@@ -1,4 +1,6 @@
 from datetime import date
+from zipfile import Path
+from PIL import Image
 from bs4 import BeautifulSoup
 from users.models import Faculty, Direction, Group
 
@@ -105,3 +107,13 @@ def get_profile_statistic(user):
     }
 
     return data
+
+
+def crop_photo(open_photo_path, save_photo_path, post_data):
+    width = int(post_data.get('width'))
+    height = int(post_data.get('height'))
+    delta_x = int(post_data.get('delta_x'))
+    delta_y = int(post_data.get('delta_y'))
+    photo = Image.open(open_photo_path)
+    photo = photo.crop((delta_x, delta_y, delta_x + width, delta_y + height))
+    photo.save(save_photo_path)

@@ -20,7 +20,7 @@
                         <div class="d-flex">
                             <a href="{% url 'profile' team.leader.id %}" target="_blank">
                                 <div class="card" style="width: 10rem;">
-                                    <img src="{{ team.leader.photo.url }}" class="card-img-top"
+                                    <img src="{{ team.leader.cropped_photo.url }}" class="card-img-top"
                                          alt="Фотография руководителя команды">
                                     <div class="card-body">
                                         <h5 class="card-title text-center">Руководитель
@@ -31,7 +31,7 @@
                             {% for member in team.members.all %}
                                 <a href="{% url 'profile' member.id %}" target="_blank">
                                     <div class="card" style="width: 10rem;">
-                                        <img src="{{ member.photo.url }}" class="card-img-top"
+                                        <img src="{{ member.cropped_photo.url }}" class="card-img-top"
                                              alt="Фотография участника команды">
                                         <div class="card-body">
                                             <h5 class="card-title text-center">{{ member.last_name }} {{ member.first_name }}</h5>
@@ -58,7 +58,7 @@
                         <div class="d-flex">
                             <a href="{% url 'profile' team.leader.id %}" target="_blank">
                                 <div class="card" style="width: 10rem;">
-                                    <img src="{{ team.leader.photo.url }}" class="card-img-top"
+                                    <img src="{{ team.leader.cropped_photo.url }}" class="card-img-top"
                                          alt="Фотография руководителя команды">
                                     <div class="card-body">
                                         <h5 class="card-title text-center">Руководитель
@@ -69,7 +69,7 @@
                             {% for member in team.members.all %}
                                 <a href="{% url 'profile' member.id %}" target="_blank">
                                     <div class="card" style="width: 10rem;">
-                                        <img src="{{ member.photo.url }}" class="card-img-top"
+                                        <img src="{{ member.cropped_photo.url }}" class="card-img-top"
                                              alt="Фотография участника команды">
                                         <div class="card-body">
                                             <h5 class="card-title text-center">{{ member.last_name }} {{ member.first_name }}</h5>
