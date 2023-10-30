@@ -19,7 +19,7 @@ class Project(models.Model):
     technical_task = models.FileField(blank=True, null=True)
     creation_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
-    status = models.CharField(choices=STATUS_CHOICES, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True)
     manager = models.ForeignKey(User, related_name='manager_projects', null=True, on_delete=models.SET_NULL)
     team = models.ForeignKey(Team, related_name='team_projects', null=True, on_delete=models.SET_NULL)
 
