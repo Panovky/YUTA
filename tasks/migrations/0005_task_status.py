@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='task',
             name='status',
-            field=models.CharField(choices=[('назначена', 'назначена'), ('в работе', 'в работе'), ('выполнена', 'выполнена')], null=True),
+            field=models.CharField(max_length=20, choices=[('назначена', 'назначена'), ('в работе', 'в работе'), ('выполнена', 'выполнена')], null=True),
         ),
     ]
