@@ -16,7 +16,6 @@ document.querySelector('#choiceAvatartBtn').addEventListener('click', () => {
 })
 
 
-
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
 const imageCur = document.querySelector('#image');
 const cropper = new Cropper(imageCur, {
@@ -39,7 +38,6 @@ document.querySelector('#openThumbModal').addEventListener('click', () => {
 })
 
 
-
 // ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ
 tippy('#editButton', {
     content: 'Редактировать профиль',
@@ -53,4 +51,11 @@ tippy('#reloadButton', {
     placement: 'top-end',
     animation: 'scale',
     theme: 'material',
+});
+
+
+// МАСКА ДЛЯ ВВОДА НОМЕРА ТЕЛЕФОНА
+const phoneInput = document.querySelector('.phone');
+const mask = new IMask(phoneInput, {
+    mask: "+{7} (000) 000-00-00"
 });
