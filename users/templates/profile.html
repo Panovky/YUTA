@@ -7,106 +7,121 @@
 {% block logo %}<img src="{% static 'images/orange-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
 
 {% block content %}
-<div class="text-center avatar-block">
-    <div class="container-xxl">
-        <div class="avatar-wrapper">
-            <img src="{{ photo_url }}" alt="аватарка">
+    <div class="text-center avatar-block">
+        <div class="container-xxl">
+            <div class="avatar-wrapper">
+                <img src="{{ cropped_photo_url }}" alt="аватарка">
+                {% if is_owner %}
+                    <button type="button" id="choiceAvatartBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg style="width: 40px; height: 40px;">
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#camera"></use>
+                        </svg>
+                    </button>
+                    <ul class="dropdown-content">
+                        <li>
+                            <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
+                                    type="button" data-bs-toggle="modal" data-bs-target="#foto">
+                                <svg style="width: 19px; height: 19px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#updatefoto"></use>
+                                </svg>
+                                <p>Обновить фотографию</p>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
+                                    type="button" id="openThumbModal" data-bs-toggle="modal" data-bs-target="#thumb">
+                                <svg style="width: 19px; height: 19px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#crop"></use>
+                                </svg>
+                                <p>Изменить миниатюру</p>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
+                                    type="button" data-bs-toggle="modal" data-bs-target="#delete">
+                                <svg style="width: 19px; height: 17px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                </svg>
+                                <p>Удалить фотографию</p>
+                            </button>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
             {% if is_owner %}
-            <button type="button" id="choiceAvatartBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg style="width: 40px; height: 40px;">
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#camera"></use>
-                </svg>
-            </button>
-            <ul class="dropdown-content">
-                <li>
-                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#foto">
-                        <svg style="width: 19px; height: 19px;">
-                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#updatefoto"></use>
-                        </svg>
-                        <p>Обновить фотографию</p>
-                    </button>
-                </li>
-                <li>
-                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center" type="button" id="openThumbModal" data-bs-toggle="modal" data-bs-target="#thumb">
-                        <svg style="width: 19px; height: 19px;">
-                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#crop"></use>
-                        </svg>
-                        <p>Изменить миниатюру</p>
-                    </button>
-                </li>
-                <li>
-                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#delete">
-                        <svg style="width: 19px; height: 17px;">
-                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
-                        </svg>
-                        <p>Удалить фотографию</p>
-                    </button>
-                </li>
-            </ul>
-            {% endif %}
-        </div>
-        {% if is_owner %}
-        <div class="modal fade modal-custom" id="foto" tabindex="-1" aria-labelledby="foto" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                            <svg style="width: 28px; height: 28px;">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                            </svg>
-                        </button>
-                    </div>
-                    <p class="modal-title text-center">Загрузка фотографии</p>
-                    <div class="modal-devider"></div>
-                    <form method="POST" enctype="multipart/form-data" class="mt-2">
-                        {% csrf_token %}
-                        <p class="text-center fs-5 mb-1">Друзьям будет проще узнать вас, если вы загрузите свою настоящую фотографию.</p>
-                        <p class="text-center fs-5 mb-4">Вы можете загрузить изображение в формате JPG, GIF или PNG.</p>
-                        <div class="input-file-row mb-3">
-                            <div class="d-flex gap-3 mb-3">
-                                <label class="input-file">
-                                    <input type="file" id="inputImg" name="photo" multiple accept="image/jpeg, image/jpg, image/png" required>
-                                    <span>Выбрать фотографию</span>
-                                </label>
-                                <button type="button" id="deleteFotoBtn" class="d-flex justify-content-center align-items-center orange-btn modal-btn">
-                                    <svg style="width: 19px; height: 17px;">
-                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                <div class="modal fade modal-custom" id="foto" tabindex="-1" aria-labelledby="foto" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header position-relative">
+                                <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                        aria-label="Закрыть">
+                                    <svg style="width: 28px; height: 28px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
                                     </svg>
                                 </button>
                             </div>
-                            <div class="input-file-list">
-                                <img src="{{ photo_url }}" data-src="{{ photo_url }}" id="output"/>
-                            </div>
+                            <p class="modal-title text-center">Загрузка фотографии</p>
+                            <div class="modal-devider"></div>
+                            <form method="POST" enctype="multipart/form-data" class="mt-2">
+                                {% csrf_token %}
+                                <p class="text-center fs-5 mb-1">Друзьям будет проще узнать вас, если вы загрузите свою
+                                    настоящую фотографию.</p>
+                                <p class="text-center fs-5 mb-4">Вы можете загрузить изображение в формате JPG, GIF или
+                                    PNG.</p>
+                                <div class="input-file-row mb-3">
+                                    <div class="d-flex gap-3 mb-3">
+                                        <label class="input-file">
+                                            <input type="file" id="inputImg" name="photo" multiple
+                                                   accept="image/jpeg, image/jpg, image/png" required>
+                                            <span>Выбрать фотографию</span>
+                                        </label>
+                                        <button type="button" id="deleteFotoBtn"
+                                                class="d-flex justify-content-center align-items-center orange-btn modal-btn">
+                                            <svg style="width: 19px; height: 17px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="input-file-list">
+                                        <img src="{{ cropped_photo_url }}" data-src="{{ cropped_photo_url }}" id="output"/>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="action" value="update_photo">
+                                <input type="hidden" name="width" value="500">
+                                <input type="hidden" name="height" value="1000">
+                                <input type="hidden" name="delta_x" value="550">
+                                <input type="hidden" name="delta_y" value="350">
+                                <div class="d-flex flex-column justify-content-start gap-2">
+                                    <button type="submit"
+                                            class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                        <svg style="width: 19px; height: 17px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
+                                        </svg>
+                                        <p>Сохранить</p>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <input type="hidden" name="action" value="update_photo">
-                        <div class="d-flex flex-column justify-content-start gap-2">
-                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                <svg style="width: 19px; height: 17px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
-                                </svg>
-                                <p>Сохранить</p>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade modal-custom" id="thumb" tabindex="-1" aria-labelledby="thumb" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                            <svg style="width: 28px; height: 28px;">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                            </svg>
-                        </button>
                     </div>
-                    <p class="modal-title text-center">Выбор миниатюры</p>
-                    <div class="modal-devider"></div>
-                    <form method="POST" enctype="multipart/form-data" class="mt-2">
-                        {% csrf_token %}
-                        <p class="text-center fs-5 mb-1">Выберите область для маленьких фотографий.</p>
-                        <p class="text-center fs-5 mb-4">Выбранная миниатюра будет использоваться в профиле.</p>
+                </div>
+                <div class="modal fade modal-custom" id="thumb" tabindex="-1" aria-labelledby="thumb"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header position-relative">
+                                <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                        aria-label="Закрыть">
+                                    <svg style="width: 28px; height: 28px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="modal-title text-center">Выбор миниатюры</p>
+                            <div class="modal-devider"></div>
+                            <form method="POST" enctype="multipart/form-data" class="mt-2">
+                                {% csrf_token %}
+                                <p class="text-center fs-5 mb-1">Выберите область для маленьких фотографий.</p>
+                                <p class="text-center fs-5 mb-4">Выбранная миниатюра будет использоваться в профиле.</p>
 
                                 <div>
                                     <div class="d-flex justify-content-center align-items-center gap-5">
@@ -122,7 +137,11 @@
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="action" value="update_thumb">
+                                <input type="hidden" name="action" value="update_miniature">
+                                <input type="hidden" name="width" value="1000">
+                                <input type="hidden" name="height" value="1000">
+                                <input type="hidden" name="delta_x" value="350">
+                                <input type="hidden" name="delta_y" value="450">
                                 <button type="submit" class="orange-btn modal-btn mt-5">
                                     Обновить
                                 </button>

@@ -2,7 +2,7 @@ import requests
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.scripts import parse_lk, get_age, get_profile_statistic
+from YUTA.scripts import parse_lk, get_age, get_profile_statistic, crop_photo
 from YUTA.settings import MEDIA_ROOT
 from users.models import User
 
@@ -20,6 +20,7 @@ class ProfileView(View):
             'profile.html',
             context={
                 'photo_url': user.photo.url,
+                'cropped_photo_url': user.cropped_photo.url,
                 'last_name': user.last_name,
                 'first_name': user.first_name,
                 'patronymic': user.patronymic,
@@ -47,11 +48,29 @@ class ProfileView(View):
         if request.POST.get('action') == 'update_photo':
             photo = request.FILES.get('photo')
             fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\images\\users_photos')
+
             photo_name = fs.save(photo.name, photo)
             user.photo = f'images/users_photos/{photo_name}'
 
+            crop_photo(
+                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
+                request.POST
+            )
+            user.cropped_photo = f'images/users_photos/cropped-{photo_name}'
+
+        if request.POST.get('action') == 'update_miniature':
+            photo_name = user.photo.url
+            photo_name = photo_name.replace('/media/images/users_photos/', '')
+            crop_photo(
+                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
+                request.POST
+            )
+
         if request.POST.get('action') == 'delete_photo':
-            user.photo = 'images/default.png'
+            user.photo = 'images/default_user_photo.png'
+            user.cropped_photo = 'images/cropped-default_user_photo.png'
 
         if request.POST.get('action') == 'edit_data':
 
@@ -92,6 +111,7 @@ class ProfileView(View):
                     'profile.html',
                     context={
                         'photo_url': user.photo.url,
+                        'cropped_photo_url': user.cropped_photo.url,
                         'last_name': user.last_name,
                         'first_name': user.first_name,
                         'patronymic': user.patronymic,
