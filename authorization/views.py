@@ -8,6 +8,7 @@ from users.models import User
 class MainView(View):
 
     def get(self, request):
+        request.session['user_id'] = None
         return render(request, 'main.html')
 
     def post(self, request):

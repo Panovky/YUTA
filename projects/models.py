@@ -31,7 +31,8 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
-    def get_deadline(self):
+    @property
+    def deadline_str(self):
         if self.status == 'приостановлен':
             return 'Разработка проекта приостановлена'
         if self.status == 'завершен':
