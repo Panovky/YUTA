@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Faculty(models.Model):
@@ -67,3 +68,62 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.last_name} {self.first_name} {self.patronymic if self.patronymic is not None else ''}"
+
+    @property
+    def age(self):
+        today = date.today()
+        age = today.year - self.birthday.year
+
+        if today.month < self.birthday.month or today.month == self.birthday.month and today.day < self.birthday.day:
+            age -= 1
+
+        if age in (16, 17, 18):
+            age = f'{age} лет'
+        else:
+            match age % 10:
+                case 0 | 5 | 6 | 7 | 8 | 9:
+                    age = f'{age} лет'
+                case 1:
+                    age = f'{age} год'
+                case 2 | 3 | 4:
+                    age = f'{age} года'
+
+        return age
+
+    @property
+    def all_projects_count(self):
+        all_projects_count = self.manager_projects.count() + len(
+            [
+                project
+                for team in self.teams.all()
+                for project in team.team_projects.all()
+            ]
+        )
+        return all_projects_count
+
+    @property
+    def done_projects_count(self):
+        done_projects_count = self.manager_projects.filter(status='завершен').count() + len(
+            [
+                project
+                for team in self.teams.all()
+                for project in team.team_projects.filter(status='завершен')
+            ]
+        )
+        return done_projects_count
+
+    @property
+    def all_tasks_count(self):
+        all_tasks_count = self.responsible_tasks.count()
+        return all_tasks_count
+
+    @property
+    def done_tasks_count(self):
+        done_tasks_count = self.responsible_tasks.filter(status='выполнена').count()
+        return done_tasks_count
+
+    @property
+    def teams_count(self):
+        teams_count = self.teams.count() + self.leader_teams.count()
+        return teams_count
+

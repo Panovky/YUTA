@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>{{ last_name }} {{ first_name }}</title>{% endblock title %}
+{% block title %}<title>{{ user.last_name }} {{ user.first_name }}</title>{% endblock title %}
 
 {% load static %}
 
@@ -10,7 +10,7 @@
     <div class="text-center avatar-block">
         <div class="container-xxl">
             <div class="avatar-wrapper">
-                <img src="{{ cropped_photo_url }}" alt="аватарка">
+                <img src="{{ user.cropped_photo.url }}" alt="аватарка">
                 {% if is_owner %}
                     <button type="button" id="choiceAvatartBtn" data-bs-toggle="dropdown" aria-expanded="false">
                         <svg style="width: 40px; height: 40px;">
@@ -83,11 +83,11 @@
                                         </button>
                                     </div>
                                     <div class="input-file-list">
-                                        <img src="{{ cropped_photo_url }}" data-src="{{ cropped_photo_url }}" id="output"/>
+                                        <img src="{{ user.cropped_photo.url }}" data-src="{{ user.cropped_photo.url }}" id="output"/>
                                     </div>
                                 </div>
                                 <input type="hidden" name="action" value="update_photo">
-                                <input type="hidden" name="width" value="500">
+                                <input type="hidden" name="width" value="1000">
                                 <input type="hidden" name="height" value="1000">
                                 <input type="hidden" name="delta_x" value="550">
                                 <input type="hidden" name="delta_y" value="350">
@@ -126,7 +126,7 @@
                                 <div>
                                     <div class="d-flex justify-content-center align-items-center gap-5">
                                         <div class="inputImg-wrapper">
-                                            <img class="inputImg" src="{{ photo_url }}" id="image">
+                                            <img class="inputImg" src="{{ user.photo.url }}" id="image">
                                         </div>
                                         <div class="exampleThumb">
                                             <img src="" id="outputThumb">
@@ -138,8 +138,8 @@
                                 </div>
 
                                 <input type="hidden" name="action" value="update_miniature">
-                                <input type="hidden" name="width" value="1000">
-                                <input type="hidden" name="height" value="1000">
+                                <input type="hidden" name="width" value="600">
+                                <input type="hidden" name="height" value="600">
                                 <input type="hidden" name="delta_x" value="350">
                                 <input type="hidden" name="delta_y" value="450">
                                 <button type="submit" class="orange-btn modal-btn mt-5">
@@ -185,14 +185,14 @@
     </div>
     <div class="container-xxl">
         <div class="position-relative text-center">
-            {% if patronymic is not None %}
-                <p class="person-name">{{ last_name }} {{ first_name }} {{ patronymic }}</p>
+            {% if user.patronymic is not None %}
+                <p class="person-name">{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
             {% else %}
-                <p class="person-name">{{ last_name }} {{ first_name }}</p>
+                <p class="person-name">{{ user.last_name }} {{ user.first_name }}</p>
             {% endif %}
-            <p class="person-age mt-2">{{ age }}</p>
-            {% if biography is not None %}
-                <p class="person-about mt-4">{{ biography }}</p>
+            <p class="person-age mt-2">{{ user.age }}</p>
+            {% if user.biography is not None %}
+                <p class="person-about mt-4">{{ user.biography }}</p>
             {% endif %}
 
             {% if is_owner %}
@@ -219,9 +219,9 @@
                                 <form method="POST" enctype="multipart/form-data" class="mt-2">
                                     {% csrf_token %}
 
-                                    {% if biography is not None %}
+                                    {% if user.biography is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <textarea name="biography" maxlength="200">{{ biography }}</textarea>
+                                            <textarea name="biography" maxlength="200" placeholder="O cебе">{{ user.biography }}</textarea>
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -229,9 +229,9 @@
                                         </div>
                                     {% endif %}
 
-                                    {% if phone_number is not None %}
+                                    {% if user.phone_number is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" name="phone_number" value="{{ phone_number }}">
+                                            <input type="text" class="phone" name="phone_number" value="{{ user.phone_number }}" placeholder="Телефон">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -239,9 +239,9 @@
                                         </div>
                                     {% endif %}
 
-                                    {% if e_mail is not None %}
+                                    {% if user.e_mail is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" name="e_mail" value="{{ e_mail }}">
+                                            <input type="text" name="e_mail" value="{{ user.e_mail }}" placeholder="E-mail">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -249,9 +249,9 @@
                                         </div>
                                     {% endif %}
 
-                                    {% if vk is not None %}
+                                    {% if user.vk is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" name="vk" value="{{ vk }}">
+                                            <input type="text" name="vk" value="{{ user.vk }}" placeholder="Ссылка на ВК">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -326,53 +326,53 @@
             <svg style="width: 60px; height: 60px;">
                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#study"></use>
             </svg>
-            <p>Факультет: {{ faculty }}</p>
-            <p>Направление: {{ direction }}</p>
-            <p>Группа: {{ group }}</p>
+            <p>Факультет: {{ user.faculty.name }}</p>
+            <p>Направление: {{ user.direction.code }} - {{ user.direction.name }}</p>
+            <p>Группа: {{ user.group.name }}</p>
         </div>
         <div class="statistic d-flex align-items-center justify-content-center">
             <div class="statistic-item text-center animate__animated animate__fadeInUp animate__faster">
                 <p class="item-title">Проекты</p>
-                <p class="item-meaning">{{ done_projects_count }}/{{ all_projects_count }}</p>
+                <p class="item-meaning">{{ user.done_projects_count }}/{{ user.all_projects_count }}</p>
             </div>
             <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
                  data-wow-delay="0.2s">
                 <p class="item-title">Задачи</p>
-                <p class="item-meaning">{{ done_tasks_count }}/{{ all_tasks_count }}</p>
+                <p class="item-meaning">{{ user.done_tasks_count }}/{{ user.all_tasks_count }}</p>
             </div>
             <div class="statistic-item text-center wow animate__animated animate__fadeInUp animate__faster"
                  data-wow-delay="0.4s">
                 <p class="item-title">Команды</p>
-                <p class="item-meaning">{{ teams_count }}</p>
+                <p class="item-meaning">{{ user.teams_count }}</p>
             </div>
         </div>
 
         <div class="contacts d-flex align-items-center justify-content-center">
 
-            {% if phone_number is not None %}
+            {% if user.phone_number is not None %}
                 <div class="contacts-item d-flex align-items-center justify-content-center">
                     <svg>
                         <use xlink:href="{% static 'images/svg/sprite.svg' %}#phone"></use>
                     </svg>
-                    <p>{{ phone_number }}</p>
+                    <p>{{ user.phone_number }}</p>
                 </div>
             {% endif %}
 
-            {% if e_mail is not None %}
+            {% if user.e_mail is not None %}
                 <div class="contacts-item d-flex align-items-center justify-content-center">
                     <svg>
                         <use xlink:href="{% static 'images/svg/sprite.svg' %}#message"></use>
                     </svg>
-                    <p>{{ e_mail }}</p>
+                    <p>{{ user.e_mail }}</p>
                 </div>
             {% endif %}
 
-            {% if vk is not None %}
+            {% if user.vk is not None %}
                 <div class="contacts-item d-flex align-items-center justify-content-center">
                     <svg>
                         <use xlink:href="{% static 'images/svg/sprite.svg' %}#vk"></use>
                     </svg>
-                    <p><a href="{{ vk }}">{{ vk }}</a></p>
+                    <p><a href="{{ user.vk }}">{{ user.vk }}</a></p>
                 </div>
             {% endif %}
 

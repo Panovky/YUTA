@@ -2,7 +2,7 @@ import requests
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.scripts import parse_lk, get_age, get_profile_statistic, crop_photo
+from YUTA.scripts import parse_lk, crop_photo
 from YUTA.settings import MEDIA_ROOT
 from users.models import User
 
@@ -10,33 +10,14 @@ from users.models import User
 class ProfileView(View):
     def get(self, request, url_user_id):
         user = User.objects.get(id=url_user_id)
-        age = get_age(user.birthday)
         session_user_id = request.session.get('user_id')
         is_owner = url_user_id == session_user_id
-        data = get_profile_statistic(user)
 
         return render(
             request,
             'profile.html',
             context={
-                'photo_url': user.photo.url,
-                'cropped_photo_url': user.cropped_photo.url,
-                'last_name': user.last_name,
-                'first_name': user.first_name,
-                'patronymic': user.patronymic,
-                'age': age,
-                'biography': user.biography,
-                'faculty': user.faculty.name,
-                'direction': f'{user.direction.code} - {user.direction.name}',
-                'group': user.group.name,
-                'phone_number': user.phone_number,
-                'e_mail': user.e_mail,
-                'vk': user.vk,
-                'done_projects_count': data.get('done_projects_count'),
-                'all_projects_count': data.get('all_projects_count'),
-                'done_tasks_count': data.get('done_tasks_count'),
-                'all_tasks_count': data.get('all_tasks_count'),
-                'teams_count': data.get('teams_count'),
+                'user': user,
                 'is_owner': is_owner,
                 'menu_user_id': session_user_id
             }
@@ -101,33 +82,14 @@ class ProfileView(View):
                                      data={'login': login, 'password': password})
 
             if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
-                age = get_age(user.birthday)
                 session_user_id = request.session['user_id']
                 is_owner = url_user_id == session_user_id
-                data = get_profile_statistic(user)
 
                 return render(
                     request,
                     'profile.html',
                     context={
-                        'photo_url': user.photo.url,
-                        'cropped_photo_url': user.cropped_photo.url,
-                        'last_name': user.last_name,
-                        'first_name': user.first_name,
-                        'patronymic': user.patronymic,
-                        'age': age,
-                        'biography': user.biography,
-                        'faculty': user.faculty.name,
-                        'direction': f'{user.direction.code} - {user.direction.name}',
-                        'group': user.group.name,
-                        'phone_number': user.phone_number,
-                        'e_mail': user.e_mail,
-                        'vk': user.vk,
-                        'done_projects_count': data.get('done_projects_count'),
-                        'all_projects_count': data.get('all_projects_count'),
-                        'done_tasks_count': data.get('done_tasks_count'),
-                        'all_tasks_count': data.get('all_tasks_count'),
-                        'teams_count': data.get('teams_count'),
+                        'user': user,
                         'is_owner': is_owner,
                         'message': 'Неправильный пароль.',
                         'menu_user_id': session_user_id

@@ -1,5 +1,3 @@
-from datetime import date
-from zipfile import Path
 from PIL import Image
 from bs4 import BeautifulSoup
 from users.models import Faculty, Direction, Group
@@ -49,61 +47,6 @@ def parse_lk(response):
         'faculty': faculty,
         'direction': direction,
         'group': group
-    }
-
-    return data
-
-
-def get_age(birthday):
-    today = date.today()
-    age = today.year - birthday.year
-
-    if today.month < birthday.month or today.month == birthday.month and today.day < birthday.day:
-        age -= 1
-
-    if age in (16, 17, 18):
-        age = f'{age} лет'
-    else:
-        match age % 10:
-            case 0 | 5 | 6 | 7 | 8 | 9:
-                age = f'{age} лет'
-            case 1:
-                age = f'{age} год'
-            case 2 | 3 | 4:
-                age = f'{age} года'
-
-    return age
-
-
-def get_profile_statistic(user):
-    all_projects_count = user.manager_projects.count() + len(
-        [
-            project
-            for team in user.teams.all()
-            for project in team.team_projects.all()
-        ]
-    )
-
-    done_projects_count = user.manager_projects.filter(status='завершен').count() + len(
-        [
-            project
-            for team in user.teams.all()
-            for project in team.team_projects.filter(status='завершен')
-        ]
-
-    )
-
-    all_tasks_count = user.responsible_tasks.count()
-    done_tasks_count = user.responsible_tasks.filter(status='выполнена').count()
-
-    teams_count = user.teams.count() + user.leader_teams.count()
-
-    data = {
-        'done_projects_count': done_projects_count,
-        'all_projects_count': all_projects_count,
-        'done_tasks_count': done_tasks_count,
-        'all_tasks_count': all_tasks_count,
-        'teams_count': teams_count,
     }
 
     return data
