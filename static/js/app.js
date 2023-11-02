@@ -16,26 +16,44 @@ document.querySelector('#choiceAvatartBtn').addEventListener('click', () => {
 })
 
 
+
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
-const imageCur = document.querySelector('#image');
-const cropper = new Cropper(imageCur, {
-    aspectRatio: 1,
-    viewMode: 1,
-    autoCropArea: 0.65,
-    zoomable: false,
-    guides: true,
-    background: false,
+const btnOpenModal = document.querySelector('#openThumbModal');
+const btnUpdateThumb = document.querySelector('#btnUpdateThumb');
+const modal = new bootstrap.Modal(document.querySelector('#thumb'));
+btnOpenModal.addEventListener('click', ()=> {
+    modal.show();
+});
+
+document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
+    const image = document.querySelector('#imageCrop');
+
+    document.querySelector(".preview").style.cssText = `
+		width: 180px;
+		height: 180px;
+		border-radius: 50%;
+		overflow: hidden;
+	`;
+
+    const cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 2,
+        autoCropArea: 0.65,
+        guides: true,
+        background: false,
+        zoomable: false,
+        scalable: false,
+        enforceBoundary: false,
+        enableExif: true,
+        preview: '.preview',
+    });
+});
+
+btnUpdateThumb.addEventListener('click', ()=> {
+    const imageNew = document.querySelector(".preview").childNodes[0];
+    const imageCrop = document.querySelector(".wrapperCrop").childNodes[0];
 })
 
-document.querySelector('#cropImageBtn').addEventListener('click', () => {
-    let croppedImage = cropper.getCroppedCanvas().toDataURL("image/png");
-    document.querySelector('#outputThumb').src = croppedImage;
-})
-
-document.querySelector('#openThumbModal').addEventListener('click', () => {
-    let croppedImage = cropper.getCroppedCanvas().toDataURL("image/png");
-    document.querySelector('#outputThumb').src = croppedImage;
-})
 
 
 // ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ

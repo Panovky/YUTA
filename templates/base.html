@@ -53,21 +53,47 @@
                         aria-expanded="false" aria-label="Переключатель навигации">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse nav-list" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <div class="collapse navbar-collapse nav-list justify-content-end" id="navbarSupportedContent">
+                    <ul class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
                         <li class="nav-item">
                             <a class="menu-link" href="{% url 'profile' menu_user_id %}">Профиль</a>
                         </li>
-                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0">
+                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'projects' %}">Проекты</a>
                         </li>
-                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0">
+                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'tasks' %}">Задачи</a>
                         </li>
-                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0">
+                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'teams' %}">Команды</a>
                         </li>
+                        <li class="nav-item ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
+                            <button type="button" class="orange-btn blue-btn blue-btn-sm" data-bs-toggle="modal" data-bs-target="#exit">Выйти</button>
+                        </li>
                     </ul>
+                </div>
+                <div class="modal fade modal-custom" id="exit" tabindex="-1" aria-labelledby="exit" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header position-relative">
+                                <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                                    <svg style="width: 28px; height: 28px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="modal-title text-center">Предупреждение</p>
+                            <div class="modal-devider"></div>
+                            <form method="POST" class="mt-2">
+                                {% csrf_token %}
+                                <p class="text-start fs-5">Вы действительно выйти из профиля?</p>
+                                <input type="hidden" name="action" value="delete_photo">
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="orange-btn modal-btn">Да, выйти</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>

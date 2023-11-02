@@ -29,7 +29,7 @@
                         </li>
                         <li>
                             <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
-                                    type="button" id="openThumbModal" data-bs-toggle="modal" data-bs-target="#thumb">
+                                    type="button" id="openThumbModal">
                                 <svg style="width: 19px; height: 19px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#crop"></use>
                                 </svg>
@@ -123,17 +123,12 @@
                                 <p class="text-center fs-5 mb-1">Выберите область для маленьких фотографий.</p>
                                 <p class="text-center fs-5 mb-4">Выбранная миниатюра будет использоваться в профиле.</p>
 
-                                <div>
-                                    <div class="d-flex justify-content-center align-items-center gap-5">
-                                        <div class="inputImg-wrapper">
-                                            <img class="inputImg" src="{{ user.photo.url }}" id="image">
-                                        </div>
-                                        <div class="exampleThumb">
-                                            <img src="" id="outputThumb">
-                                        </div>
-                                    </div>
+                                <div class="wrapperCrop d-flex justify-content-center align-items-sm-start">
                                     <div>
-                                        <button type="button" class="crop-btn" id="cropImageBtn">Обрезать</button>
+                                        <img src="{% static 'images/5.jpg' %}" id="imageCrop">
+                                    </div>
+                                    <div class="ms-lg-4 ms-md-0 ms-sm-0 ms-0 mt-lg-0 mt-md-3 mt-sm-3 mt-3">
+                                        <div class="preview"></div>
                                     </div>
                                 </div>
 
@@ -142,7 +137,7 @@
                                 <input type="hidden" name="height" value="600">
                                 <input type="hidden" name="delta_x" value="350">
                                 <input type="hidden" name="delta_y" value="450">
-                                <button type="submit" class="orange-btn modal-btn mt-5">
+                                <button type="button" id="btnUpdateThumb" class="orange-btn modal-btn mt-5">
                                     Обновить
                                 </button>
                             </form>
