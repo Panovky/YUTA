@@ -8,6 +8,8 @@
 *:before,
 *:after {
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 :focus,
@@ -148,6 +150,21 @@ main {
     transition: all 0.2s;
 }
 
+.blue-btn {
+    background-color: #16389D;
+    opacity: 0.9;
+}
+
+.blue-btn-sm {
+    padding: 8px 40px;
+}
+
+.blue-btn:hover,
+.blue-btn:active {
+    background-color: #16389D;
+    opacity: 1;
+}
+
 .close-modal-btn {
     background-color: transparent;
     position: absolute;
@@ -160,6 +177,7 @@ main {
 .close-modal-btn:hover {
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
+    -webkit-transform: rotate(-90deg);
     transform: rotate(-90deg);
 }
 
@@ -200,6 +218,7 @@ main {
     position: absolute;
     left: 20px;
     top: 50%;
+    -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
 }
 
@@ -274,6 +293,10 @@ main {
     color: #fdfdfd;
 }
 
+.navigation .modal-custom {
+    color: #1C1C1C;
+}
+
 .menu-link {
     position: relative;
     color: #fdfdfd;
@@ -295,12 +318,14 @@ main {
     position: absolute;
     left: 0;
     bottom: -7px;
+    -webkit-transform: scaleX(0);
     transform: scaleX(0);
     -webkit-transition: 0.25s;
     transition: 0.25s;
 }
 
 .menu-link:hover::before {
+    -webkit-transform: scaleX(1);
     transform: scaleX(1);
     -webkit-transition: 0.25s;
     transition: 0.25s;
@@ -458,6 +483,7 @@ footer {
 }
 
 .autorization-checkbox + label {
+    display: -webkit-inline-box;
     display: -ms-inline-flexbox;
     display: inline-flex;
     -webkit-box-align: center;
@@ -565,6 +591,7 @@ footer {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
+    -ms-flex-negative: 0;
     flex-shrink: 0;
     width: 50px;
     height: 50px;
@@ -634,6 +661,7 @@ footer {
 }
 
 .about-item .hover-image-scale img:hover {
+    -webkit-transform: scale(1.1);
     transform: scale(1.1);
     -webkit-transition: all 0.6s;
     transition: all 0.6s;
@@ -749,39 +777,20 @@ footer {
     transition: all 0.4s;
 }
 
-.inputImg-wrapper .inputImg {
-    display: block;
-    max-width: 100%;
+.wrapperCrop {
+    overflow: hidden;
 }
 
-.exampleThumb img {
-    display: block;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
+.wrapperCrop img {
+    width: 350px;
+    height: auto;
     -o-object-fit: cover;
     object-fit: cover;
 }
 
-.cropper-modal {
-    background-color: transparent;
-    opacity: 0.8;
-}
-
-.crop-btn {
-    color: #fdfdfd;
-    padding: 12px 16px;
-    background-color: #16389D;
-    opacity: 0.9;
-    border-radius: 25px;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
-}
-
-.crop-btn:hover {
-    opacity: 1;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
+.preview {
+    overflow: hidden;
+    border: 2px solid #16389D;
 }
 
 .person-name {
@@ -1140,9 +1149,25 @@ footer {
     .contacts .contacts-item a {
         color: #1C1C1C;
     }
+
+    .wrapperCrop {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 850px) {
+    .logo img {
+        width: 65px;
+        height: 65px;
+    }
+
+    .menu-link {
+        font-size: 1rem;
+    }
+
     .header {
         height: 100%;
     }
