@@ -9,8 +9,10 @@ from users.models import User
 
 class ProfileView(View):
     def get(self, request, url_user_id):
-        user = User.objects.get(id=url_user_id)
+        if not request.session.get('user_id'):
+            return redirect('main')
         session_user_id = request.session.get('user_id')
+        user = User.objects.get(id=url_user_id)
         is_owner = url_user_id == session_user_id
 
         return render(
@@ -24,6 +26,8 @@ class ProfileView(View):
         )
 
     def post(self, request, url_user_id):
+        if not request.session.get('user_id'):
+            return redirect('main')
         user = User.objects.get(id=url_user_id)
 
         if request.POST.get('action') == 'update_photo':

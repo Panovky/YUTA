@@ -7,6 +7,8 @@ from users.models import User
 
 class NewTeamView(View):
     def get(self, request, stage):
+        if not request.session.get('user_id'):
+            return redirect('main')
         session_user_id = request.session['user_id']
 
         if stage == 'choose-team-name':
@@ -58,6 +60,8 @@ class NewTeamView(View):
             )
 
     def post(self, request, stage):
+        if not request.session.get('user_id'):
+            return redirect('main')
         session_user_id = request.session['user_id']
 
         if stage == 'choose-team-name':
@@ -200,6 +204,8 @@ class NewTeamView(View):
 
 class TeamsView(View):
     def get(self, request):
+        if not request.session.get('user_id'):
+            return redirect('main')
         session_user_id = request.session.get('user_id')
         managed_teams = User.objects.get(id=session_user_id).leader_teams.all()
         others_teams = User.objects.get(id=session_user_id).teams.all()
