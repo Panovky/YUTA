@@ -221,3 +221,15 @@ class TeamsView(View):
                 'menu_user_id': session_user_id
             }
         )
+
+    def post(self, request):
+        if not request.session.get('user_id'):
+            return redirect('main')
+
+        if request.POST.get('action') == 'delete_team':
+            team_id = request.POST.get('team_id')
+            Team.objects.get(id=team_id).delete()
+            print(team_id, 'команда удалена')
+
+        return redirect('teams')
+
