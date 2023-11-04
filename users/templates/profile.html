@@ -83,14 +83,11 @@
                                         </button>
                                     </div>
                                     <div class="input-file-list">
-                                        <img src="{{ user.cropped_photo.url }}" data-src="{{ user.cropped_photo.url }}" id="output"/>
+                                        <img src="{{ user.cropped_photo.url }}" data-src="{{ user.cropped_photo.url }}"
+                                             id="output"/>
                                     </div>
                                 </div>
                                 <input type="hidden" name="action" value="update_photo">
-                                <input type="hidden" name="width" value="1000">
-                                <input type="hidden" name="height" value="1000">
-                                <input type="hidden" name="delta_x" value="550">
-                                <input type="hidden" name="delta_y" value="350">
                                 <div class="d-flex flex-column justify-content-start gap-2">
                                     <button type="submit"
                                             class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
@@ -133,11 +130,12 @@
                                 </div>
 
                                 <input type="hidden" name="action" value="update_miniature">
-                                <input type="hidden" name="width" value="300">
-                                <input type="hidden" name="height" value="300">
-                                <input type="hidden" name="delta_x" value="50">
-                                <input type="hidden" name="delta_y" value="50">
-
+                                <input type="hidden" name="width">
+                                <input type="hidden" name="height">
+                                <input type="hidden" name="delta_x">
+                                <input type="hidden" name="delta_y">
+                                <input type="hidden" name="container_width">
+                                <input type="hidden" name="container_height">
                                 <button type="submit" id="btnUpdateThumb" class="orange-btn modal-btn mt-5">
                                     Обновить
                                 </button>
@@ -217,7 +215,8 @@
 
                                     {% if user.biography is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <textarea name="biography" maxlength="200" placeholder="O cебе">{{ user.biography }}</textarea>
+                                            <textarea name="biography" maxlength="200"
+                                                      placeholder="O cебе">{{ user.biography }}</textarea>
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -227,7 +226,8 @@
 
                                     {% if user.phone_number is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" class="phone" name="phone_number" value="{{ user.phone_number }}" placeholder="Телефон">
+                                            <input type="text" class="phone" name="phone_number"
+                                                   value="{{ user.phone_number }}" placeholder="Телефон">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -237,7 +237,8 @@
 
                                     {% if user.e_mail is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" name="e_mail" value="{{ user.e_mail }}" placeholder="E-mail">
+                                            <input type="text" name="e_mail" value="{{ user.e_mail }}"
+                                                   placeholder="E-mail">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">
@@ -247,7 +248,8 @@
 
                                     {% if user.vk is not None %}
                                         <div class="text-field__noticon mb-3">
-                                            <input type="text" name="vk" value="{{ user.vk }}" placeholder="Ссылка на ВК">
+                                            <input type="text" name="vk" value="{{ user.vk }}"
+                                                   placeholder="Ссылка на ВК">
                                         </div>
                                     {% else %}
                                         <div class="text-field__noticon mb-3">

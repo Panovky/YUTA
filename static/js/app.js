@@ -21,15 +21,11 @@ const btnOpenModal = document.querySelector('#openThumbModal');
 const btnUpdateThumb = document.querySelector('#btnUpdateThumb');
 const modal = new bootstrap.Modal(document.querySelector('#thumb'));
 
-btnOpenModal.addEventListener('click', ()=> {
-    updateMiniatureForm.width.value = 300;
-    updateMiniatureForm.height.value = 300;
-    updateMiniatureForm.delta_x.value = 50;
-    updateMiniatureForm.delta_y.value = 50;
+btnOpenModal.addEventListener('click', () => {
     modal.show();
 });
 
-document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
+document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
     const image = document.querySelector('#imageCrop');
 
     document.querySelector(".preview").style.cssText = `
@@ -52,19 +48,25 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
         preview: '.preview',
     });
 
-    btnUpdateThumb.addEventListener('click', ()=> {
+    btnUpdateThumb.addEventListener('click', () => {
         const box = document.querySelector('.cropper-crop-box');
-        const style = window.getComputedStyle(box)
+        const container = document.querySelector('.cropper-container')
+        const styleBox = window.getComputedStyle(box);
+        const styleContainer = window.getComputedStyle(container);
 
-        let boxWidth = parseInt(style.width);
-        let boxHeight = parseInt(style.height);
-        const matrix = style.transform || style.mozTransform;
-        const matrixValues = matrix.match(/matrix.*\((.+)\)/)[1].split(', ');
-        const translateX = parseInt(matrixValues[4]);
-        const translateY = parseInt(matrixValues[5]);
+        let boxWidth = parseInt(styleBox.width);
+        let boxHeight = parseInt(styleBox.height);
+        let matrix = styleBox.transform || styleBox.mozTransform;
+        let matrixValues = matrix.match(/matrix.*\((.+)\)/)[1].split(', ');
+        let translateX = parseInt(matrixValues[4]);
+        let translateY = parseInt(matrixValues[5]);
+        let container_width = parseInt(styleContainer.width);
+        let container_height = parseInt(styleContainer.height);
 
         updateMiniatureForm.width.value = boxWidth;
         updateMiniatureForm.height.value = boxHeight;
+        updateMiniatureForm.container_width.value = container_width;
+        updateMiniatureForm.container_height.value = container_height;
         updateMiniatureForm.delta_x.value = translateX;
         updateMiniatureForm.delta_y.value = translateY;
 
