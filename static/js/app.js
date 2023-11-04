@@ -1,31 +1,29 @@
-// УСТАНОВКА НОВОЙ ФОТОГРАФИИ НА АВАТАРКУ
-let newImage = document.querySelector('#output');
+// ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
+const modalMiniature = new bootstrap.Modal(document.querySelector('#thumb'));
+const modalChoice = new bootstrap.Modal(document.querySelector('#foto'));
+const btnOpenModalChoice = document.querySelector('#openChiceFotoModal');
+const btnOpenModalMiniature = document.querySelector('#openThumbModal');
+const btnUpdateMiniature = document.querySelector('#btnUpdateThumb');
 
-document.querySelector('#inputImg').addEventListener('change', (event) => {
-    newImage.src = URL.createObjectURL(event.target.files[0]);
-})
+btnOpenModalChoice.addEventListener('click', ()=> {
+    modalChoice.show();
+    document.querySelector('#inputImg').value = '';
+});
 
-document.querySelector('#deleteFotoBtn').addEventListener('click', () => {
-    newImage.src = newImage.dataset.src;
-    inputField.value = '';
-})
-
-document.querySelector('#choiceAvatartBtn').addEventListener('click', () => {
-    newImage.src = newImage.dataset.src;
-    inputField.value = '';
-})
+const fileInput = document.querySelector('#inputImg');
+fileInput.addEventListener('change', (event)=> {
+    modalMiniature.show();
+    updateFotoForm.submit();
+    modalChoice.hide();
+});
 
 
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
-const btnOpenModal = document.querySelector('#openThumbModal');
-const btnUpdateThumb = document.querySelector('#btnUpdateThumb');
-const modal = new bootstrap.Modal(document.querySelector('#thumb'));
-
-btnOpenModal.addEventListener('click', () => {
-    modal.show();
+btnOpenModalMiniature.addEventListener('click', ()=> {
+    modalMiniature.show();
 });
 
-document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
+document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
     const image = document.querySelector('#imageCrop');
 
     document.querySelector(".preview").style.cssText = `
@@ -48,7 +46,7 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
         preview: '.preview',
     });
 
-    btnUpdateThumb.addEventListener('click', () => {
+    btnUpdateMiniature.addEventListener('click', ()=> {
         const box = document.querySelector('.cropper-crop-box');
         const container = document.querySelector('.cropper-container')
         const styleBox = window.getComputedStyle(box);
@@ -70,7 +68,7 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
         updateMiniatureForm.delta_x.value = translateX;
         updateMiniatureForm.delta_y.value = translateY;
 
-        modal.hide();
+        modalMiniature.hide();
     })
 });
 
