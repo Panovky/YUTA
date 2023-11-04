@@ -37,12 +37,8 @@ class ProfileView(View):
             photo_name = fs.save(photo.name, photo)
             user.photo = f'images/users_photos/{photo_name}'
 
-            crop_photo(
-                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
-                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
-                request.POST
-            )
-            user.cropped_photo = f'images/users_photos/cropped-{photo_name}'
+            cropped_photo_name = fs.save('cropped-' + photo.name, photo)
+            user.cropped_photo = f'images/users_photos/{cropped_photo_name}'
 
         if request.POST.get('action') == 'update_miniature':
             photo_name = user.photo.url
