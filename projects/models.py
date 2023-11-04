@@ -14,9 +14,9 @@ STATUS_CHOICES = (
 class Project(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
-    photo = models.ImageField(blank=True, upload_to='images/projects_photos', default='images/default.png')
-    description = models.CharField(max_length=200)
-    technical_task = models.FileField(blank=True, null=True)
+    photo = models.ImageField(blank=True, upload_to='images/projects_photos', default='images/project_default.png')
+    description = models.CharField(max_length=1000)
+    technical_task = models.FileField(blank=True, null=True, upload_to='projects_tech_tasks',)
     creation_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True)
