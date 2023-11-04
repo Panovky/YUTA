@@ -16,12 +16,16 @@ document.querySelector('#choiceAvatartBtn').addEventListener('click', () => {
 })
 
 
-
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
 const btnOpenModal = document.querySelector('#openThumbModal');
 const btnUpdateThumb = document.querySelector('#btnUpdateThumb');
 const modal = new bootstrap.Modal(document.querySelector('#thumb'));
+
 btnOpenModal.addEventListener('click', ()=> {
+    updateMiniatureForm.width.value = 300;
+    updateMiniatureForm.height.value = 300;
+    updateMiniatureForm.delta_x.value = 50;
+    updateMiniatureForm.delta_y.value = 50;
     modal.show();
 });
 
@@ -47,13 +51,26 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
         enableExif: true,
         preview: '.preview',
     });
+
+    btnUpdateThumb.addEventListener('click', ()=> {
+        const box = document.querySelector('.cropper-crop-box');
+        const style = window.getComputedStyle(box)
+
+        let boxWidth = parseInt(style.width);
+        let boxHeight = parseInt(style.height);
+        const matrix = style.transform || style.mozTransform;
+        const matrixValues = matrix.match(/matrix.*\((.+)\)/)[1].split(', ');
+        const translateX = parseInt(matrixValues[4]);
+        const translateY = parseInt(matrixValues[5]);
+
+        updateMiniatureForm.width.value = boxWidth;
+        updateMiniatureForm.height.value = boxHeight;
+        updateMiniatureForm.delta_x.value = translateX;
+        updateMiniatureForm.delta_y.value = translateY;
+
+        modal.hide();
+    })
 });
-
-btnUpdateThumb.addEventListener('click', ()=> {
-    const imageNew = document.querySelector(".preview").childNodes[0];
-    const imageCrop = document.querySelector(".wrapperCrop").childNodes[0];
-})
-
 
 
 // ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ
