@@ -20,7 +20,7 @@
                     <ul class="dropdown-content">
                         <li>
                             <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
-                                    type="button" data-bs-toggle="modal" data-bs-target="#foto">
+                                    type="button" id="openChiceFotoModal">
                                 <svg style="width: 19px; height: 19px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#updatefoto"></use>
                                 </svg>
@@ -68,35 +68,16 @@
                                     настоящую фотографию.</p>
                                 <p class="text-center fs-5 mb-4">Вы можете загрузить изображение в формате JPG, GIF или
                                     PNG.</p>
-                                <div class="input-file-row mb-3">
-                                    <div class="d-flex gap-3 mb-3">
+                                <div class="input-file-row">
+                                    <div class="d-flex gap-3">
                                         <label class="input-file">
                                             <input type="file" id="inputImg" name="photo" multiple
                                                    accept="image/jpeg, image/jpg, image/png" required>
                                             <span>Выбрать фотографию</span>
                                         </label>
-                                        <button type="button" id="deleteFotoBtn"
-                                                class="d-flex justify-content-center align-items-center orange-btn modal-btn">
-                                            <svg style="width: 19px; height: 17px;">
-                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="input-file-list">
-                                        <img src="{{ user.cropped_photo.url }}" data-src="{{ user.cropped_photo.url }}"
-                                             id="output"/>
                                     </div>
                                 </div>
                                 <input type="hidden" name="action" value="update_photo">
-                                <div class="d-flex flex-column justify-content-start gap-2">
-                                    <button type="submit"
-                                            class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                        <svg style="width: 19px; height: 17px;">
-                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
-                                        </svg>
-                                        <p>Сохранить</p>
-                                    </button>
-                                </div>
                             </form>
                         </div>
                     </div>
@@ -137,7 +118,7 @@
                                 <input type="hidden" name="container_width">
                                 <input type="hidden" name="container_height">
                                 <button type="submit" id="btnUpdateThumb" class="orange-btn modal-btn mt-5">
-                                    Обновить
+                                    Сохранить
                                 </button>
                             </form>
                         </div>
