@@ -252,8 +252,8 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#reload">
-                        <svg id="reloadButton" style="width: 30px; height: 30px;">
+                    <button type="button" id="openModalReloadBtn">
+                        <svg style="width: 30px; height: 30px;">
                             <use xlink:href="{% static 'images/svg/sprite.svg' %}#reload"></use>
                         </svg>
                     </button>
@@ -273,7 +273,7 @@
                                 <div class="modal-devider"></div>
                                 <p class="text-start fs-5 mt-2 mb-3">Чтобы синхронизировать данные личного кабинета на
                                     сайте ЯГТУ и данные в YUTA, введите свой пароль:</p>
-                                <form method="POST" class="mt-2">
+                                <form method="POST" id="reloadForm" class="mt-2">
                                     {% csrf_token %}
                                     <div class="text-field__icon mb-3 text-field__icon_password">
                                         <input id="Password" type="password" name="password" placeholder="Пароль"
@@ -281,7 +281,7 @@
                                         <input type="hidden" name="action" value="update_data">
                                     </div>
                                     {% if message %}
-                                        <p>{{ message }}</p>
+                                        <p id="errorMessage" class="text-start text-danger">{{ message }}</p>
                                     {% endif %}
                                     <div class="d-flex justify-content-end mt-4">
                                         <button type="submit"

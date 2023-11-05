@@ -1,3 +1,33 @@
+// ОБРАБОТКА ОШИБОК ФОРМЫ АВТОРИЗАЦИИ И ОБНОВЛЕНИЯ
+document.addEventListener("DOMContentLoaded", () => {
+    const openModalAuthBtn = document.querySelector('#openModalAuthBtn');
+    const modalAutorization = new bootstrap.Modal(document.querySelector('#autorization'));
+    const authorizationForm = document.querySelector('#authorizationForm');
+
+    openModalAuthBtn.addEventListener('click', () => {
+        modalAutorization.show()
+    })
+
+    if (authorizationForm.contains(document.querySelector('#errorMessage'))) {
+        modalAutorization.show()
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const openModalReloadBtn = document.querySelector('#openModalReloadBtn');
+    const modalReload = new bootstrap.Modal(document.querySelector('#reload'));
+    const reloadForm = document.querySelector('#reloadForm');
+
+    openModalReloadBtn.addEventListener('click', () => {
+        modalReload.show()
+    })
+
+    if (reloadForm.contains(document.querySelector('#errorMessage'))) {
+        modalReload.show()
+    }
+});
+
+
 // ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
 const modalMiniature = new bootstrap.Modal(document.querySelector('#thumb'));
 const modalChoice = new bootstrap.Modal(document.querySelector('#foto'));
