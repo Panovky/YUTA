@@ -68,9 +68,8 @@ updateFotoForm.addEventListener('submit', (e) => {
         return response.json();
     })
     .then(data => {
-        document.querySelector('#imageCrop').src = data.photo_url;
+        decodeURIComponent(document.querySelector('#imageCrop').src = decodeURIComponent(data.photo_url));
     })
-    .catch(error => console.error(error));
 });
 
 
