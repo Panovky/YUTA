@@ -1,6 +1,7 @@
 import json
 
 import requests
+import urllib.parse
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -44,15 +45,14 @@ class ProfileView(View):
             user.cropped_photo = f'images/users_photos/{cropped_photo_name}'
 
             user.save()
-            data = {'photo_url': user.photo.url}
-            return JsonResponse(data)
+            return JsonResponse({'photo_url': user.photo.url})
 
         if request.POST.get('action') == 'update_miniature':
             photo_name = user.photo.url
             photo_name = photo_name.replace('/media/images/users_photos/', '')
             crop_photo(
-                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
-                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\{urllib.parse.unquote(photo_name)}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{urllib.parse.unquote(photo_name)}',
                 request.POST
             )
 
