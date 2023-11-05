@@ -34,17 +34,39 @@ const modalChoice = new bootstrap.Modal(document.querySelector('#foto'));
 const btnOpenModalChoice = document.querySelector('#openChiceFotoModal');
 const btnOpenModalMiniature = document.querySelector('#openThumbModal');
 const btnUpdateMiniature = document.querySelector('#btnUpdateThumb');
+const deleteFotoBtn = document.querySelector('#deleteFotoBtn');
 
 btnOpenModalChoice.addEventListener('click', ()=> {
     modalChoice.show();
     document.querySelector('#inputImg').value = '';
 });
 
-const fileInput = document.querySelector('#inputImg');
-fileInput.addEventListener('change', (event)=> {
-    modalMiniature.show();
-    updateFotoForm.submit();
-    modalChoice.hide();
+deleteFotoBtn.addEventListener('click', ()=> {
+    document.querySelector('#inputImg').value = '';
+});
+
+document.querySelector('#inputImg').addEventListener('change', (event) => {
+    document.querySelector('#output').src = URL.createObjectURL(event.target.files[0]);
+})
+
+updateFotoForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const headers = {}
+    fetch("/profile/1", {
+        method: 'POST',
+        body: new FormData(updateFotoForm),
+        headers: headers,
+    })
+        .then(response => {
+            if (!response.ok) {
+                console.log(response.status);
+                modalChoice.hide();
+                modalMiniature.show();
+            } else {
+                modalChoice.hide();
+                modalMiniature.show();
+            }
+        })
 });
 
 
