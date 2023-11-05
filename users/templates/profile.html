@@ -62,22 +62,35 @@
                             </div>
                             <p class="modal-title text-center">Загрузка фотографии</p>
                             <div class="modal-devider"></div>
-                            <form method="POST" enctype="multipart/form-data" class="mt-2">
+                            <form method="POST" name="updateFotoForm" id="updateFotoForm" enctype="multipart/form-data" class="mt-2">
                                 {% csrf_token %}
-                                <p class="text-center fs-5 mb-1">Друзьям будет проще узнать вас, если вы загрузите свою
-                                    настоящую фотографию.</p>
-                                <p class="text-center fs-5 mb-4">Вы можете загрузить изображение в формате JPG, GIF или
-                                    PNG.</p>
+                                <p class="text-center fs-5 mb-1">Друзьям будет проще узнать вас, если вы загрузите свою настоящую фотографию.</p>
+                                <p class="text-center fs-5 mb-4">Вы можете загрузить изображение в формате JPG, GIF или PNG.</p>
                                 <div class="input-file-row">
                                     <div class="d-flex gap-3">
                                         <label class="input-file">
-                                            <input type="file" id="inputImg" name="photo" multiple
-                                                   accept="image/jpeg, image/jpg, image/png" required>
+                                            <input type="file" id="inputImg" name="photo" multiple accept="image/jpeg, image/jpg, image/png" required>
                                             <span>Выбрать фотографию</span>
                                         </label>
+                                        <button type="button" id="deleteFotoBtn" class="d-flex justify-content-center align-items-center orange-btn modal-btn">
+                                            <svg style="width: 19px; height: 17px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="input-file-list my-3">
+                                        <img src="{% static 'images/default.png' %}" id="output"/>
                                     </div>
                                 </div>
                                 <input type="hidden" name="action" value="update_photo">
+                                <div class="d-flex flex-column justify-content-start gap-2">
+                                    <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                        <svg style="width: 19px; height: 17px;">
+                                            <use xlink:href="assets/images/svg/sprite.svg#save"></use>
+                                        </svg>
+                                        <p>Сохранить</p>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -96,7 +109,7 @@
                             </div>
                             <p class="modal-title text-center">Выбор миниатюры</p>
                             <div class="modal-devider"></div>
-                            <form method="POST" name="updateMiniatureForm" enctype="multipart/form-data" class="mt-2">
+                            <form method="POST" name="updateMiniatureForm" id="updateMiniatureForm" enctype="multipart/form-data" class="mt-2">
                                 {% csrf_token %}
                                 <p class="text-center fs-5 mb-1">Выберите область для маленьких фотографий.</p>
                                 <p class="text-center fs-5 mb-4">Выбранная миниатюра будет использоваться в профиле.</p>
