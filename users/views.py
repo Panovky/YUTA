@@ -1,5 +1,8 @@
+import json
+
 import requests
 from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from YUTA.scripts import parse_lk, crop_photo
@@ -39,6 +42,10 @@ class ProfileView(View):
 
             cropped_photo_name = fs.save('cropped-' + photo.name, photo)
             user.cropped_photo = f'images/users_photos/{cropped_photo_name}'
+
+            user.save()
+            data = {'photo_url': user.photo.url}
+            return JsonResponse(data)
 
         if request.POST.get('action') == 'update_miniature':
             photo_name = user.photo.url

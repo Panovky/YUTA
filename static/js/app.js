@@ -39,34 +39,38 @@ const deleteFotoBtn = document.querySelector('#deleteFotoBtn');
 btnOpenModalChoice.addEventListener('click', ()=> {
     modalChoice.show();
     document.querySelector('#inputImg').value = '';
+    document.querySelector('.input-file-list').style.display = 'none';
 });
 
 deleteFotoBtn.addEventListener('click', ()=> {
     document.querySelector('#inputImg').value = '';
+    document.querySelector('.input-file-list').style.display = 'none';
 });
 
 document.querySelector('#inputImg').addEventListener('change', (event) => {
     document.querySelector('#output').src = URL.createObjectURL(event.target.files[0]);
+    document.querySelector('.input-file-list').style.display = 'block';
 })
 
 updateFotoForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const headers = {}
+    const headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+    }
     fetch("/profile/1", {
         method: 'POST',
         body: new FormData(updateFotoForm),
         headers: headers,
     })
-        .then(response => {
-            if (!response.ok) {
-                console.log(response.status);
-                modalChoice.hide();
-                modalMiniature.show();
-            } else {
-                modalChoice.hide();
-                modalMiniature.show();
-            }
-        })
+    .then(response => {
+        modalChoice.hide();
+        modalMiniature.show();
+        return response.json();
+    })
+    .then(data => {
+        document.querySelector('#imageCrop').src = data.photo_url;
+    })
+    .catch(error => console.error(error));
 });
 
 

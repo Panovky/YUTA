@@ -919,7 +919,7 @@ footer {
     cursor: pointer;
     outline: none;
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1rem;
     vertical-align: middle;
     color: #fdfdfd;
     text-align: center;
@@ -927,8 +927,8 @@ footer {
     letter-spacing: 1px;
     background-color: #16389D;
     opacity: 0.85;
-    height: 44px;
-    padding: 12px 20px;
+    height: 40px;
+    padding: 11px 22px;
     border: none;
     -webkit-transition: all 0.2s;
     transition: all 0.2s;
