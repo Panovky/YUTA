@@ -1,7 +1,4 @@
-import json
-
 import requests
-import urllib.parse
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -38,11 +35,19 @@ class ProfileView(View):
             photo = request.FILES.get('photo')
             fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\images\\users_photos')
 
-            photo_name = fs.save(photo.name, photo)
+            photo_name = user.login
+            if '.jpg' in photo.name:
+                photo_name += '.jpg'
+            elif '.jpeg' in photo.name:
+                photo_name += '.jpeg'
+            elif '.png' in photo.name:
+                photo_name += '.png'
+
+            fs.save(photo_name, photo)
             user.photo = f'images/users_photos/{photo_name}'
 
-            cropped_photo_name = fs.save('cropped-' + photo.name, photo)
-            user.cropped_photo = f'images/users_photos/{cropped_photo_name}'
+            fs.save('cropped-' + photo_name, photo)
+            user.cropped_photo = f'images/users_photos/cropped-{photo_name}'
 
             user.save()
             return JsonResponse({'photo_url': user.photo.url})
@@ -51,8 +56,8 @@ class ProfileView(View):
             photo_name = user.photo.url
             photo_name = photo_name.replace('/media/images/users_photos/', '')
             crop_photo(
-                f'{MEDIA_ROOT}\\images\\users_photos\\{urllib.parse.unquote(photo_name)}',
-                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{urllib.parse.unquote(photo_name)}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
                 request.POST
             )
 
