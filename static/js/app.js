@@ -54,10 +54,13 @@ document.querySelector('#inputImg').addEventListener('change', (event) => {
 
 updateFotoForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    let url = document.querySelector('.menu-link').href;
+    let id = url.slice(-1);
+    console.log(id);
     const headers = {
         'X-Requested-With': 'XMLHttpRequest',
     }
-    fetch("/profile/1", {
+    fetch(`/profile/${id}`, {
         method: 'POST',
         body: new FormData(updateFotoForm),
         headers: headers,
