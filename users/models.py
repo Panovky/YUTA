@@ -59,7 +59,7 @@ class User(models.Model):
     faculty = models.ForeignKey(Faculty, related_name='faculty_users', null=True, on_delete=models.SET_NULL)
     direction = models.ForeignKey(Direction, related_name='direction_users', null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Group, related_name='group_users', null=True, on_delete=models.SET_NULL)
-    teams = models.ManyToManyField('teams.Team')
+    teams = models.ManyToManyField('teams.Team', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -126,4 +126,3 @@ class User(models.Model):
     def teams_count(self):
         teams_count = self.teams.count() + self.leader_teams.count()
         return teams_count
-
