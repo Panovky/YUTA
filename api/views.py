@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from YUTA.utils import authorize_user
+from users.models import User
 
 
 class AuthorizationView(APIView):
@@ -12,4 +13,34 @@ class AuthorizationView(APIView):
             'status': 'OK' if user else 'Failed',
             'user_id': user.id if user else None
         }
+        return JsonResponse(data=response_data)
+
+
+class ProfileView(APIView):
+    def get(self, request):
+        user_id = request.data.get('user_id')
+        user = User.objects.get(id=user_id)
+
+        response_data = {
+            'login': user.login,
+            'photo': user.photo.url,
+            'cropped_photo': user.cropped_photo.url,
+            'last_name': user.last_name,
+            'first_name': user.first_name,
+            'patronymic': user.patronymic,
+            'age': user.age,
+            'biography': user.biography,
+            'phone_number': user.phone_number,
+            'e_mail': user.e_mail,
+            'vk': user.vk,
+            'faculty': user.faculty.name,
+            'direction': f'{user.direction.code}-{user.direction.name}',
+            'group': user.group.name,
+            'all_projects_count': user.all_projects_count,
+            'done_projects_count': user.done_projects_count,
+            'all_tasks_count': user.done_tasks_count,
+            'done_tasks_count': user.done_tasks_count,
+            'teams_count': user.teams_count,
+        }
+
         return JsonResponse(data=response_data)
