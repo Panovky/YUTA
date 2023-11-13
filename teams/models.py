@@ -18,6 +18,7 @@ class Team(models.Model):
 
     def serialize_for_teams_view(self):
         return {
+            'id': self.id,
             'name': self.name,
             'leader': {
                 'id': self.leader.id,
