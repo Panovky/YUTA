@@ -28,6 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// ОБРАБОТКА СТРАНИЦЫ ПРОЕКТОВ
+const deleteProjectBtns = document.querySelectorAll('.deleteProjectBtn');
+const deleteProjectForm = document.querySelector('#deleteProjectForm');
+
+deleteProjectBtns.forEach((btn) => btn.addEventListener('click', e => {
+    let span = document.querySelector('#deleteProjectForm span');
+    let projectIdInput = document.querySelector('#projectIdInput');
+    span.innerHTML = e.target.dataset.projectName;
+    projectIdInput.value = e.target.dataset.projectId;
+    deleteProjectForm.style.display = 'block';
+}));
+
+
 // ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
 const modalMiniature = new bootstrap.Modal(document.querySelector('#thumb'));
 const modalChoice = new bootstrap.Modal(document.querySelector('#foto'));
@@ -36,13 +49,13 @@ const btnOpenModalMiniature = document.querySelector('#openThumbModal');
 const btnUpdateMiniature = document.querySelector('#btnUpdateThumb');
 const deleteFotoBtn = document.querySelector('#deleteFotoBtn');
 
-btnOpenModalChoice.addEventListener('click', ()=> {
+btnOpenModalChoice.addEventListener('click', () => {
     modalChoice.show();
     document.querySelector('#inputImg').value = '';
     document.querySelector('.input-file-list').style.display = 'none';
 });
 
-deleteFotoBtn.addEventListener('click', ()=> {
+deleteFotoBtn.addEventListener('click', () => {
     document.querySelector('#inputImg').value = '';
     document.querySelector('.input-file-list').style.display = 'none';
 });
@@ -56,32 +69,31 @@ updateFotoForm.addEventListener('submit', (e) => {
     e.preventDefault();
     let url = document.querySelector('.menu-link').href;
     let id = url.slice(-1);
-    console.log(id);
     const headers = {
         'X-Requested-With': 'XMLHttpRequest',
     }
-    fetch(`/profile/${id}`, {
+    fetch(`profile/${id}`, {
         method: 'POST',
         body: new FormData(updateFotoForm),
         headers: headers,
     })
-    .then(response => {
-        modalChoice.hide();
-        modalMiniature.show();
-        return response.json();
-    })
-    .then(data => {
-        decodeURIComponent(document.querySelector('#imageCrop').src = decodeURIComponent(data.photo_url));
-    })
+        .then(response => {
+            modalChoice.hide();
+            modalMiniature.show();
+            return response.json();
+        })
+        .then(data => {
+            decodeURIComponent(document.querySelector('#imageCrop').src = decodeURIComponent(data.photo_url));
+        })
 });
 
 
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
-btnOpenModalMiniature.addEventListener('click', ()=> {
+btnOpenModalMiniature.addEventListener('click', () => {
     modalMiniature.show();
 });
 
-document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
+document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
     const image = document.querySelector('#imageCrop');
 
     document.querySelector(".preview").style.cssText = `
@@ -104,7 +116,7 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', ()=> {
         preview: '.preview',
     });
 
-    btnUpdateMiniature.addEventListener('click', ()=> {
+    btnUpdateMiniature.addEventListener('click', () => {
         const box = document.querySelector('.cropper-crop-box');
         const container = document.querySelector('.cropper-container')
         const styleBox = window.getComputedStyle(box);
