@@ -229,7 +229,6 @@ class TeamsView(View):
         if request.POST.get('action') == 'delete_team':
             team_id = request.POST.get('team_id')
             Team.objects.get(id=team_id).delete()
-            print(team_id, 'команда удалена')
 
         return redirect('teams')
 
