@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'teams',
     'users',
     'tasks',
+    'api',
     'django_cleanup.apps.CleanupConfig'
 ]
 
