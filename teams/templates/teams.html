@@ -10,16 +10,16 @@
     <br>
     <br>
 
-    <form method="POST"
-          style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+    <form method="POST" id="deleteTeamForm"
+          style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
         {% csrf_token %}
+        <input class="form-control" type="hidden" name="action" value="delete_team">
 
         <p>Предупреждение</p>
         <br>
-        <p>Вы действительно хотите удалить команду 'наименование команды'?</p>
+        <p>Вы действительно хотите удалить команду "<span></span>"?</p>
 
-        <input class="form-control" type="hidden" name="action" value="delete_team">
-        <input class="form-control" type="hidden" name="team_id" value="9">
+        <input class="form-control" type="hidden" name="team_id">
 
         <br>
         <button type="button" class="orange-btn">Отмена</button>
@@ -35,8 +35,10 @@
                     <div style="border: 1px solid blue">
                         <div class="d-flex justify-content-between">
                             <p class="text-center">{{ team.name }}</p>
-                            <button type="button" class="orange-btn" data-team-id="{{ team.id }}">Изменить</button>
-                            <button type="button" class="orange-btn" data-team-id="{{ team.id }}">Удалить</button>
+                            <button type="button" class="orange-btn">Изменить</button>
+                            <button type="button" class="deleteTeamBtn orange-btn" data-team-id="{{ team.id }}"
+                                    data-team-name="{{ team.name }}">Удалить
+                            </button>
                         </div>
                         <br>
                         <div class="d-flex">
@@ -107,5 +109,8 @@
             {% endif %}
         </div>
     </div>
+
+    {% load static %}
+    <script src="{% static 'js/teams.js' %}"></script>
 {% endblock content %}
 
