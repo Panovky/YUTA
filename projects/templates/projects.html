@@ -3,221 +3,212 @@
 {% block title %}<title>Проекты</title>{% endblock title %}
 
 {% block content %}
-<br>
-<button class="orange-btn">Создать проект</button>
-
-<form method="POST" id="deleteProjectForm"
-      style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-    {% csrf_token %}
-
-    <p>Предупреждение</p>
     <br>
-    <p>Вы действительно хотите удалить проект "<span></span>"</p>
+    <button type="button" class="orange-btn" id="createProjectBtn">Создать проект</button>
 
-    <input class="form-control" type="hidden" name="action" value="delete_project">
-    <input class="form-control" id="projectIdInput" type="hidden" name="project_id">
-
-    <br>
-    <button type="button" class="orange-btn">Отмена</button>
-    <button type="submit" class="orange-btn">Да, удалить</button>
-</form>
-
-<form method="POST" enctype="multipart/form-data"
-      style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-    {% csrf_token %}
-    <div class="mb-3">
-
-        <label>Обложка проекта
-            <input class="form-control" type="file" name="project_photo" multiple
-                   accept="image/jpeg, image/jpg, image/png">
-        </label>
-        <p>Вы можете загрузить изображение в формате JPG, JPEG или PNG.</p>
-
-        <br>
-        <br>
-
-        <label class="form-label">Наименование проекта
-            <input class="form-control" type="text" name="project_name" required>
-        </label>
-
-        <br>
-        <br>
-
-
-        <label class="form-label">Руководитель проекта
-            {% if user.patronymic %}
-                <input class="form-control" type="text" name="project_manager"
-                       value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
-            {% else %}
-                <input class="form-control" type="text" name="project_manager"
-                       value="{{ user.last_name }} {{ user.first_name }}" readonly>
-            {% endif %}
-        </label>
-
-        <br>
-        <br>
-
-        <label class="form-label">Техническое задание
-            <input class="form-control" type="file" name="project_tech_task" multiple accept=".pdf">
-        </label>
-        <p>Вы можете загрузить файл в формате PDF.</p>
-
-        <br>
-        <br>
-
-        <label class="form-label">Дедлайн
-            <input class="form-control" type="date" name="project_deadline" required>
-        </label>
-
-        <br>
-        <br>
-
-        <label class="form-label">Описание проекта
-            <textarea class="form-control" name="project_description" maxlength="1000" required></textarea>
-        </label>
-
-        <br>
-        <br>
-
-        <p>Вы можете:</p>
-
-        <br>
-
-        <input type="radio" name="fav_language" value="HTML" checked>
-        <label for="html">Создать новую команду для проекта</label>
-
-        <br>
-        <br>
-
-        <input type="radio" name="fav_language" value="CSS">
-        <label for="css">Прикрепить к проекту одну из своих команд</label>
-
-        <br>
-        <br>
-
-        <input type="radio" name="fav_language" value="JavaScript">
-        <label for="javascript">Создать проект без команды и добавить ее позже</label>
-
-        <input type="hidden" name="team_id" value="1">
-
-        <button class="orange-btn">Отмена</button>
-        <button type="submit" class="orange-btn">Создать проект</button>
-    </div>
-</form>
-
-<div style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-    <form method="POST">
+    <form method="POST" id="deleteProjectForm"
+          style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
         {% csrf_token %}
-        <input type="hidden" name="action" value="search-team">
-        <div class="d-flex">
-            <input class="form-control" type="text" name="team_name" placeholder="Наименование команды"
-                   required>
-            <button type="submit" class="orange-btn">Поиск</button>
+        <input class="form-control" type="hidden" name="action" value="delete_project">
+
+        <p>Предупреждение</p>
+        <br>
+        <p>Вы действительно хотите удалить проект "<span></span>"</p>
+
+        <input class="form-control" type="hidden" name="project_id">
+
+        <br>
+        <button type="button" class="orange-btn">Отмена</button>
+        <button type="submit" class="orange-btn">Да, удалить</button>
+    </form>
+
+    <form method="POST" enctype="multipart/form-data" id="createProjectForm"
+          style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+        {% csrf_token %}
+        <input class="form-control" type="hidden" name="action" value="create_project">
+        <div class="mb-3">
+
+            <label class="form-label">Наименование проекта
+                <input class="form-control" type="text" maxlength="30" name="project_name" required>
+            </label>
+            <p style="display: none;" class="message">Проект с таким именем уже существует!</p>
+
+            <br>
+            <br>
+
+            <label class="form-label">Руководитель проекта
+                {% if user.patronymic %}
+                    <input class="form-control" type="text" name="project_manager"
+                           value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
+                {% else %}
+                    <input class="form-control" type="text" name="project_manager"
+                           value="{{ user.last_name }} {{ user.first_name }}" readonly>
+                {% endif %}
+            </label>
+
+            <br>
+            <br>
+
+            <label class="form-label">Техническое задание
+                <input class="form-control" type="file" name="project_tech_task" multiple accept=".pdf">
+            </label>
+            <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p>
+
+            <br>
+            <br>
+
+            <label class="form-label">Дедлайн
+                <input class="form-control" type="date" min="{{ today }}" name="project_deadline" required>
+            </label>
+
+            <br>
+            <br>
+
+            <label class="form-label">Описание проекта
+                <textarea class="form-control" name="project_description" maxlength="1000" required></textarea>
+            </label>
+
+            <br>
+            <br>
+
+            <p>Вы можете:</p>
+
+            <br>
+
+            <label>
+            <input type="radio" name="team_radio" value="create" checked>Создать новую команду для проекта
+            </label>
+
+            <br>
+            <br>
+
+            <label>
+                <input type="radio" name="team_radio" value="search">Прикрепить к проекту одну из своих команд
+            </label>
+
+            <br>
+            <br>
+
+            <label>
+            <input type="radio" name="team_radio" value="pass">Создать проект без команды и добавить ее позже
+            </label>
+
+            <input type="hidden" name="team_id">
+
+            <br>
+            <br>
+            <button class="orange-btn">Отмена</button>
+            <button type="submit" class="orange-btn">Создать проект</button>
         </div>
     </form>
 
-    <br>
-    <br>
-
-    <div class="d-flex align-items-center justify-content-between"
-         style="width: 70%; border: 2px solid orange">
-        <div class="d-flex align-items-center">
-            <p></p>
-        </div>
-        <button class="orange-btn" data-team-id="">Прикрепить</button>
+    <div style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+        <form method="POST" id="searchTeamForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="search_team">
+            <div class="d-flex">
+                <input class="form-control" type="text" name="team_name" placeholder="Наименование команды"
+                       required>
+                <button type="submit" class="orange-btn">Поиск</button>
+            </div>
+        </form>
     </div>
-</div>
 
 
-{% if managed_projects %}
-    <p>Проекты, которыми Вы руководите:</p>
-    {% for project in managed_projects %}
-        <br>
-        <div class="d-flex" style="border: 2px solid orange">
-            <div class="d-flex flex-column -content-between">
-                <img src="{{ project.photo.url }}" width="300px" alt="Обложка проекта">
-                <button type="button" class="orange-btn">Изменить</button>
-                <button type="button" class="deleteProjectBtn orange-btn" data-project-id="{{ project.id }}" data-project-name="{{ project.name }}">Удалить</button>
+    {% if managed_projects %}
+        <p>Проекты, которыми Вы руководите:</p>
+        {% for project in managed_projects %}
+            <br>
+            <div class="d-flex" style="border: 2px solid orange">
+                <div class="d-flex flex-column -content-between">
+                    <img src="{{ project.photo.url }}" width="300px" alt="Обложка проекта">
+                    <button type="button" class="orange-btn">Изменить</button>
+                    <button type="button" class="deleteProjectBtn orange-btn" data-project-id="{{ project.id }}"
+                            data-project-name="{{ project.name }}">Удалить
+                    </button>
+                </div>
+                <div class=" d-flex flex-column">
+                    <h1 class="text-center">{{ project.name }}</h1>
+                    <h2 class="text-center">{{ project.deadline_str }}</h2>
+                    <div class="text-center">
+                        {% if project.technical_task %}
+                            <a href="{{ project.technical_task.url }}" target="_blank">Техническое задание</a>
+                        {% endif %}
+                    </div>
+                    <p class="text-justify" style="margin-top: 10px">{{ project.description }}</p>
+                    <div class="d-flex" style="margin-top: 10px">
+                        <p>Руководитель проекта</p>
+                        <a href="{% url 'profile' project.manager.id %}" target="_blank"><img
+                                src="{{ project.manager.cropped_photo.url }}"
+                                width="50px"
+                                style="border: 2px solid orange; border-radius: 50%;"></a>
+                    </div>
+                    <div class="d-flex">
+                        {% if project.team %}
+                            <p>Команда</p>
+                            {% for member in project.team.members.all %}
+                                <a href="{% url 'profile' member.id %}" target="_blank"><img
+                                        src="{{ member.cropped_photo.url }}"
+                                        width="50px"
+                                        style="border: 2px solid orange; border-radius: 50%;"></a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class=" d-flex flex-column">
-                <h1 class="text-center">{{ project.name }}</h1>
-                <h2 class="text-center">{{ project.deadline_str }}</h2>
-                <div class="text-center">
-                    {% if project.technical_task %}
-                        <a href="{{ project.technical_task.url }}" target="_blank">Техническое задание</a>
-                    {% endif %}
-                </div>
-                <p class="text-justify" style="margin-top: 10px">{{ project.description }}</p>
-                <div class="d-flex" style="margin-top: 10px">
-                    <p>Руководитель проекта</p>
-                    <a href="{% url 'profile' project.manager.id %}" target="_blank"><img
-                            src="{{ project.manager.cropped_photo.url }}"
-                            width="50px"
-                            style="border: 2px solid orange; border-radius: 50%;"></a>
-                </div>
-                <div class="d-flex">
-                    {% if project.team %}
-                        <p>Команда</p>
-                        {% for member in project.team.members.all %}
-                            <a href="{% url 'profile' member.id %}" target="_blank"><img
-                                    src="{{ member.cropped_photo.url }}"
-                                    width="50px"
-                                    style="border: 2px solid orange; border-radius: 50%;"></a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-{% else %}
-    <p class="fs-4 text-center mt-4">К сожалению, Вы еще не руководите ни одним проектом. Хотите
-        создать новый
-        проект?</p>
-{% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="fs-4 text-center mt-4">К сожалению, Вы еще не руководите ни одним проектом. Хотите
+            создать новый
+            проект?</p>
+    {% endif %}
 
-<br>
+    <br>
 
-{% if others_projects %}
-    <p>Проекты, в которых вы участвуете:</p>
-    {% for project in others_projects %}
-        <br>
-        <div class="d-flex" style="border: 2px solid orange">
-            <div class="d-flex flex-column -content-between">
-                <img src="{{ project.photo.url }}" width="300px" alt="Обложка проекта">
+    {% if others_projects %}
+        <p>Проекты, в которых вы участвуете:</p>
+        {% for project in others_projects %}
+            <br>
+            <div class="d-flex" style="border: 2px solid orange">
+                <div class="d-flex flex-column -content-between">
+                    <img src="{{ project.photo.url }}" width="300px" alt="Обложка проекта">
+                </div>
+                <div class=" d-flex flex-column">
+                    <h1 class="text-center">{{ project.name }}</h1>
+                    <h2 class="text-center">{{ project.deadline_str }}</h2>
+                    <div class="text-center">
+                        {% if project.technical_task %}
+                            <a href="{{ project.technical_task.url }}" target="_blank">Техническое задание</a>
+                        {% endif %}
+                    </div>
+                    <p class="text-justify" style="margin-top: 10px">{{ project.description }}</p>
+                    <div class="d-flex" style="margin-top: 10px">
+                        <p>Руководитель проекта</p>
+                        <a href="{% url 'profile' project.manager.id %}" target="_blank"><img
+                                src="{{ project.manager.cropped_photo.url }}"
+                                width="50px"
+                                style="border: 2px solid orange; border-radius: 50%;"></a>
+                    </div>
+                    <div class="d-flex">
+                        {% if project.team %}
+                            <p>Команда</p>
+                            {% for member in project.team.members.all %}
+                                <a href="{% url 'profile' member.id %}" target="_blank"><img
+                                        src="{{ member.cropped_photo.url }}"
+                                        width="50px"
+                                        style="border: 2px solid orange; border-radius: 50%;"></a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class=" d-flex flex-column">
-                <h1 class="text-center">{{ project.name }}</h1>
-                <h2 class="text-center">{{ project.deadline_str }}</h2>
-                <div class="text-center">
-                    {% if project.technical_task %}
-                        <a href="{{ project.technical_task.url }}" target="_blank">Техническое задание</a>
-                    {% endif %}
-                </div>
-                <p class="text-justify" style="margin-top: 10px">{{ project.description }}</p>
-                <div class="d-flex" style="margin-top: 10px">
-                    <p>Руководитель проекта</p>
-                    <a href="{% url 'profile' project.manager.id %}" target="_blank"><img
-                            src="{{ project.manager.cropped_photo.url }}"
-                            width="50px"
-                            style="border: 2px solid orange; border-radius: 50%;"></a>
-                </div>
-                <div class="d-flex">
-                    {% if project.team %}
-                        <p>Команда</p>
-                        {% for member in project.team.members.all %}
-                            <a href="{% url 'profile' member.id %}" target="_blank"><img
-                                    src="{{ member.cropped_photo.url }}"
-                                    width="50px"
-                                    style="border: 2px solid orange; border-radius: 50%;"></a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-{% else %}
-    <p class="fs-4 text-center mt-4">К сожалению, Вы еще не участвуете ни одном в проекте. Хотите
-        создать новый
-        проект?</p>
-{% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="fs-4 text-center mt-4">К сожалению, Вы еще не участвуете ни одном в проекте. Хотите
+            создать новый
+            проект?</p>
+    {% endif %}
+
+    {% load static %}
+    <script src="{% static 'js/projects.js' %}"></script>
 {% endblock content %}

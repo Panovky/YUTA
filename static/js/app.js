@@ -28,19 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ОБРАБОТКА СТРАНИЦЫ ПРОЕКТОВ
-const deleteProjectBtns = document.querySelectorAll('.deleteProjectBtn');
-const deleteProjectForm = document.querySelector('#deleteProjectForm');
-
-deleteProjectBtns.forEach((btn) => btn.addEventListener('click', e => {
-    let span = document.querySelector('#deleteProjectForm span');
-    let projectIdInput = document.querySelector('#projectIdInput');
-    span.innerHTML = e.target.dataset.projectName;
-    projectIdInput.value = e.target.dataset.projectId;
-    deleteProjectForm.style.display = 'block';
-}));
-
-
 // ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
 const modalMiniature = new bootstrap.Modal(document.querySelector('#thumb'));
 const modalChoice = new bootstrap.Modal(document.querySelector('#foto'));
@@ -72,7 +59,7 @@ updateFotoForm.addEventListener('submit', (e) => {
     const headers = {
         'X-Requested-With': 'XMLHttpRequest',
     }
-    fetch(`profile/${id}`, {
+    fetch(`${id}`, {
         method: 'POST',
         body: new FormData(updateFotoForm),
         headers: headers,
