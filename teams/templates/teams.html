@@ -4,9 +4,7 @@
 
 {% block content %}
     <br>
-    <a href="{% url 'new_team' 'choose-team-name' %}">
-        <button class="orange-btn">Создать команду</button>
-    </a>
+    <button class="orange-btn">Создать команду</button>
     <br>
     <br>
 
@@ -25,6 +23,57 @@
         <button type="button" class="orange-btn">Отмена</button>
         <button type="submit" class="orange-btn">Да, удалить</button>
     </form>
+
+    <form method="POST" id="createTeamForm"
+          style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+        {% csrf_token %}
+        <input class="form-control" type="hidden" name="action" value="create_team">
+
+        <p>Создание команды</p>
+
+        <br>
+
+        <label>
+            Наименование команды
+            <input class="form-control" type="text" name="team_name" maxlength="50" required>
+        </label>
+
+        <br>
+        <br>
+
+        <label>
+            Руководитель команды
+            {% if user.patronymic %}
+                <input class="form-control" type="text" name="team_leader"
+                       value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
+            {% else %}
+                <input class="form-control" type="text" name="team_leader"
+                       value="{{ user.last_name }} {{ user.first_name }}" readonly>
+            {% endif %}
+        </label>
+
+        <br>
+        <br>
+
+        <button type="button" class="orange-btn">Отмена</button>
+        <button type="submit" class="orange-btn">Создать</button>
+    </form>
+
+    <div style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+    <form method="POST" id="searchUserForm">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="search_user">
+
+        <div class="d-flex">
+            <label>
+                Пользователь
+                <input class="form-control" type="text" name="user_name" placeholder="Фамилия Имя (Отчество)"
+                       required>
+            </label>
+            <button type="submit" class="orange-btn">Поиск</button>
+        </div>
+    </form>
+    </div>
 
     <div class="d-flex justify-content-around">
         <div>
