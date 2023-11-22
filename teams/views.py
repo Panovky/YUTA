@@ -1,3 +1,4 @@
+import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -13,9 +14,7 @@ class TeamsView(View):
         user = User.objects.get(id=session_user_id)
         managed_teams = user.leader_teams.all()
         others_teams = user.teams.all()
-        request.session['team_name'] = None
-        request.session['project_id'] = None
-        request.session['members_id'] = None
+
         return render(
             request,
             'teams.html',
@@ -30,6 +29,7 @@ class TeamsView(View):
     def post(self, request):
         if not request.session.get('user_id'):
             return redirect('main')
+        session_user_id = request.session.get('user_id')
 
         if request.POST.get('action') == 'delete_team':
             team_id = request.POST.get('team_id')
@@ -57,6 +57,8 @@ class TeamsView(View):
                     User.objects.filter(first_name__icontains=user_name[0]) | \
                     User.objects.filter(patronymic__icontains=user_name[0])
 
+            users = users.exclude(id=session_user_id)
+
             response_data = {
                 'users': [
                     {
@@ -71,3 +73,16 @@ class TeamsView(View):
             }
             return JsonResponse(data=response_data)
 
+        if json.loads(request.body).get('action') == 'create_team':
+            request_body = json.loads(request.body)
+            team_name = request_body.get('team_name')
+            team_leader = User.objects.get(id=request.session.get('user_id'))
+            team_members_id = request_body.get('members_id')
+
+            team = Team.objects.create(
+                name=team_name,
+                leader=team_leader
+            )
+
+            for member_id in team_members_id:
+                team.members.add(User.objects.get(id=member_id))
