@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalEdit = new bootstrap.Modal(document.querySelector('#edit-team'));
     editTeamBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-            console.log('Button clicked');
             modalEdit.show();
         })
     })
@@ -180,6 +179,7 @@ swiperList.forEach((swiper) => {
         slideToClickedSlide: false,
         spaceBetween: 15,
         initialSlide: 0,
+        centerInsufficientSlides: true,
 
         pagination: {
             el: `.swiper-pagination-${swiper_slider_id}`,

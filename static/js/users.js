@@ -1,18 +1,4 @@
-// ОБРАБОТКА ОШИБОК ФОРМЫ АВТОРИЗАЦИИ И ОБНОВЛЕНИЯ
-document.addEventListener("DOMContentLoaded", () => {
-    const openModalAuthBtn = document.querySelector('#openModalAuthBtn');
-    const modalAutorization = new bootstrap.Modal(document.querySelector('#autorization'));
-    const authorizationForm = document.querySelector('#authorizationForm');
-
-    openModalAuthBtn.addEventListener('click', () => {
-        modalAutorization.show()
-    })
-
-    if (authorizationForm.contains(document.querySelector('#errorMessage'))) {
-        modalAutorization.show()
-    }
-});
-
+// ОБРАБОТКА ОШИБКИ МОДАЛКИ ОБНОВЛЕНИЯ ДАННЫХ
 document.addEventListener("DOMContentLoaded", () => {
     const openModalReloadBtn = document.querySelector('#openModalReloadBtn');
     const modalReload = new bootstrap.Modal(document.querySelector('#reload'));
@@ -26,6 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
         modalReload.show()
     }
 });
+
+
+// ДОБАВЛЕНИЕ ГРАДИЕНТА В ФОН
+document.querySelector('.navbar').classList.add('gradient');
 
 
 // ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
@@ -131,23 +121,27 @@ document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
 
 
 // ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ
-tippy('#editButton', {
-    content: 'Редактировать профиль',
-    placement: 'top-end',
-    animation: 'scale',
-    theme: 'material',
-});
+document.addEventListener("DOMContentLoaded", () => {
+    tippy('#editButton', {
+        content: 'Редактировать профиль',
+        placement: 'top-end',
+        animation: 'scale',
+        theme: 'material',
+    });
 
-tippy('#reloadButton', {
-    content: 'Обновить данные профиля с сайта ЯГТУ',
-    placement: 'top-end',
-    animation: 'scale',
-    theme: 'material',
+    tippy('#openModalReloadBtn', {
+        content: 'Обновить данные профиля с сайта ЯГТУ',
+        placement: 'top-end',
+        animation: 'scale',
+        theme: 'material',
+    });
 });
 
 
 // МАСКА ДЛЯ ВВОДА НОМЕРА ТЕЛЕФОНА
-const phoneInput = document.querySelector('.phone');
-const mask = new IMask(phoneInput, {
-    mask: "+{7} (000) 000-00-00"
+document.addEventListener("DOMContentLoaded", () => {
+    const phoneInput = document.querySelector('.phone');
+    const mask = new IMask(phoneInput, {
+        mask: "+{7} (000) 000-00-00"
+    });
 });
