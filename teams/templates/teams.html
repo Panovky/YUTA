@@ -2,171 +2,313 @@
 
 {% block title %}<title>Команды</title>{% endblock title %}
 
+{% load static %}
+
 {% block content %}
-    <br>
-    <button class="orange-btn">Создать команду</button>
-    <br>
-    <br>
 
-    <form method="POST" id="deleteTeamForm"
-          style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-        {% csrf_token %}
-        <input class="form-control" type="hidden" name="action" value="delete_team">
-
-        <p>Предупреждение</p>
-        <br>
-        <p>Вы действительно хотите удалить команду "<span></span>"?</p>
-
-        <input class="form-control" type="hidden" name="team_id">
-
-        <br>
-        <button type="button" class="orange-btn">Отмена</button>
-        <button type="submit" class="orange-btn">Да, удалить</button>
-    </form>
-
-    <form method="POST" id="createTeamForm"
-          style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-        {% csrf_token %}
-        <input class="form-control" type="hidden" name="action" value="create_team">
-
-        <p>Создание команды</p>
-
-        <br>
-
-        <label>
-            Наименование команды
-            <input class="form-control" type="text" name="team_name" maxlength="50" required>
-        </label>
-
-        <br>
-        <br>
-
-        <label>
-            Руководитель команды
-            {% if user.patronymic %}
-                <input class="form-control" type="text" name="team_leader"
-                       value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
-            {% else %}
-                <input class="form-control" type="text" name="team_leader"
-                       value="{{ user.last_name }} {{ user.first_name }}" readonly>
-            {% endif %}
-        </label>
-
-        <br>
-        <br>
-
-        <p>Участники команды</p>
-
-        <div id="members" class="d-flex flex-column"></div>
-
-        <br><br>
-        <button type="button" class="orange-btn">Отмена</button>
-        <button type="submit" class="orange-btn">Создать</button>
-    </form>
-
-    <div style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-        <form method="POST" id="searchUserForm">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="search_user">
-
-            <div class="d-flex align-items-center">
-                <label>
-                    Пользователь
-                    <input class="form-control" type="text" name="user_name" placeholder="Фамилия Имя (Отчество)"
-                           required>
-                </label>
-                <button type="submit" class="orange-btn">Поиск</button>
-            </div>
-
-            <div id="searchedUsers" class="d-flex flex-column"></div>
-        </form>
-    </div>
-
-    <div class="d-flex justify-content-around">
-        <div>
-            <p>Команды, которыми Вы руководите</p>
-            {% if managed_teams %}
-                {% for team in managed_teams %}
-                    <br>
-                    <div style="border: 1px solid blue">
-                        <div class="d-flex justify-content-between">
-                            <p class="text-center">{{ team.name }}</p>
-                            <button type="button" class="orange-btn">Изменить</button>
-                            <button type="button" class="deleteTeamBtn orange-btn" data-team-id="{{ team.id }}"
-                                    data-team-name="{{ team.name }}">Удалить
+    <main>
+        <div class="container">
+            <button class="orange-btn blue-btn blue-btn-sm my-4 d-flex gap-2 align-items-center" data-bs-toggle="modal" data-bs-target="#create-team">
+                <svg style="width: 20px; height: 26px;">
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#create"></use>
+                </svg>
+                <p>Создать команду</p>
+            </button>
+            <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ КОМАНДЫ -->
+            <div class="modal fade modal-custom" id="create-team" tabindex="-1" aria-labelledby="create-team" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header position-relative">
+                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                                <svg style="width: 28px; height: 28px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                </svg>
                             </button>
                         </div>
-                        <br>
-                        <div class="d-flex">
-                            <a href="{% url 'profile' team.leader.id %}" target="_blank">
-                                <div class="card" style="width: 10rem;">
-                                    <img src="{{ team.leader.cropped_photo.url }}" class="card-img-top"
-                                         alt="Фотография руководителя команды">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-center">Руководитель
-                                            команды: {{ team.leader.last_name }} {{ team.leader.first_name }}</h5>
-                                    </div>
-                                </div>
-                            </a>
-                            {% for member in team.members.all %}
-                                <a href="{% url 'profile' member.id %}" target="_blank">
-                                    <div class="card" style="width: 10rem;">
-                                        <img src="{{ member.cropped_photo.url }}" class="card-img-top"
-                                             alt="Фотография участника команды">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-center">{{ member.last_name }} {{ member.first_name }}</h5>
-                                        </div>
-                                    </div>
-                                </a>
-                            {% endfor %}
-                        </div>
+                        <p class="modal-title text-center">Создание команды</p>
+                        <div class="modal-devider"></div>
+                        <form method="POST" name="createTeamForm" enctype="multipart/form-data" class="mt-2">
+                            {% csrf_token %}
+                            <input class="form-control" type="hidden" name="action" value="create_team">
+                            <div class="mt-3">
+                                <button type="submit" class="orange-btn modal-btn my-0 mx-auto">Создать команду</button>
+                            </div>
+                        </form>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>К сожалению, Вы не руководите ни одной командой.</p>
-            {% endif %}
-        </div>
-        <div>
-            <p>Команды, в которых Вы состоите</p>
-            {% if others_teams %}
-                {% for team in others_teams %}
-                    <br>
-                    <div style="border: 1px solid blue">
-                        <br>
-                        <p class="text-center">{{ team.name }}</p>
-                        <br>
-                        <div class="d-flex">
-                            <a href="{% url 'profile' team.leader.id %}" target="_blank">
-                                <div class="card" style="width: 10rem;">
-                                    <img src="{{ team.leader.cropped_photo.url }}" class="card-img-top"
-                                         alt="Фотография руководителя команды">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-center">Руководитель
-                                            команды: {{ team.leader.last_name }} {{ team.leader.first_name }}</h5>
-                                    </div>
-                                </div>
-                            </a>
-                            {% for member in team.members.all %}
-                                <a href="{% url 'profile' member.id %}" target="_blank">
-                                    <div class="card" style="width: 10rem;">
-                                        <img src="{{ member.cropped_photo.url }}" class="card-img-top"
-                                             alt="Фотография участника команды">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-center">{{ member.last_name }} {{ member.first_name }}</h5>
-                                        </div>
-                                    </div>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>К сожалению, Вы не состоите ни одной командой.</p>
-            {% endif %}
-        </div>
-    </div>
+                </div>
+            </div>
 
+            <!--ФОРМА СОЗДАНИЯ КОМАНДЫ-->
+            <form method="POST" id="createTeamForm"
+                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+                {% csrf_token %}
+                <input class="form-control" type="hidden" name="action" value="create_team">
+
+                <p>Создание команды</p>
+
+                <br>
+
+                <label>
+                    Наименование команды
+                    <input class="form-control" type="text" name="team_name" maxlength="50" required>
+                </label>
+
+                <br>
+                <br>
+
+                <label>
+                    Руководитель команды
+                    {% if user.patronymic %}
+                    <input class="form-control" type="text" name="team_leader"
+                           value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
+                    {% else %}
+                    <input class="form-control" type="text" name="team_leader"
+                           value="{{ user.last_name }} {{ user.first_name }}" readonly>
+                    {% endif %}
+                </label>
+
+                <br>
+                <br>
+
+                <p>Участники команды</p>
+
+                <div id="members" class="d-flex flex-column"></div>
+
+                <br><br>
+                <button type="button" class="orange-btn">Отмена</button>
+                <button type="submit" class="orange-btn">Создать</button>
+            </form>
+
+            <div style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+                <form method="POST" id="searchUserForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="search_user">
+
+                    <div class="d-flex align-items-center">
+                        <label>
+                            Пользователь
+                            <input class="form-control" type="text" name="user_name" placeholder="Фамилия Имя (Отчество)"
+                                   required>
+                        </label>
+                        <button type="submit" class="orange-btn">Поиск</button>
+                    </div>
+
+                    <div id="searchedUsers" class="d-flex flex-column"></div>
+                </form>
+            </div>
+
+
+
+
+            <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
+                <button type="button" id="filter-boss-tab" data-bs-toggle="tab" data-bs-target="#filter-boss" role="tab"
+                        class="tab-btn">Вы руководитель команды
+                </button>
+                <button type="button" class="tab-btn active" id="filter-participant-tab" data-bs-toggle="tab" data-bs-target="#filter-participant"
+                        role="tab">Вы участник команды
+                </button>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                <div id="filter-boss" class="tab-pane fade" role="tabpanel"
+                     aria-labelledby="filter-date-tab">
+                    {% if managed_teams %}
+                        {% for team in managed_teams %}
+                            <div class="team">
+                                <div class="team-title d-flex justify-content-center gap-5">
+                                    <p class="text-center">{{ team.name }}</p>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" style="width: 26px; height: 26px;" class="edit-team-btn">
+                                            <svg style="width: 100%; height: 100%;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit-orange"></use>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="deleteTeamBtn" style="width: 26px; height: 26px;" data-team-id="{{ team.id }}"
+                                                data-team-name="{{ team.name }}">
+                                            <svg style="width: 100%; height: 100%;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete-orange"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="slider-container">
+                                    <div class="swiper">
+                                        <div class="swiper-wrapper">
+                                            <a href="{% url 'profile' team.leader.id %}" target="_blank" class="swiper-slide team-card">
+                                                <div class="avatar-wrapper"></div>
+                                                <div class="crown-boss">
+                                                    <svg style="width: 26px; height: 26px;">
+                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                                    </svg>
+                                                </div>
+                                                <div class="img-wrapper">
+                                                    <img src="{{ team.leader.cropped_photo.url }}" alt="Фотография руководителя команды">
+                                                </div>
+                                                <p class="text-center">{{ team.leader.last_name }} {{ team.leader.first_name }}</p>
+                                            </a>
+                                            {% for member in team.members.all %}
+                                            <a href="{% url 'profile' member.id %}" target="_blank" class="swiper-slide team-card">
+                                                <div class="avatar-wrapper"></div>
+                                                <div class="img-wrapper">
+                                                    <img src="{{ member.cropped_photo.url }}" alt="Фотография участника команды">
+                                                </div>
+                                                <p class="text-center">{{ member.last_name }} {{ member.first_name }}</p>
+                                            </a>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="swiper-pagination"></div>
+                                    </div>
+                                    <div class="swiper-navigation">
+                                        <button class="slider-button slider-button-prev">
+                                            <svg style="width: 28px; height: 76px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#left-arrow"></use>
+                                            </svg>
+                                        </button>
+                                        <button class="slider-button slider-button-next">
+                                            <svg style="width: 28px; height: 78px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#right-arrow"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы не руководите ни одной командой</p>
+                    {% endif %}
+                </div>
+                <div id="filter-participant" class="tab-pane fade show active" role="tabpanel"
+                     aria-labelledby="filter-participant-tab">
+                    {% if others_teams %}
+                        {% for team in others_teams %}
+                            <div class="team">
+                                <div class="team-title d-flex justify-content-center gap-5">
+                                    <p class="text-center">{{ team.name }}</p>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="edit-team-btn">
+                                            <svg style="width: 26px; height: 26px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit-orange"></use>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="deleteTeamBtn"  data-team-id="{{ team.id }}"
+                                                data-team-name="{{ team.name }}">
+                                            <svg style="width: 26px; height: 26px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete-orange"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="slider-container">
+                                    <div class="swiper">
+                                        <div class="swiper-wrapper">
+                                            <a href="{% url 'profile' team.leader.id %}" target="_blank" class="swiper-slide team-card">
+                                                <div class="avatar-wrapper"></div>
+                                                <div class="crown-boss">
+                                                    <svg style="width: 26px; height: 26px;">
+                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                                    </svg>
+                                                </div>
+                                                <div class="img-wrapper">
+                                                    <img src="{{ team.leader.cropped_photo.url }}" alt="Фотография руководителя команды">
+                                                </div>
+                                                <p class="text-center">{{ team.leader.last_name }} {{ team.leader.first_name }}</p>
+                                            </a>
+                                            {% for member in team.members.all %}
+                                            <a href="{% url 'profile' member.id %}" target="_blank" class="swiper-slide team-card">
+                                                <div class="avatar-wrapper"></div>
+                                                <div class="img-wrapper">
+                                                    <img src="{{ member.cropped_photo.url }}" alt="Фотография участника команды">
+                                                </div>
+                                                <p class="text-center">{{ member.last_name }} {{ member.first_name }}</p>
+                                            </a>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="swiper-pagination"></div>
+                                    </div>
+                                    <div class="swiper-navigation">
+                                        <button class="slider-button slider-button-prev">
+                                            <svg style="width: 28px; height: 76px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#left-arrow"></use>
+                                            </svg>
+                                        </button>
+                                        <button class="slider-button slider-button-next">
+                                            <svg style="width: 28px; height: 78px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#right-arrow"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы не состоите ни в одной команде(</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!--  МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ КОМАНДЫ -->
+        <div class="modal fade modal-custom" id="delete-team" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header position-relative">
+                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <svg style="width: 28px; height: 28px;">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="modal-title text-center">Предупреждение</p>
+                    <div class="modal-devider"></div>
+                    <form method="POST" class="mt-2" id="deleteTeamForm">
+                        {% csrf_token %}
+                        <input class="form-control" type="hidden" name="action" value="delete_team">
+                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить команду "<span></span>"?</p>
+                        <input class="form-control" type="hidden" name="team_id">
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                <svg style="width: 19px; height: 17px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                </svg>
+                                <p>Да, удалить</p>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ КОМАНДЫ -->
+        <div class="modal fade modal-custom" id="edit-team" tabindex="-1" aria-labelledby="edit-team" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header position-relative">
+                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <svg style="width: 28px; height: 28px;">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="modal-title text-center">Редактирование команды</p>
+                    <div class="modal-devider"></div>
+                    <form method="POST" class="mt-2">
+                        <input type="hidden" name="action" value="update-team">
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                                <svg style="width: 19px; height: 17px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
+                                </svg>
+                                <p>Сохранить</p>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     {% load static %}
     <script src="{% static 'js/teams.js' %}"></script>
+
 {% endblock content %}
 

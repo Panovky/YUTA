@@ -120,7 +120,7 @@ main {
 
 .orange-btn {
     color: #fdfdfd;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     background-color: #e9771b;
     padding: 10px 50px;
@@ -151,12 +151,13 @@ main {
 }
 
 .blue-btn {
+    padding: 10px 45px;
     background-color: #16389D;
     opacity: 0.9;
 }
 
 .blue-btn-sm {
-    padding: 8px 35px;
+    padding: 8px 40px;
 }
 
 .blue-btn:hover,
@@ -1011,6 +1012,212 @@ footer {
     line-height: 16px;
     border-radius: 50%;
 }
+
+
+
+.nav-tabs {
+    background-color: rgba(22, 56, 157, 0.3);
+    border-radius: 30px;
+    margin-top: 45px;
+}
+
+.tab-btn {
+    background-color: rgba(253, 253, 253, 0);
+    color: #16389D;
+    width: 50%;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 0;
+}
+
+.nav-tabs .active {
+    background-color: rgba(22, 56, 157, 0.9);
+    color: #fdfdfd;
+}
+
+.team {
+    margin: 65px auto;
+    position: relative;
+}
+
+.team-title button {
+    background-color: transparent;
+}
+
+.team-title svg {
+    opacity: 0.85;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.team-title svg:hover {
+    opacity: 1;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.team-title p {
+    color: #1C1C1C;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.team-content {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.team-card {
+    width: 20%;
+    height: 230px;
+    border: 2px solid rgba(22, 56, 157, 0.85);
+    border-radius: 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 30px 20px;
+    margin: 0 10px;
+    position: relative;
+    text-decoration: none;
+    will-change: transform;
+    -webkit-transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.team-card:hover {
+    will-change: transform, opacity;
+    -webkit-transform: translate3d(0, 0, 0) scale(1.03);
+    transform: translate3d(0, 0, 0) scale(1.03);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-box-shadow: 6px -6px 13px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 6px -6px 13px -2px rgba(34, 60, 80, 0.2);
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.team-card .avatar-wrapper {
+    width: 100%;
+    height: 90px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: 27px 27px 0 0;
+    background: rgb(13, 36, 104);
+    background: linear-gradient(126deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
+}
+
+.team-card .crown-boss {
+    position: absolute;
+    left: 20px;
+    top: 15px;
+    z-index: 3;
+}
+
+.team-card .img-wrapper {
+    z-index: 2;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #fdfdfd;
+    width: 110px;
+    height: 110px;
+    border: 2px solid rgba(22, 56, 157, 0.9);
+    border-radius: 50%;
+}
+
+.team-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.team-card p {
+    font-size: 1.1rem;
+    color: #1C1C1C;
+    font-weight: 600;
+    margin-top: 18px;
+}
+
+.swiper {
+    width: 100%;
+}
+
+.swiper-slide {
+    width: 235px !important;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.swiper-wrapper {
+    padding: 30px 0 50px 0;
+}
+
+.swiper-navigation {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.slider-button {
+    background-color: transparent;
+}
+
+.slider-button-prev {
+    position: absolute;
+    top: 40%;
+    left: -70px;
+}
+
+.slider-button-next {
+    position: absolute;
+    top: 40%;
+    right: -70px;
+}
+
+
+
+
 
 @media (max-width: 1600px) {
     .header-main {
