@@ -1,14 +1,18 @@
 // УДАЛЕНИЕ КОМАНДЫ
-const deleteTeamBtns = document.querySelectorAll('.deleteTeamBtn');
-const deleteTeamForm = document.querySelector('#deleteTeamForm');
+document.addEventListener('DOMContentLoaded', () => {
+    let deleteTeamBtns = document.querySelectorAll('.deleteTeamBtn');
+    const modalDelete = new bootstrap.Modal(document.querySelector('#delete-team'));
+    deleteTeamBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            let span = document.querySelector('#deleteTeamForm span');
+            let teamIdInput = document.querySelector('[name=team_id]');
+            span.innerHTML = e.currentTarget.dataset.teamName;
+            teamIdInput.value = e.currentTarget.dataset.teamId;
+            modalDelete.show();
+        })
+    })
+});
 
-deleteTeamBtns.forEach((btn) => btn.addEventListener('click', e => {
-    let span = document.querySelector('#deleteTeamForm span');
-    let teamIdInput = document.querySelector('[name=team_id]');
-    span.innerHTML = e.target.dataset.teamName;
-    teamIdInput.value = e.target.dataset.teamId;
-    deleteTeamForm.style.display = 'block';
-}));
 
 // ПОИСК ПОЛЬЗОВАТЕЛЯ
 const searchUserForm = document.querySelector('#searchUserForm');
@@ -118,7 +122,6 @@ function deleteMember(e) {
 
 // СОЗДАНИЕ КОМАНДЫ
 const createTeamForm = document.querySelector('#createTeamForm');
-
 createTeamForm.addEventListener('submit', e => {
     e.preventDefault();
     let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -146,3 +149,71 @@ createTeamForm.addEventListener('submit', e => {
             document.location.reload();
         });
 });
+
+
+/* РЕДАКТИРОВАНИЕ КОМАНДЫ */
+document.addEventListener('DOMContentLoaded', () => {
+    let editTeamBtns = document.querySelectorAll('.edit-team-btn');
+    const modalEdit = new bootstrap.Modal(document.querySelector('#edit-team'));
+    editTeamBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            console.log('Button clicked');
+            modalEdit.show();
+        })
+    })
+});
+
+/* СЛАЙДЕР */
+const swiperList = document.querySelectorAll('.slider-container');
+let count = 1;
+swiperList.forEach((swiper) => {
+    let swiper_slider_id = count;
+    swiper.childNodes[1].classList.add(`swiper-${swiper_slider_id}`);
+    swiper.childNodes[1].childNodes[3].classList.add(`swiper-pagination-${swiper_slider_id}`);
+    swiper.childNodes[3].childNodes[1].classList.add(`slider-button-prev-${swiper_slider_id}`);
+    swiper.childNodes[3].childNodes[3].classList.add(`slider-button-next-${swiper_slider_id}`);
+
+    const teamSwiper = new Swiper(`.swiper-${swiper_slider_id}`, {
+        direction: 'horizontal',
+        loop: true,
+        slidesPerView: 5,
+        slideToClickedSlide: false,
+        spaceBetween: 15,
+        initialSlide: 0,
+
+        pagination: {
+            el: `.swiper-pagination-${swiper_slider_id}`,
+        },
+
+        navigation: {
+            nextEl: `.slider-button-next-${swiper_slider_id}`,
+            prevEl: `.slider-button-prev-${swiper_slider_id}`,
+        },
+
+        breakpoints: {
+            100: {
+                slidesPerView: 3,
+                spaceBetween: 5
+            },
+            576: {
+
+            },
+            768: {
+
+            },
+            992: {
+
+            },
+            1200: {
+                slidesPerView: 4,
+            },
+            1400: {
+                slidesPerView: 5,
+            }
+        }
+    });
+    count++;
+})
+
+
+
