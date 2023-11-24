@@ -30,8 +30,10 @@
                         <form method="POST" name="createTeamForm" enctype="multipart/form-data" class="mt-2">
                             {% csrf_token %}
                             <input class="form-control" type="hidden" name="action" value="create_team">
-                            <div class="mt-3">
-                                <button type="submit" class="orange-btn modal-btn my-0 mx-auto">Создать команду</button>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button type="submit" class="orange-btn modal-btn my-0">
+                                    <p>Создать команду</p>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -183,19 +185,6 @@
                             <div class="team">
                                 <div class="team-title d-flex justify-content-center gap-5">
                                     <p class="text-center">{{ team.name }}</p>
-                                    <div class="d-flex gap-2">
-                                        <button type="button" class="edit-team-btn">
-                                            <svg style="width: 26px; height: 26px;">
-                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit-orange"></use>
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="deleteTeamBtn"  data-team-id="{{ team.id }}"
-                                                data-team-name="{{ team.name }}">
-                                            <svg style="width: 26px; height: 26px;">
-                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete-orange"></use>
-                                            </svg>
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="slider-container">
                                     <div class="swiper">
