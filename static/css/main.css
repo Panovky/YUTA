@@ -1,0 +1,230 @@
+.header {
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header-top {
+    padding: 15px 0;
+    background-color: var(--blue-color);
+}
+
+.logo img {
+    width: 75px;
+    height: 75px;
+}
+
+.header-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--white-color);
+    margin-bottom: 0;
+}
+
+.header-main {
+    padding: 0 120px;
+    margin-top: 160px;
+}
+
+.header-text {
+    max-width: 50%;
+}
+
+.header-text__title {
+    margin-top: 40px;
+    line-height: 1.1;
+    font-size: 3.2rem;
+    font-weight: 600;
+}
+
+.header-text__title span {
+    color: var(--orange-color);
+}
+
+.header-text__subtitle {
+    margin-top: 20px;
+    line-height: 1.2;
+    font-size: 1.8rem;
+}
+
+.header-foto {
+    max-width: 820px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-foto img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.autorization-checkbox {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.autorization-checkbox + label {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+}
+
+.autorization-checkbox + label::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--gray-color);
+    border-radius: 50%;
+    margin-right: 5px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+}
+
+.autorization-checkbox:checked + label::before {
+    background-size: 20px;
+    border: none;
+    background-image: url("../images/svg/check.svg");
+}
+
+.autorization-checkbox-label {
+    font-weight: 500;
+    color: var(--gray-color);
+    font-size: 1rem;
+    gap: 3px;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+}
+
+.orange-block {
+    border: 3px solid var(--orange-color);
+    border-radius: 23px;
+}
+
+.orange-block-title {
+    background-color: var(--orange-color);
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    color: var(--white-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.advantages {
+    padding: 40px 60px;
+}
+
+.advantages .advantages-item {
+    width: 33.3%;
+    padding: 0 30px;
+}
+
+.advantages svg {
+    width: 60px;
+    height: 60px;
+    opacity: 0.9;
+}
+
+.advantages-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue-color);
+    margin-top: 18px;
+}
+
+.advantages-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 8px;
+}
+
+.mobile-text {
+    width: 50%;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--dark-gray-color);
+}
+
+.mobile-text .mobile-item {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.mobile-text .mobile-item .counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--orange-color);
+    border-radius: 50%;
+    color: var(--blue-color);
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.mobile-text p {
+    margin: 0 0 0 20px;
+    line-height: 1.1;
+}
+
+.mobile-foto {
+    max-width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-foto img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.about-item {
+    text-align: center;
+    width: 20%;
+}
+
+.about-item .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--blue-color);
+}
+
+.about-item .role {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-color);
+}
+
+.about-item .hover-image-scale {
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid var(--blue-color);
+}
+
+.about-item .hover-image-scale img {
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 140px;
+    height: 140px;
+    transition: all 0.5s;
+}
+
+.about-item .hover-image-scale img:hover {
+    transform: scale(1.1);
+    transition: all 0.6s;
+}

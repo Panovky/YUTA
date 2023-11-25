@@ -1,0 +1,64 @@
+footer {
+    background-color: var(--blue-color);
+    color: var(--white-color);
+}
+
+.company-text {
+    margin-left: 35px;
+}
+
+.company-text__title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.company-text__subtitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-top: 3px;
+}
+
+.footer-devider {
+    width: 2px;
+    height: 100px;
+    background-color: var(--white-color);
+    opacity: 0.7;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+}
+
+.politics {
+    display: flex;
+    flex-direction: column;
+}
+
+.politics-document p {
+    margin-bottom: 5px;
+}
+
+.politics-document a {
+    color: var(--white-color);
+    font-weight: 500;
+    opacity: 0.8;
+    transition: all 0.2s;
+}
+
+.politics-document a:hover {
+    opacity: 1;
+    transition: all 0.2s;
+}
+
+.politics-support {
+    margin-top: 20px;
+}
+
+.politics-support .support-text {
+    margin-left: 8px;
+}
+
+.politics-support .support-text .title {
+    font-weight: 600;
+    margin-bottom: 3px;
+}
