@@ -55,27 +55,27 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
-                        <li class="nav-item my-2">
+                    <ul class="navbar-nav ms-lg-5 ms-md-3 ms-sm-0 ms-0 d-flex align-items-center">
+                        <li class="nav-item my-2 mt-md-2 mt-sm-0 mt-2 ms-lg-0 ms-md-0 ms-sm-0 ms-0">
                             <a class="menu-link" href="{% url 'profile' menu_user_id %}">Профиль</a>
                         </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
+                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'projects' %}">Проекты</a>
                         </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
+                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'tasks' %}">Задачи</a>
                         </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
+                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
                             <a class="menu-link" href="{% url 'teams' %}">Команды</a>
                         </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-3 ms-0 d-flex align-items-center">
+                        <li class="nav-item my-2 mb-md-2 mb-sm-4 mb-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
                             <button type="button" class="orange-btn blue-btn blue-btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#exit">Выйти
                             </button>
                         </li>
                     </ul>
                 </div>
-                <div class="modal fade modal-custom" id="exit" tabindex="-1" aria-labelledby="exit" aria-hidden="true">
+                <div class="modal fade modal-exit" id="exit" tabindex="-1" aria-labelledby="exit" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header position-relative">

@@ -1,20 +1,25 @@
 // УДАЛЕНИЕ ПРОЕКТА
-const deleteProjectBtns = document.querySelectorAll('.deleteProjectBtn');
-const deleteProjectForm = document.querySelector('#deleteProjectForm');
+document.addEventListener('DOMContentLoaded', () => {
+    let deleteTeamBtns = document.querySelectorAll('.deleteProjectBtn');
+    const modalDelete = new bootstrap.Modal(document.querySelector('#delete-project'));
+    deleteTeamBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            let span = document.querySelector('#deleteProjectForm span');
+            let projectIdInput = document.querySelector('[name=project_id]');
+            span.innerHTML = e.currentTarget.dataset.projectName;
+            projectIdInput.value = e.currentTarget.dataset.projectId;
+            modalDelete.show();
+        })
+    })
+});
 
-deleteProjectBtns.forEach((btn) => btn.addEventListener('click', e => {
-    let span = document.querySelector('#deleteProjectForm span');
-    let projectIdInput = document.querySelector('[name=project_id]');
-    span.innerHTML = e.target.dataset.projectName;
-    projectIdInput.value = e.target.dataset.projectId;
-    deleteProjectForm.style.display = 'block';
-}));
 
 // СОЗДАНИЕ ПРОЕКТА
 const createProjectBtn = document.querySelector('#createProjectBtn');
 const createProjectForm = document.querySelector('#createProjectForm');
 
 createProjectBtn.addEventListener('click', e => {
+    console.log('click')
     createProjectForm.style.display = 'block';
 });
 
@@ -76,4 +81,16 @@ searchTeamForm.addEventListener('submit', (e) => {
             });
             searchTeamForm.parentElement.appendChild(result_div);
         });
+});
+
+
+// РЕДАКТИРОВАНИЕ ПРОЕКТА
+document.addEventListener('DOMContentLoaded', () => {
+    let updateTeamBtns = document.querySelectorAll('.updateProjectBtn');
+    const modalUpdate = new bootstrap.Modal(document.querySelector('#edit-project'));
+    updateTeamBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            modalUpdate.show();
+        })
+    })
 });

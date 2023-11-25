@@ -1,0 +1,405 @@
+@media (max-width: 1600px) {
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header-main {
+        padding: 0 120px;
+        margin-top: 100px;
+    }
+}
+
+
+@media (max-width: 1400px) {
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header-text__title {
+        margin-top: 40px;
+        font-size: 2.3rem;
+    }
+
+    .header-text__subtitle {
+        margin-top: 20px;
+        font-size: 1.5rem;
+    }
+}
+
+
+@media (max-width: 1200px) {
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header-title {
+        font-size: 1.6rem;
+    }
+
+    .header-main {
+        padding: 0 40px;
+        margin-top: 120px;
+    }
+
+    .header-text__title {
+        margin-top: 40px;
+        font-size: 2rem;
+    }
+
+    .header-text__subtitle {
+        margin-top: 20px;
+        font-size: 1.2rem;
+    }
+}
+
+
+@media (max-width: 1000px) {
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header {
+        height: 100%;
+    }
+
+    .header-main {
+        margin-top: 20px;
+    }
+
+    .advantages {
+        padding: 20px 30px;
+    }
+
+    .advantages .advantages-item {
+        padding: 0 30px;
+    }
+
+    .advantages-title {
+        font-size: 1.2rem;
+        margin-top: 18px;
+    }
+
+    .advantages-text {
+        font-size: 1.1rem;
+    }
+
+    .about-item .name {
+        font-size: 1rem;
+    }
+
+    .about-item .role {
+        font-size: 0.9rem;
+    }
+
+    .about-item .hover-image-scale img {
+        width: 120px;
+        height: 120px;
+    }
+
+    /* ФУТЕР */
+    .company-text {
+        margin-left: 25px;
+    }
+
+    .company-text__subtitle {
+        font-size: 1rem;
+        margin-top: 3px;
+    }
+
+    .company-text__title {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .company .logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .politics {
+        align-items: center;
+        flex-direction: row;
+        gap: 30px;
+    }
+
+    .politics-support {
+        margin-top: 0;
+    }
+
+    /* ЛИЧНЫЙ КАБИНЕТ */
+    .person-name {
+        padding-top: 40px;
+    }
+
+    .person-icons {
+        margin-left: auto;
+        margin-right: auto;
+        left: 46%;
+        right: 0;
+        text-align: center;
+    }
+
+    .contacts {
+        margin: 0 0 30px 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .contacts .contacts-item {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .contacts .contacts-item p {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+
+    .contacts .contacts-item a {
+        color: var(--dark-gray-color);
+    }
+
+    .preview {
+        display: none;
+    }
+}
+
+
+@media (max-width: 850px) {
+    /* НАВИГАЦИЯ */
+    .logo img {
+        width: 65px;
+        height: 65px;
+    }
+
+    .menu-link {
+        font-size: 1rem;
+    }
+
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header {
+        height: 100%;
+    }
+
+    .header-main {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    .header-text {
+        max-width: 100%;
+    }
+
+    .header-foto {
+        margin-top: 30px;
+    }
+
+    .mobile-foto {
+        display: none;
+    }
+
+    .mobile-text {
+        width: 100%;
+        padding-right: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    /* НАВИГАЦИЯ */
+    .nav-link {
+        font-size: 1rem;
+    }
+
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header-main {
+        margin-top: 20px;
+    }
+
+    .header-text {
+        max-width: 100%;
+    }
+
+    .header-foto {
+        margin-top: 30px;
+    }
+
+    .advantages {
+        padding: 20px 20px;
+    }
+
+    .advantages .advantages-item {
+        padding: 0 20px;
+    }
+
+    .advantages-title {
+        font-size: 1.1rem;
+        margin-top: 18px;
+    }
+
+    .advantages-text {
+        font-size: 1rem;
+    }
+
+    .about-item .name {
+        font-size: 0.9rem;
+    }
+
+    .about-item .role {
+        font-size: 0.8rem;
+    }
+
+    .about-item .hover-image-scale img {
+        width: 100px;
+        height: 100px;
+    }
+
+    /* ФУТЕР */
+    .politics {
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .politics-support {
+        margin-top: 0;
+    }
+}
+
+
+@media (max-width: 660px) {
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .header-title {
+        font-size: 1.1rem;
+    }
+
+    .advantages {
+        padding: 30px 50px;
+        flex-direction: column;
+    }
+
+    .advantages .advantages-item {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 25px;
+    }
+
+    .advantages svg {
+        width: 50px;
+        height: 50px;
+        opacity: 0.9;
+    }
+
+    .advantages-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 18px;
+    }
+
+    .advantages-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-top: 8px;
+    }
+
+    .about-item .name {
+        font-size: 0.9rem;
+    }
+
+    .about-item .role {
+        font-size: 0.8rem;
+    }
+
+    .about-item .hover-image-scale img {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* ФУТЕР */
+    .politics-support svg {
+        width: 35px !important;
+    }
+}
+
+@media (max-width: 578px) {
+    /* НАВИГАЦИЯ */
+    .navbar-nav {
+        margin-top: 15px;
+    }
+
+    .navbar-nav .nav-item {
+        margin-bottom: 5px;
+    }
+
+    .logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* ЛИЧНЫЙ КАБИНЕТ */
+    .study-info p {
+        font-size: 1rem;
+    }
+
+    .statistic {
+        margin: 60px 0;
+    }
+
+    .statistic .statistic-item .item-title {
+        font-size: 1.2rem;
+    }
+
+    .statistic .statistic-item .item-meaning {
+        font-size: 1.9rem;
+    }
+
+    .contacts .contacts-item p {
+        font-size: 1.1rem;
+    }
+
+    .contacts .contacts-item svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    /* ГЛАВНАЯ СТРАНИЦА */
+    .orange-block-title {
+        font-size: 1.2rem;
+    }
+
+    .about-item .name {
+        font-size: 0.6rem;
+    }
+
+    .about-item .role {
+        font-size: 0.5rem;
+    }
+
+    .about-item .hover-image-scale img {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* ФУТЕР */
+    .company-text {
+        margin-left: 0;
+    }
+
+    .company-text__title {
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+    }
+
+    .company-text__subtitle {
+        font-size: 0.9rem;
+        margin-top: 3px;
+    }
+
+    .company .logo {
+        display: none;
+    }
+
+    .politics {
+        margin-top: 30px !important;
+    }
+
+    .politics-document p {
+        text-align: center;
+        margin-bottom: 6px;
+        font-size: 0.8rem;
+    }
+}

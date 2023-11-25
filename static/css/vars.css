@@ -1,0 +1,11 @@
+:root {
+    --orange-color: rgb(233, 119, 27);
+    --blue-color: rgb(22, 56, 157);
+    --black-color: rgb(1, 1, 1);
+    --dark-gray-color: rgb(28, 28, 28);
+    --gray-color: rgb(74, 74, 74);
+    --light-gray-color: rgb(240, 240, 240);
+    --hover-gray: rgb(211, 211, 211);
+    --white-color: rgb(253, 253, 253);
+}
+
