@@ -88,11 +88,10 @@ class TeamsView(View):
             }
             return JsonResponse(data=response_data)
 
-        if json.loads(request.body).get('action') == 'create_team':
-            request_body = json.loads(request.body)
-            team_name = request_body.get('team_name')
+        if request.POST.get('action') == 'create_team':
+            team_name = request.POST.get('team_name').strip()
             team_leader = User.objects.get(id=request.session.get('user_id'))
-            team_members_id = request_body.get('members_id')
+            team_members_id = json.loads(request.POST.get('members_id'))
 
             team = Team.objects.create(
                 name=team_name,

@@ -168,13 +168,14 @@ createTeamForm.addEventListener('submit', e => {
         members_id.push(+member.dataset.memberId);
     });
 
+    let form_data = new FormData();
+    form_data.append('action', 'create_team');
+    form_data.append('team_name', team_name);
+    form_data.append('members_id', JSON.stringify(members_id));
+
     fetch('', {
         method: 'POST',
-        body: JSON.stringify({
-            action: 'create_team',
-            team_name: team_name,
-            members_id: members_id
-        }),
+        body: form_data,
         headers: {
             "X-CSRFToken": token,
         }
