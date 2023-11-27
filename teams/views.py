@@ -37,7 +37,9 @@ class TeamsView(View):
             return redirect('teams')
 
         if request.POST.get('action') == 'search_user':
-            user_name = request.POST.get('user_name').split()
+            user_name = request.POST.get('user_name').strip().split()
+            members_id = json.loads(request.POST.get('members_id'))
+
             if len(user_name) == 3:
                 users = \
                     User.objects.filter(last_name__icontains=user_name[0]) & \
@@ -57,7 +59,8 @@ class TeamsView(View):
                     User.objects.filter(first_name__icontains=user_name[0]) | \
                     User.objects.filter(patronymic__icontains=user_name[0])
 
-            users = users.exclude(id=session_user_id)
+            prohibited_id = [session_user_id] + [member_id for member_id in members_id]
+            users = users.exclude(id__in=prohibited_id)
 
             response_data = {
                 'users': [

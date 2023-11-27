@@ -20,13 +20,27 @@ const searchedUsers = document.querySelector('#searchedUsers');
 
 searchUserForm.addEventListener('submit', e => {
     e.preventDefault();
-    const headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-    }
+
+    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let user_name = document.querySelector('[name=user_name]').value;
+
+    let members_id = [];
+    let members = document.querySelectorAll('.member');
+    members.forEach(member => {
+        members_id.push(+member.dataset.memberId);
+    });
+
+    let form_data = new FormData();
+    form_data.append('action', 'search_user');
+    form_data.append('user_name', user_name);
+    form_data.append('members_id', JSON.stringify(members_id));
+
     fetch('', {
         method: 'POST',
-        body: new FormData(searchUserForm),
-        headers: headers,
+        body: form_data,
+        headers: {
+            "X-CSRFToken": token,
+        }
     })
         .then(response => {
             return response.json();
@@ -74,19 +88,7 @@ function clearSearchResults() {
 const addedMembers = document.querySelector('#members');
 
 function addMember(e) {
-    let members = document.querySelectorAll('.member');
     let user = e.target.parentElement;
-    let check = true;
-
-    members.forEach(member => {
-        if (member.dataset.memberId == user.dataset.userId) {
-            check = false;
-        }
-    });
-
-    if (!check) {
-        return;
-    }
 
     let member = document.createElement('div');
     member.dataset.memberId = user.dataset.userId;
@@ -142,7 +144,6 @@ createTeamForm.addEventListener('submit', e => {
         }),
         headers: {
             "X-CSRFToken": token,
-            "Content-Type": "application/x-www-form-urlencoded"
         }
     })
         .then(() => {
