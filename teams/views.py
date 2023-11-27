@@ -36,8 +36,22 @@ class TeamsView(View):
             Team.objects.get(id=team_id).delete()
             return redirect('teams')
 
+        if request.POST.get('action') == 'check_team_name':
+            team_name = request.POST.get('team_name').strip()
+            if Team.objects.filter(name=team_name).exists():
+                response_data = {
+                    'unique': False
+                }
+            else:
+                response_data = {
+                    'unique': True
+                }
+            return JsonResponse(data=response_data)
+
         if request.POST.get('action') == 'search_user':
-            user_name = request.POST.get('user_name').split()
+            user_name = request.POST.get('user_name').strip().split()
+            members_id = json.loads(request.POST.get('members_id'))
+
             if len(user_name) == 3:
                 users = \
                     User.objects.filter(last_name__icontains=user_name[0]) & \
@@ -57,7 +71,8 @@ class TeamsView(View):
                     User.objects.filter(first_name__icontains=user_name[0]) | \
                     User.objects.filter(patronymic__icontains=user_name[0])
 
-            users = users.exclude(id=session_user_id)
+            prohibited_id = [session_user_id] + [member_id for member_id in members_id]
+            users = users.exclude(id__in=prohibited_id)
 
             response_data = {
                 'users': [
@@ -73,11 +88,10 @@ class TeamsView(View):
             }
             return JsonResponse(data=response_data)
 
-        if json.loads(request.body).get('action') == 'create_team':
-            request_body = json.loads(request.body)
-            team_name = request_body.get('team_name')
+        if request.POST.get('action') == 'create_team':
+            team_name = request.POST.get('team_name').strip()
             team_leader = User.objects.get(id=request.session.get('user_id'))
-            team_members_id = request_body.get('members_id')
+            team_members_id = json.loads(request.POST.get('members_id'))
 
             team = Team.objects.create(
                 name=team_name,

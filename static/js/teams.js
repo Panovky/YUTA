@@ -13,6 +13,39 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
+// ПРОВЕРКА НАИМЕНОВАНИЯ КОМАНДЫ НА УНИКАЛЬНОСТЬ
+const teamNameInput = document.querySelector('[name=team_name]');
+const notUniqueWarning = document.querySelector('#notUniqueWarning');
+const createTeamBtn = document.querySelector('#createTeamBtn');
+
+teamNameInput.addEventListener('input', () => {
+    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let team_name = document.querySelector('[name=team_name]').value;
+
+    let form_data = new FormData();
+    form_data.append('action', 'check_team_name');
+    form_data.append('team_name', team_name);
+
+    fetch('', {
+        method: 'POST',
+        body: form_data,
+        headers: {
+            "X-CSRFToken": token,
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (!data.unique) {
+                notUniqueWarning.style.display = 'block';
+                createTeamBtn.type = 'button';
+            } else {
+                notUniqueWarning.style.display = 'none';
+                createTeamBtn.type = 'submit';
+            }
+        });
+});
 
 // ПОИСК ПОЛЬЗОВАТЕЛЯ
 const searchUserForm = document.querySelector('#searchUserForm');
@@ -20,13 +53,27 @@ const searchedUsers = document.querySelector('#searchedUsers');
 
 searchUserForm.addEventListener('submit', e => {
     e.preventDefault();
-    const headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-    }
+
+    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let user_name = document.querySelector('[name=user_name]').value;
+
+    let members_id = [];
+    let members = document.querySelectorAll('.member');
+    members.forEach(member => {
+        members_id.push(+member.dataset.memberId);
+    });
+
+    let form_data = new FormData();
+    form_data.append('action', 'search_user');
+    form_data.append('user_name', user_name);
+    form_data.append('members_id', JSON.stringify(members_id));
+
     fetch('', {
         method: 'POST',
-        body: new FormData(searchUserForm),
-        headers: headers,
+        body: form_data,
+        headers: {
+            "X-CSRFToken": token,
+        }
     })
         .then(response => {
             return response.json();
@@ -74,19 +121,7 @@ function clearSearchResults() {
 const addedMembers = document.querySelector('#members');
 
 function addMember(e) {
-    let members = document.querySelectorAll('.member');
     let user = e.target.parentElement;
-    let check = true;
-
-    members.forEach(member => {
-        if (member.dataset.memberId == user.dataset.userId) {
-            check = false;
-        }
-    });
-
-    if (!check) {
-        return;
-    }
 
     let member = document.createElement('div');
     member.dataset.memberId = user.dataset.userId;
@@ -133,16 +168,16 @@ createTeamForm.addEventListener('submit', e => {
         members_id.push(+member.dataset.memberId);
     });
 
+    let form_data = new FormData();
+    form_data.append('action', 'create_team');
+    form_data.append('team_name', team_name);
+    form_data.append('members_id', JSON.stringify(members_id));
+
     fetch('', {
         method: 'POST',
-        body: JSON.stringify({
-            action: 'create_team',
-            team_name: team_name,
-            members_id: members_id
-        }),
+        body: form_data,
         headers: {
             "X-CSRFToken": token,
-            "Content-Type": "application/x-www-form-urlencoded"
         }
     })
         .then(() => {
@@ -195,15 +230,9 @@ swiperList.forEach((swiper) => {
                 slidesPerView: 3,
                 spaceBetween: 5
             },
-            576: {
-
-            },
-            768: {
-
-            },
-            992: {
-
-            },
+            576: {},
+            768: {},
+            992: {},
             1200: {
                 slidesPerView: 4,
             },
