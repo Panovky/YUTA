@@ -13,6 +13,39 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
+// ПРОВЕРКА НАИМЕНОВАНИЯ КОМАНДЫ НА УНИКАЛЬНОСТЬ
+const teamNameInput = document.querySelector('[name=team_name]');
+const notUniqueWarning = document.querySelector('#notUniqueWarning');
+const createTeamBtn = document.querySelector('#createTeamBtn');
+
+teamNameInput.addEventListener('input', () => {
+    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let team_name = document.querySelector('[name=team_name]').value;
+
+    let form_data = new FormData();
+    form_data.append('action', 'check_team_name');
+    form_data.append('team_name', team_name);
+
+    fetch('', {
+        method: 'POST',
+        body: form_data,
+        headers: {
+            "X-CSRFToken": token,
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (!data.unique) {
+                notUniqueWarning.style.display = 'block';
+                createTeamBtn.type = 'button';
+            } else {
+                notUniqueWarning.style.display = 'none';
+                createTeamBtn.type = 'submit';
+            }
+        });
+});
 
 // ПОИСК ПОЛЬЗОВАТЕЛЯ
 const searchUserForm = document.querySelector('#searchUserForm');
@@ -196,15 +229,9 @@ swiperList.forEach((swiper) => {
                 slidesPerView: 3,
                 spaceBetween: 5
             },
-            576: {
-
-            },
-            768: {
-
-            },
-            992: {
-
-            },
+            576: {},
+            768: {},
+            992: {},
             1200: {
                 slidesPerView: 4,
             },

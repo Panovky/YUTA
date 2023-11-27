@@ -54,6 +54,7 @@
                     Наименование команды
                     <input class="form-control" type="text" name="team_name" maxlength="50" required>
                 </label>
+                <p id="notUniqueWarning" style="display: none; color: red">Команда с таким наименованием уже существует.</p>
 
                 <br>
                 <br>
@@ -78,7 +79,7 @@
 
                 <br><br>
                 <button type="button" class="orange-btn">Отмена</button>
-                <button type="submit" class="orange-btn">Создать</button>
+                <button id="createTeamBtn" type="submit" class="orange-btn">Создать</button>
             </form>
 
             <div style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">

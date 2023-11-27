@@ -36,6 +36,18 @@ class TeamsView(View):
             Team.objects.get(id=team_id).delete()
             return redirect('teams')
 
+        if request.POST.get('action') == 'check_team_name':
+            team_name = request.POST.get('team_name').strip()
+            if Team.objects.filter(name=team_name).exists():
+                response_data = {
+                    'unique': False
+                }
+            else:
+                response_data = {
+                    'unique': True
+                }
+            return JsonResponse(data=response_data)
+
         if request.POST.get('action') == 'search_user':
             user_name = request.POST.get('user_name').strip().split()
             members_id = json.loads(request.POST.get('members_id'))
