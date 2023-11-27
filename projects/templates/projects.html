@@ -15,7 +15,8 @@
                 <p>Создать проект</p>
             </button>
             <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ ПРОЕКТА-->
-            <div class="modal fade modal-custom" id="create-project" tabindex="-1" aria-labelledby="create-team" aria-hidden="true">
+            <div class="modal fade modal-custom" id="create-project" tabindex="-1" aria-labelledby="create-team"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header position-relative">
@@ -58,11 +59,11 @@
 
                     <label class="form-label">Руководитель проекта
                         {% if user.patronymic %}
-                        <input class="form-control" type="text" name="project_manager"
-                               value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
+                            <input class="form-control" type="text" name="project_manager"
+                                   value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
                         {% else %}
-                        <input class="form-control" type="text" name="project_manager"
-                               value="{{ user.last_name }} {{ user.first_name }}" readonly>
+                            <input class="form-control" type="text" name="project_manager"
+                                   value="{{ user.last_name }} {{ user.first_name }}" readonly>
                         {% endif %}
                     </label>
 
@@ -110,7 +111,8 @@
                     <br>
 
                     <label>
-                        <input type="radio" name="team_radio" value="pass">Создать проект без команды и добавить ее позже
+                        <input type="radio" name="team_radio" value="pass">Создать проект без команды и добавить ее
+                        позже
                     </label>
 
                     <input type="hidden" name="team_id">
@@ -140,7 +142,8 @@
                 <button type="button" id="filter-boss-tab" data-bs-toggle="tab" data-bs-target="#filter-boss" role="tab"
                         class="tab-btn">Вы руководитель проекта
                 </button>
-                <button type="button" class="tab-btn active" id="filter-participant-tab" data-bs-toggle="tab" data-bs-target="#filter-participant"
+                <button type="button" class="tab-btn active" id="filter-participant-tab" data-bs-toggle="tab"
+                        data-bs-target="#filter-participant"
                         role="tab">Вы участник проекта
                 </button>
             </div>
@@ -157,12 +160,13 @@
                                         <div class="header-content d-flex flex-column justify-content-center">
                                             <p class="title">{{ project.name }}</p>
                                             {% if project.technical_task %}
-                                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank" class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
-                                                <svg style="width: 14px; height: 14px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
-                                                </svg>
-                                                <p>Техническое задание</p>
-                                            </a>
+                                                <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                                                   class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
+                                                    <svg style="width: 14px; height: 14px;">
+                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
+                                                    </svg>
+                                                    <p>Техническое задание</p>
+                                                </a>
                                             {% endif %}
                                         </div>
                                         <button type="button" class="context-menu-btn">
@@ -172,13 +176,16 @@
                                         </button>
                                         <ul class="dropdown-context-menu">
                                             <li>
-                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center updateProjectBtn" type="button">
+                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center updateProjectBtn"
+                                                        type="button">
                                                     Редактировать проект
                                                 </button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center deleteProjectBtn" type="button"
-                                                        data-project-id="{{ project.id }}" data-project-name="{{ project.name }}">
+                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center deleteProjectBtn"
+                                                        type="button"
+                                                        data-project-id="{{ project.id }}"
+                                                        data-project-name="{{ project.name }}">
                                                     Удалить проект
                                                 </button>
                                             </li>
@@ -191,45 +198,51 @@
                                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
                                                 </svg>
                                                 <p class="ms-2">
-                                                    <span class="fw-semibold">Статус:</span> в работе
+                                                    <span class="fw-semibold">Статус:</span> {{ project.status }}
                                                 </p>
                                             </div>
-                                            <div class="d-flex mb-2">
-                                                <p class="flex-shrink-0">
-                                                    <svg style="width: 19px; height: 20px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
-                                                    </svg>
-                                                </p>
-                                                <p class="ms-2">
-                                                    <span class="fw-semibold">Дней до сдачи:</span> {{ project.deadline_str }}
-                                                </p>
-                                            </div>
+                                            {% if project.status == 'в работе' %}
+                                                <div class="d-flex mb-2">
+                                                    <p class="flex-shrink-0">
+                                                        <svg style="width: 19px; height: 20px;">
+                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
+                                                        </svg>
+                                                    </p>
+                                                    <p class="ms-2">
+                                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
+                                                    </p>
+                                                </div>
+                                            {% endif %}
                                             <div class="d-flex mb-2">
                                                 <p class="flex-shrink-0">
                                                     <svg style="width: 19px; height: 19px;">
                                                         <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
                                                     </svg>
                                                 </p>
-                                                <p class="ms-2 project-description"><span class="fw-semibold">Описание:</span> {{ project.description }}</p>
+                                                <p class="ms-2 project-description"><span
+                                                        class="fw-semibold">Описание:</span> {{ project.description }}
+                                                </p>
                                             </div>
                                         </div>
                                         <div>
                                             <p class="text-center fw-semibold mb-3">Команда</p>
                                             <div class="d-flex justify-content-center align-items-start content__team">
-                                                <a href="{% url 'profile' project.manager.id %}" target="_blank" class="d-flex justify-content-center align-items-center flex-column">
+                                                <a href="{% url 'profile' project.manager.id %}" target="_blank"
+                                                   class="d-flex justify-content-center align-items-center flex-column">
                                                     <img src="{{ project.manager.cropped_photo.url }}">
                                                     <div class="crown-boss">
                                                         <svg style="width: 21px; height: 21px;">
                                                             <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
                                                         </svg>
                                                     </div>
-                                                    <p>Имя Фамилия</p>
+                                                    <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
                                                 </a>
                                                 {% if project.team %}
                                                     {% for member in project.team.members.all %}
-                                                        <a href="{% url 'profile' member.id %}" target="_blank" class="d-flex justify-content-center align-items-center flex-column">
+                                                        <a href="{% url 'profile' member.id %}" target="_blank"
+                                                           class="d-flex justify-content-center align-items-center flex-column">
                                                             <img src="{{ member.cropped_photo.url }}">
-                                                            <p>Имя Фамилия</p>
+                                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
                                                         </a>
                                                     {% endfor %}
                                                 {% endif %}
@@ -240,89 +253,99 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                    <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не руководите ни одним проектом. Хотите
-                        создать новый проект?</p>
+                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не руководите ни одним проектом.
+                            Хотите
+                            создать новый проект?</p>
                     {% endif %}
                 </div>
-                <div id="filter-participant" class="tab-pane fade show active" role="tabpanel" aria-labelledby="filter-participant-tab">
+                <div id="filter-participant" class="tab-pane fade show active" role="tabpanel"
+                     aria-labelledby="filter-participant-tab">
                     {% if others_projects %}
-                    <div class="project-list">
-                        {% for project in others_projects %}
-                            <div class="project-card">
-                                <div class="header">
-                                    <div class="img-wrapper">
-                                        <img src="{{ project.photo.url }}" alt="Обложка проекта">
-                                    </div>
-                                    <div class="header-content d-flex flex-column justify-content-center">
-                                        <p class="title">{{ project.name }}</p>
-                                        {% if project.technical_task %}
-                                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank" class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
-                                                <svg style="width: 14px; height: 14px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
-                                                </svg>
-                                                <p>Техническое задание</p>
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="content">
-                                    <div class="content__text">
-                                        <div class="d-flex mb-2">
-                                            <svg style="width: 18px; height: 19px;">
-                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
-                                            </svg>
-                                            <p class="ms-2">
-                                                <span class="fw-semibold">Статус:</span> в работе
-                                            </p>
+                        <div class="project-list">
+                            {% for project in others_projects %}
+                                <div class="project-card">
+                                    <div class="header">
+                                        <div class="img-wrapper">
+                                            <img src="{{ project.photo.url }}" alt="Обложка проекта">
                                         </div>
-                                        <div class="d-flex mb-2">
-                                            <p class="flex-shrink-0">
-                                                <svg style="width: 19px; height: 20px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
-                                                </svg>
-                                            </p>
-                                            <p class="ms-2">
-                                                <span class="fw-semibold">Дней до сдачи:</span> {{ project.deadline_str }}
-                                            </p>
-                                        </div>
-                                        <div class="d-flex mb-2">
-                                            <p class="flex-shrink-0">
-                                                <svg style="width: 19px; height: 19px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
-                                                </svg>
-                                            </p>
-                                            <p class="ms-2 project-description"><span class="fw-semibold">Описание:</span> {{ project.description }}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="text-center fw-semibold mb-3">Команда</p>
-                                        <div class="d-flex justify-content-center align-items-start content__team">
-                                            <a href="{% url 'profile' project.manager.id %}" target="_blank" class="d-flex justify-content-center align-items-center flex-column">
-                                                <img src="{{ project.manager.cropped_photo.url }}">
-                                                <div class="crown-boss">
-                                                    <svg style="width: 21px; height: 21px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                        <div class="header-content d-flex flex-column justify-content-center">
+                                            <p class="title">{{ project.name }}</p>
+                                            {% if project.technical_task %}
+                                                <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                                                   class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
+                                                    <svg style="width: 14px; height: 14px;">
+                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
                                                     </svg>
-                                                </div>
-                                                <p>Имя Фамилия</p>
-                                            </a>
-                                            {% if project.team %}
-                                                {% for member in project.team.members.all %}
-                                                <a href="{% url 'profile' member.id %}" target="_blank" class="d-flex justify-content-center align-items-center flex-column">
-                                                    <img src="{{ member.cropped_photo.url }}">
-                                                    <p>Имя Фамилия</p>
+                                                    <p>Техническое задание</p>
                                                 </a>
-                                                {% endfor %}
                                             {% endif %}
                                         </div>
                                     </div>
+                                    <div class="content">
+                                        <div class="content__text">
+                                            <div class="d-flex mb-2">
+                                                <svg style="width: 18px; height: 19px;">
+                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
+                                                </svg>
+                                                <p class="ms-2">
+                                                    <span class="fw-semibold">Статус:</span> {{ project.status }}
+                                                </p>
+                                            </div>
+                                            {% if project.status == 'в работе' %}
+                                                <div class="d-flex mb-2">
+                                                    <p class="flex-shrink-0">
+                                                        <svg style="width: 19px; height: 20px;">
+                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
+                                                        </svg>
+                                                    </p>
+                                                    <p class="ms-2">
+                                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+                                            <div class="d-flex mb-2">
+                                                <p class="flex-shrink-0">
+                                                    <svg style="width: 19px; height: 19px;">
+                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
+                                                    </svg>
+                                                </p>
+                                                <p class="ms-2 project-description"><span
+                                                        class="fw-semibold">Описание:</span> {{ project.description }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-center fw-semibold mb-3">Команда</p>
+                                            <div class="d-flex justify-content-center align-items-start content__team">
+                                                <a href="{% url 'profile' project.manager.id %}" target="_blank"
+                                                   class="d-flex justify-content-center align-items-center flex-column">
+                                                    <img src="{{ project.manager.cropped_photo.url }}">
+                                                    <div class="crown-boss">
+                                                        <svg style="width: 21px; height: 21px;">
+                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
+                                                </a>
+                                                {% if project.team %}
+                                                    {% for member in project.team.members.all %}
+                                                        <a href="{% url 'profile' member.id %}" target="_blank"
+                                                           class="d-flex justify-content-center align-items-center flex-column">
+                                                            <img src="{{ member.cropped_photo.url }}">
+                                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
+                                                        </a>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                            {% endfor %}
+                        </div>
                     {% else %}
-                    <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не участвуете ни одном в проекте. Хотите
-                        создать новый проект?</p>
+                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не участвуете ни одном в проекте.
+                            Хотите
+                            создать новый проект?</p>
                     {% endif %}
                 </div>
             </div>
@@ -330,7 +353,8 @@
 
 
         <!--  МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ ПРОЕКТА -->
-        <div class="modal fade modal-custom" id="delete-project" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+        <div class="modal fade modal-custom" id="delete-project" tabindex="-1" aria-labelledby="delete"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header position-relative">
@@ -348,7 +372,8 @@
                         <p class="text-start fs-5 my-3">Вы действительно хотите удалить проект "<span></span>"?</p>
                         <input class="form-control" type="hidden" name="project_id">
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                            <button type="submit"
+                                    class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
                                 <svg style="width: 19px; height: 17px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
                                 </svg>
@@ -361,7 +386,8 @@
         </div>
 
         <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ПРОЕКТА -->
-        <div class="modal fade modal-custom" id="edit-project" tabindex="-1" aria-labelledby="edit-team" aria-hidden="true">
+        <div class="modal fade modal-custom" id="edit-project" tabindex="-1" aria-labelledby="edit-team"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header position-relative">
@@ -377,7 +403,8 @@
                         {% csrf_token %}
                         <input type="hidden" name="action" value="update-project">
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                            <button type="submit"
+                                    class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
                                 <svg style="width: 19px; height: 17px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
                                 </svg>
