@@ -18,7 +18,7 @@ class AuthorizationView(APIView):
 
 class ProfileView(APIView):
     def get(self, request):
-        user_id = request.data.get('user_id')
+        user_id = request.query_params.get('user_id')
         user = User.objects.get(id=user_id)
 
         response_data = {
@@ -48,7 +48,7 @@ class ProfileView(APIView):
 
 class TeamsView(APIView):
     def get(self, request):
-        user_id = request.data.get('user_id')
+        user_id = request.query_params.get('user_id')
         managed_teams = User.objects.get(id=user_id).leader_teams.all()
         others_teams = User.objects.get(id=user_id).teams.all()
 
