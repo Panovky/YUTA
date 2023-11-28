@@ -1,11 +1,10 @@
-import requests
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.scripts import parse_lk, crop_photo
+from YUTA.scripts import crop_photo
 from YUTA.settings import MEDIA_ROOT
-from YUTA.utils import edit_user_data
+from YUTA.utils import edit_user_data, update_user_data
 from users.models import User
 
 
@@ -79,12 +78,9 @@ class ProfileView(View):
             edit_user_data(user, data)
 
         if action == 'update_data':
-            login = user.login
             password = request.POST.get('password')
-            response = requests.post('https://www.ystu.ru/WPROG/auth1.php',
-                                     data={'login': login, 'password': password})
 
-            if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
+            if not update_user_data(user, password):
                 session_user_id = request.session['user_id']
                 is_owner = url_user_id == session_user_id
 
@@ -99,16 +95,5 @@ class ProfileView(View):
                     }
                 )
 
-            if response.url == 'https://www.ystu.ru/WPROG/lk/lkstud.php':
-                data = parse_lk(response)
-                user.last_name = data.get('last_name')
-                user.first_name = data.get('first_name')
-                user.patronymic = data.get('patronymic')
-                user.birthday = data.get('birthday')
-                user.faculty = data.get('faculty')
-                user.direction = data.get('direction')
-                user.group = data.get('group')
-
         user.save()
-
         return redirect('profile', url_user_id)
