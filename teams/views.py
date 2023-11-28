@@ -19,7 +19,6 @@ class TeamsView(View):
             request,
             'teams.html',
             context={
-                'user': user,
                 'managed_teams': managed_teams,
                 'others_teams': others_teams,
                 'menu_user_id': session_user_id
@@ -37,16 +36,19 @@ class TeamsView(View):
             return redirect('teams')
 
         if request.POST.get('action') == 'check_team_name':
-            team_name = request.POST.get('team_name').strip()
-            if Team.objects.filter(name=team_name).exists():
-                response_data = {
-                    'unique': False
-                }
-            else:
-                response_data = {
-                    'unique': True
-                }
-            return JsonResponse(data=response_data)
+            new_team_name = request.POST.get('team_name').strip()
+
+            if request.POST.get('team_id'):
+                team_id = request.POST.get('team_id')
+                old_team_name = Team.objects.get(id=team_id).name
+                if new_team_name == old_team_name:
+                    return JsonResponse({
+                        'unique': True}
+                    )
+
+            return JsonResponse({
+                'unique': not Team.objects.filter(name=new_team_name).exists()
+            })
 
         if request.POST.get('action') == 'search_user':
             user_name = request.POST.get('user_name').strip().split()
@@ -100,3 +102,37 @@ class TeamsView(View):
 
             for member_id in team_members_id:
                 team.members.add(User.objects.get(id=member_id))
+
+        if request.POST.get('action') == 'edit_team':
+            team_id = request.POST.get('team_id')
+            team_name = request.POST.get('team_name').strip()
+            team_members_id = json.loads(request.POST.get('members_id'))
+
+            team = Team.objects.get(id=team_id)
+            team.name = team_name
+
+            team.members.clear()
+            for member_id in team_members_id:
+                team.members.add(User.objects.get(id=member_id))
+
+            team.save()
+
+        if request.POST.get('action') == 'get_team_info':
+            team_id = request.POST.get('team_id')
+            team = Team.objects.get(id=team_id)
+
+            response_data = {
+                'name': team.name,
+                'members': [
+                    {
+                        'id': member.id,
+                        'first_name': member.first_name,
+                        'last_name': member.last_name,
+                        'patronymic': member.patronymic if member.patronymic else '',
+                        'cropped_photo': member.cropped_photo.url
+                    }
+                    for member in team.members.all()
+                ]
+            }
+
+            return JsonResponse(data=response_data)

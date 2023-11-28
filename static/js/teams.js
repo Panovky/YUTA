@@ -1,3 +1,13 @@
+// ЭЛЕМЕНТЫ
+const deleteTeamForm = document.querySelector('#delete-team');
+const createTeamForm = document.querySelector('#createTeamForm');
+const createTeamBtn = document.querySelector('#createTeamBtn');
+const editTeamForm = document.querySelector('#editTeamForm');
+const editTeamBtn = document.querySelector('#editTeamBtn');
+const editTeamBtns = document.querySelectorAll('.edit-team-btn');
+const teamNameInputs = document.querySelectorAll('[name=team_name]');
+const searchUserBtns = document.querySelectorAll('.searchUserBtn');
+
 // УДАЛЕНИЕ КОМАНДЫ
 document.addEventListener('DOMContentLoaded', () => {
     let deleteTeamBtns = document.querySelectorAll('.deleteTeamBtn');
@@ -5,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteTeamBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             let span = document.querySelector('#deleteTeamForm span');
-            let teamIdInput = document.querySelector('[name=team_id]');
+            let teamIdInput = deleteTeamForm.querySelector('[name=team_id]');
             span.innerHTML = e.currentTarget.dataset.teamName;
             teamIdInput.value = e.currentTarget.dataset.teamId;
             modalDelete.show();
@@ -14,51 +24,66 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ПРОВЕРКА НАИМЕНОВАНИЯ КОМАНДЫ НА УНИКАЛЬНОСТЬ
-const teamNameInput = document.querySelector('[name=team_name]');
-const notUniqueWarning = document.querySelector('#notUniqueWarning');
-const createTeamBtn = document.querySelector('#createTeamBtn');
+teamNameInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let team_name = e.target.value;
 
-teamNameInput.addEventListener('input', () => {
-    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let team_name = document.querySelector('[name=team_name]').value;
+        let form_data = new FormData();
+        form_data.append('action', 'check_team_name');
+        form_data.append('team_name', team_name);
 
-    let form_data = new FormData();
-    form_data.append('action', 'check_team_name');
-    form_data.append('team_name', team_name);
-
-    fetch('', {
-        method: 'POST',
-        body: form_data,
-        headers: {
-            "X-CSRFToken": token,
+        let form, btn, func;
+        if (e.target.dataset.action == 'create-team') {
+            form = createTeamForm;
+            btn = createTeamBtn;
+            func = create_team;
+        } else {
+            form = editTeamForm;
+            btn = editTeamBtn;
+            func = edit_team;
+            let team_id = form.querySelector('[name=team_id]').value;
+            form_data.append('team_id', team_id);
         }
-    })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            if (!data.unique) {
-                notUniqueWarning.style.display = 'block';
-                createTeamBtn.type = 'button';
-            } else {
-                notUniqueWarning.style.display = 'none';
-                createTeamBtn.type = 'submit';
+
+        fetch('', {
+            method: 'POST',
+            body: form_data,
+            headers: {
+                "X-CSRFToken": token,
             }
-        });
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (!data.unique) {
+                    form.querySelector('.notUniqueWarning').style.display = 'block';
+                    btn.removeEventListener('click', func);
+                } else {
+                    form.querySelector('.notUniqueWarning').style.display = 'none';
+                    btn.addEventListener('click', func);
+                }
+            });
+    });
 });
 
 // ПОИСК ПОЛЬЗОВАТЕЛЯ
-const searchUserForm = document.querySelector('#searchUserForm');
-const searchedUsers = document.querySelector('#searchedUsers');
+function search_users(e) {
+    let form, action;
+    if (e.target.dataset.action == 'create-team') {
+        form = createTeamForm;
+        action = 'create-team';
+    } else {
+        form = editTeamForm;
+        action = 'edit-team';
+    }
 
-searchUserForm.addEventListener('submit', e => {
-    e.preventDefault();
-
-    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let user_name = document.querySelector('[name=user_name]').value;
+    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    let user_name = form.querySelector('[name=user_name]').value;
 
     let members_id = [];
-    let members = document.querySelectorAll('.member');
+    let members = form.querySelectorAll('.member');
     members.forEach(member => {
         members_id.push(+member.dataset.memberId);
     });
@@ -79,7 +104,7 @@ searchUserForm.addEventListener('submit', e => {
             return response.json();
         })
         .then(data => {
-            clearSearchResults();
+            clearSearchResults(form);
             let new_users = data.users;
             new_users.forEach(u => {
                 let user = document.createElement('div');
@@ -99,28 +124,40 @@ searchUserForm.addEventListener('submit', e => {
                 let button = document.createElement('button');
                 button.innerHTML = 'Добавить';
                 button.classList.add('addMemberBtn', 'orange-btn');
+                button.dataset.action = action;
                 button.addEventListener('click', addMember);
 
                 user.appendChild(img);
                 user.appendChild(name);
                 user.appendChild(button);
 
-                searchedUsers.appendChild(user);
+                form.querySelector('.searchedUsers').appendChild(user);
             });
         });
+}
+
+searchUserBtns.forEach(btn => {
+    btn.addEventListener('click', search_users);
 });
 
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
-function clearSearchResults() {
-    document.querySelectorAll('.user').forEach(u => {
-        searchedUsers.removeChild(u);
+function clearSearchResults(form) {
+    form.querySelectorAll('.user').forEach(u => {
+        form.querySelector('.searchedUsers').removeChild(u);
     });
 }
 
 // ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ В КОМАНДУ
-const addedMembers = document.querySelector('#members');
-
 function addMember(e) {
+    let form, action;
+    if (e.target.dataset.action == 'create-team') {
+        form = createTeamForm;
+        action = 'create-team';
+    } else {
+        form = editTeamForm;
+        action = 'edit-team';
+    }
+
     let user = e.target.parentElement;
 
     let member = document.createElement('div');
@@ -140,30 +177,40 @@ function addMember(e) {
     let button = document.createElement('button');
     button.innerHTML = 'Удалить';
     button.classList.add('deleteMemberBtn', 'orange-btn');
+    button.dataset.action = action;
     button.addEventListener('click', deleteMember);
 
     member.appendChild(img);
     member.appendChild(name);
     member.appendChild(button);
-    addedMembers.appendChild(member);
-    clearSearchResults();
+    form.querySelector('.members').appendChild(member);
+    clearSearchResults(form);
 }
 
 // УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ИЗ КОМАНДЫ
 function deleteMember(e) {
+    let form;
+    if (e.target.dataset.action == 'create-team') {
+        form = createTeamForm;
+    } else {
+        form = editTeamForm;
+    }
+
     let member = e.target.parentElement;
-    addedMembers.removeChild(member);
+    form.querySelector('.members').removeChild(member);
 }
 
 // СОЗДАНИЕ КОМАНДЫ
-const createTeamForm = document.querySelector('#createTeamForm');
-createTeamForm.addEventListener('submit', e => {
-    e.preventDefault();
-    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let team_name = document.querySelector('[name=team_name]').value
+function create_team() {
+    let token = createTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let team_name = createTeamForm.querySelector('[name=team_name]').value;
+
+    if (!team_name) {
+        return;
+    }
 
     let members_id = [];
-    let members = document.querySelectorAll('.member');
+    let members = createTeamForm.querySelectorAll('.member');
     members.forEach(member => {
         members_id.push(+member.dataset.memberId);
     });
@@ -183,8 +230,98 @@ createTeamForm.addEventListener('submit', e => {
         .then(() => {
             document.location.reload();
         });
-});
+}
 
+// РЕДАКТИРОВАНИЕ КОМАНДЫ
+function edit_team() {
+    let token = editTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let team_id = editTeamForm.querySelector('[name=team_id]').value;
+    let team_name = editTeamForm.querySelector('[name=team_name]').value;
+
+    if (!team_name) {
+        return;
+    }
+
+    let members_id = [];
+    let members = editTeamForm.querySelectorAll('.member');
+    members.forEach(member => {
+        members_id.push(+member.dataset.memberId);
+    });
+
+    let form_data = new FormData();
+    form_data.append('action', 'edit_team');
+    form_data.append('team_id', team_id);
+    form_data.append('team_name', team_name);
+    form_data.append('members_id', JSON.stringify(members_id));
+
+    fetch('', {
+        method: 'POST',
+        body: form_data,
+        headers: {
+            "X-CSRFToken": token,
+        }
+    })
+        .then(() => {
+            document.location.reload();
+        });
+}
+
+// ВСТАВКА ДАННЫХ О КОМАНДЕ ДЛЯ РЕДАКТИРОВАНИЯ
+editTeamBtns.forEach(btn => {
+    btn.addEventListener('click', e => {
+        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let team_id = e.currentTarget.dataset.teamId;
+
+        let form_data = new FormData();
+        form_data.append('action', 'get_team_info');
+        form_data.append('team_id', team_id);
+
+        fetch('', {
+            method: 'POST',
+            body: form_data,
+            headers: {
+                "X-CSRFToken": token,
+            }
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                editTeamForm.querySelector('[name=team_id]').value = team_id;
+                editTeamForm.querySelector('[name=team_name]').value = data.name;
+
+                let members = data.members;
+                members.forEach(m => {
+                    let member = document.createElement('div');
+                    member.dataset.memberId = m.id;
+                    member.classList.add('member', 'd-flex', 'justify-content-between', 'align-items-center');
+                    member.style.width = '80%';
+                    member.style.border = '2px solid orange';
+                    member.style.marginTop = '30px';
+
+                    let img = document.createElement('img');
+                    img.style.width = '100px';
+                    img.src = m.cropped_photo;
+
+                    let name = document.createElement('p');
+                    name.innerHTML = `${m.last_name} ${m.first_name} ${m.patronymic}`;
+
+                    let button = document.createElement('button');
+                    button.innerHTML = 'Удалить';
+                    button.classList.add('deleteMemberBtn', 'orange-btn');
+                    button.dataset.action = 'edit-team';
+                    button.addEventListener('click', deleteMember);
+
+                    member.appendChild(img);
+                    member.appendChild(name);
+                    member.appendChild(button);
+                    editTeamForm.querySelector('.members').appendChild(member);
+                });
+            })
+
+        editTeamBtn.addEventListener('click', edit_team);
+    });
+});
 
 /* РЕДАКТИРОВАНИЕ КОМАНДЫ */
 document.addEventListener('DOMContentLoaded', () => {
