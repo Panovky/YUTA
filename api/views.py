@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.utils import authorize_user
+from YUTA.utils import authorize_user, edit_user_data
 from users.models import User
 
 
@@ -44,6 +44,22 @@ class ProfileView(APIView):
         }
 
         return JsonResponse(data=response_data)
+
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        action = request.data.get('action')
+        user = User.objects.get(id=user_id)
+
+        if action == 'edit_data':
+            data = {
+                'biography': request.data.get('biography'),
+                'phone_number': request.data.get('phone_number'),
+                'e_mail': request.data.get('e_mail'),
+                'vk': request.data.get('vk')
+            }
+
+            edit_user_data(user, data)
+            return JsonResponse(data={'modified': True})
 
 
 class TeamsView(APIView):
