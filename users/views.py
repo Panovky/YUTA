@@ -1,10 +1,10 @@
-import requests
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.scripts import parse_lk, crop_photo
+from YUTA.scripts import crop_photo
 from YUTA.settings import MEDIA_ROOT
+from YUTA.utils import edit_user_data, update_user_data
 from users.models import User
 
 
@@ -31,7 +31,9 @@ class ProfileView(View):
             return redirect('main')
         user = User.objects.get(id=url_user_id)
 
-        if request.POST.get('action') == 'update_photo':
+        action = request.POST.get('action')
+
+        if action == 'update_photo':
             photo = request.FILES.get('photo')
             fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\images\\users_photos')
 
@@ -52,7 +54,7 @@ class ProfileView(View):
             user.save()
             return JsonResponse({'photo_url': user.photo.url})
 
-        if request.POST.get('action') == 'update_miniature':
+        if action == 'update_miniature':
             photo_name = user.photo.url
             photo_name = photo_name.replace('/media/images/users_photos/', '')
             crop_photo(
@@ -61,39 +63,24 @@ class ProfileView(View):
                 request.POST
             )
 
-        if request.POST.get('action') == 'delete_photo':
+        if action == 'delete_photo':
             user.photo = 'images/default_user_photo.png'
             user.cropped_photo = 'images/cropped-default_user_photo.png'
 
-        if request.POST.get('action') == 'edit_data':
+        if action == 'edit_data':
+            data = {
+                'biography': request.POST.get('biography'),
+                'phone_number': request.POST.get('phone_number'),
+                'e_mail': request.POST.get('e_mail'),
+                'vk': request.POST.get('vk')
+            }
 
-            if request.POST.get('biography'):
-                user.biography = request.POST.get('biography').strip()
-            else:
-                user.biography = None
+            edit_user_data(user, data)
 
-            if request.POST.get('phone_number'):
-                user.phone_number = request.POST.get('phone_number')
-            else:
-                user.phone_number = None
-
-            if request.POST.get('e_mail'):
-                user.e_mail = request.POST.get('e_mail')
-            else:
-                user.e_mail = None
-
-            if request.POST.get('vk'):
-                user.vk = request.POST.get('vk')
-            else:
-                user.vk = None
-
-        if request.POST.get('action') == 'update_data':
-            login = user.login
+        if action == 'update_data':
             password = request.POST.get('password')
-            response = requests.post('https://www.ystu.ru/WPROG/auth1.php',
-                                     data={'login': login, 'password': password})
 
-            if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
+            if not update_user_data(user, password):
                 session_user_id = request.session['user_id']
                 is_owner = url_user_id == session_user_id
 
@@ -108,16 +95,5 @@ class ProfileView(View):
                     }
                 )
 
-            if response.url == 'https://www.ystu.ru/WPROG/lk/lkstud.php':
-                data = parse_lk(response)
-                user.last_name = data.get('last_name')
-                user.first_name = data.get('first_name')
-                user.patronymic = data.get('patronymic')
-                user.birthday = data.get('birthday')
-                user.faculty = data.get('faculty')
-                user.direction = data.get('direction')
-                user.group = data.get('group')
-
         user.save()
-
         return redirect('profile', url_user_id)
