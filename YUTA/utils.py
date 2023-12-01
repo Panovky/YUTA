@@ -54,3 +54,45 @@ def update_user_data(user, password):
         user.group = data.get('group')
         user.save()
         return True
+
+
+def search_user(user_name, leader_id, members_id):
+    user_name = [word.strip() for word in user_name.split()]
+
+    if len(user_name) > 3:
+        return {'users': []}
+
+    if len(user_name) == 3:
+        users = \
+            User.objects.filter(last_name__istartswith=user_name[0]) & \
+            User.objects.filter(first_name__istartswith=user_name[1]) & \
+            User.objects.filter(patronymic__istartswith=user_name[2])
+    elif len(user_name) == 2:
+        users = \
+            User.objects.filter(last_name__istartswith=user_name[0]) & \
+            User.objects.filter(first_name__istartswith=user_name[1]) | \
+            User.objects.filter(first_name__istartswith=user_name[0]) & \
+            User.objects.filter(last_name__istartswith=user_name[1]) | \
+            User.objects.filter(first_name__istartswith=user_name[0]) & \
+            User.objects.filter(patronymic__istartswith=user_name[1])
+    else:
+        users = \
+            User.objects.filter(last_name__istartswith=user_name[0]) | \
+            User.objects.filter(first_name__istartswith=user_name[0]) | \
+            User.objects.filter(patronymic__istartswith=user_name[0])
+
+    prohibited_id = [leader_id] + [member_id for member_id in members_id]
+    users = users.exclude(id__in=prohibited_id)
+
+    return {
+        'users': [
+            {
+                'id': user.id,
+                'photo': user.cropped_photo.url,
+                'last_name': user.last_name,
+                'first_name': user.first_name,
+                'patronymic': user.patronymic if user.patronymic else "",
+            }
+            for user in users
+        ]
+    }

@@ -2,6 +2,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
+from YUTA.utils import search_user
 from teams.models import Team
 from users.models import User
 
@@ -53,44 +54,10 @@ class TeamsView(View):
             })
 
         if action == 'search_user':
-            user_name = request.POST.get('user_name').strip().split()
+            user_name = request.POST.get('user_name')
+            leader_id = request.session.get('user_id')
             members_id = json.loads(request.POST.get('members_id'))
-
-            if len(user_name) == 3:
-                users = \
-                    User.objects.filter(last_name__icontains=user_name[0]) & \
-                    User.objects.filter(first_name__icontains=user_name[1]) & \
-                    User.objects.filter(patronymic__icontains=user_name[2])
-            elif len(user_name) == 2:
-                users = \
-                    User.objects.filter(last_name__icontains=user_name[0]) & \
-                    User.objects.filter(first_name__icontains=user_name[1]) | \
-                    User.objects.filter(first_name__icontains=user_name[0]) & \
-                    User.objects.filter(last_name__icontains=user_name[1]) | \
-                    User.objects.filter(first_name__icontains=user_name[0]) & \
-                    User.objects.filter(patronymic__icontains=user_name[1])
-            else:
-                users = \
-                    User.objects.filter(last_name__icontains=user_name[0]) | \
-                    User.objects.filter(first_name__icontains=user_name[0]) | \
-                    User.objects.filter(patronymic__icontains=user_name[0])
-
-            prohibited_id = [session_user_id] + [member_id for member_id in members_id]
-            users = users.exclude(id__in=prohibited_id)
-
-            response_data = {
-                'users': [
-                    {
-                        'id': user.id,
-                        'photo': user.cropped_photo.url,
-                        'last_name': user.last_name,
-                        'first_name': user.first_name,
-                        'patronymic': user.patronymic,
-                    }
-                    for user in users
-                ]
-            }
-            return JsonResponse(data=response_data)
+            return JsonResponse(data=search_user(user_name, leader_id, members_id))
 
         if action == 'create_team':
             team_name = request.POST.get('team_name').strip()
