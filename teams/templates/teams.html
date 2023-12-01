@@ -51,7 +51,7 @@
 
                 <p>Придумайте краткое наименование команды!</p><br>
                 <input data-action="create-team" class="form-control" type="text" name="team_name" maxlength="50"
-                       placeholder="Наименование">
+                       placeholder="Наименование" autocomplete="off">
                 <p class="notUniqueWarning" style="display: none; color: red">Команда с таким наименованием уже
                     существует.</p>
 
@@ -64,7 +64,7 @@
                     <br><br>
                     <p>Добавьте участников команды:</p><br>
                     <div class="d-flex align-items-center">
-                        <input class="form-control" type="text" name="user_name"
+                        <input class="form-control" data-action="create-team" type="text" name="user_name"
                                placeholder="Фамилия Имя (Отчество)">
                         <button class="searchUserBtn orange-btn" data-action="create-team" type="button">Поиск</button>
                     </div>
@@ -89,7 +89,7 @@
 
                 <p>Придумайте краткое наименование команды!</p><br>
                 <input data-action="edit-team" class="form-control" type="text" name="team_name" maxlength="50"
-                       placeholder="Наименование">
+                       placeholder="Наименование" autocomplete="off">
                 <p class="notUniqueWarning" style="display: none; color: red">Команда с таким наименованием уже
                     существует.</p>
 
@@ -102,7 +102,7 @@
                     <br><br>
                     <p>Добавьте участников команды:</p><br>
                     <div class="d-flex align-items-center">
-                        <input class="form-control" type="text" name="user_name"
+                        <input class="form-control" data-action="edit-team" type="text" name="user_name"
                                placeholder="Фамилия Имя (Отчество)">
                         <button class="searchUserBtn orange-btn" data-action="edit-team" type="button">Поиск</button>
                     </div>
