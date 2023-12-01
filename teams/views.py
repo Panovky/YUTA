@@ -30,12 +30,14 @@ class TeamsView(View):
             return redirect('main')
         session_user_id = request.session.get('user_id')
 
-        if request.POST.get('action') == 'delete_team':
+        action = request.POST.get('action')
+
+        if action == 'delete_team':
             team_id = request.POST.get('team_id')
             Team.objects.get(id=team_id).delete()
             return redirect('teams')
 
-        if request.POST.get('action') == 'check_team_name':
+        if action == 'check_team_name':
             new_team_name = request.POST.get('team_name').strip()
 
             if request.POST.get('team_id'):
@@ -50,7 +52,7 @@ class TeamsView(View):
                 'unique': not Team.objects.filter(name=new_team_name).exists()
             })
 
-        if request.POST.get('action') == 'search_user':
+        if action == 'search_user':
             user_name = request.POST.get('user_name').strip().split()
             members_id = json.loads(request.POST.get('members_id'))
 
@@ -90,7 +92,7 @@ class TeamsView(View):
             }
             return JsonResponse(data=response_data)
 
-        if request.POST.get('action') == 'create_team':
+        if action == 'create_team':
             team_name = request.POST.get('team_name').strip()
             team_leader = User.objects.get(id=request.session.get('user_id'))
             team_members_id = json.loads(request.POST.get('members_id'))
@@ -103,7 +105,7 @@ class TeamsView(View):
             for member_id in team_members_id:
                 team.members.add(User.objects.get(id=member_id))
 
-        if request.POST.get('action') == 'edit_team':
+        if action == 'edit_team':
             team_id = request.POST.get('team_id')
             team_name = request.POST.get('team_name').strip()
             team_members_id = json.loads(request.POST.get('members_id'))
@@ -117,7 +119,7 @@ class TeamsView(View):
 
             team.save()
 
-        if request.POST.get('action') == 'get_team_info':
+        if action == 'get_team_info':
             team_id = request.POST.get('team_id')
             team = Team.objects.get(id=team_id)
 

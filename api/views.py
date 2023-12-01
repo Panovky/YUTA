@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from YUTA.utils import authorize_user, edit_user_data, update_user_data
+from teams.models import Team
 from users.models import User
 
 
@@ -78,3 +79,42 @@ class TeamsView(APIView):
         }
 
         return JsonResponse(data=response_data)
+
+    def post(self, request):
+        action = request.data.get('action')
+
+        if action == 'delete_team':
+            team_id = request.data.get('team_id')
+            Team.objects.get(id=team_id).delete()
+            return JsonResponse({'success': True})
+
+        if action == 'create_team':
+            team_name = request.data.get('team_name').strip()
+            leader = User.objects.get(id=request.data.get('leader_id'))
+
+            team = Team.objects.create(
+                name=team_name,
+                leader=leader
+            )
+
+            members_id = request.data.get('members_id')
+            for member_id in members_id:
+                team.members.add(User.objects.get(id=member_id))
+
+            return JsonResponse({'success': True})
+
+        if action == 'edit_team':
+            team_id = request.data.get('team_id')
+            team = Team.objects.get(id=team_id)
+
+            team_name = request.data.get('team_name').strip()
+            team.name = team_name
+
+            team.members.clear()
+            members_id = request.data.get('members_id')
+            for member_id in members_id:
+                team.members.add(User.objects.get(id=member_id))
+
+            team.save()
+            return JsonResponse({'success': True})
+
