@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.utils import authorize_user, edit_user_data, update_user_data
+from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user
+from teams.models import Team
 from users.models import User
 
 
@@ -78,3 +79,63 @@ class TeamsView(APIView):
         }
 
         return JsonResponse(data=response_data)
+
+    def post(self, request):
+        action = request.data.get('action')
+
+        if action == 'delete_team':
+            team_id = request.data.get('team_id')
+            Team.objects.get(id=team_id).delete()
+            return JsonResponse({'success': True})
+
+        if action == 'check_team_name':
+            new_team_name = request.data.get('team_name').strip()
+
+            if request.data.get('team_id'):
+                team_id = request.data.get('team_id')
+                old_team_name = Team.objects.get(id=team_id).name
+                if new_team_name == old_team_name:
+                    return JsonResponse({
+                        'unique': True}
+                    )
+
+            return JsonResponse({
+                'unique': not Team.objects.filter(name=new_team_name).exists()
+            })
+
+        if action == 'search_user':
+            user_name = request.data.get('user_name')
+            leader_id = request.data.get('leader_id')
+            members_id = request.data.get('members_id')
+            return JsonResponse(data=search_user(user_name, leader_id, members_id))
+
+        if action == 'create_team':
+            team_name = request.data.get('team_name').strip()
+            leader = User.objects.get(id=request.data.get('leader_id'))
+
+            team = Team.objects.create(
+                name=team_name,
+                leader=leader
+            )
+
+            members_id = request.data.get('members_id')
+            for member_id in members_id:
+                team.members.add(User.objects.get(id=member_id))
+
+            return JsonResponse({'success': True})
+
+        if action == 'edit_team':
+            team_id = request.data.get('team_id')
+            team = Team.objects.get(id=team_id)
+
+            team_name = request.data.get('team_name').strip()
+            team.name = team_name
+
+            team.members.clear()
+            members_id = request.data.get('members_id')
+            for member_id in members_id:
+                team.members.add(User.objects.get(id=member_id))
+
+            team.save()
+            return JsonResponse({'success': True})
+

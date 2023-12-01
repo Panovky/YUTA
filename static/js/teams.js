@@ -6,7 +6,7 @@ const editTeamForm = document.querySelector('#editTeamForm');
 const editTeamBtn = document.querySelector('#editTeamBtn');
 const editTeamBtns = document.querySelectorAll('.edit-team-btn');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
-const searchUserBtns = document.querySelectorAll('.searchUserBtn');
+const userNameInputs = document.querySelectorAll('[name=user_name]');
 
 // УДАЛЕНИЕ КОМАНДЫ
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,16 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
-// ПРОВЕРКА НАИМЕНОВАНИЯ КОМАНДЫ НА УНИКАЛЬНОСТЬ
+// ПРОВЕРКА НАЛИЧИЯ НАИМЕНОВАНИЯ КОМАНДЫ И ЕГО УНИКАЛЬНОСТИ
 teamNameInputs.forEach(input => {
     input.addEventListener('input', (e) => {
-        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        let team_name = e.target.value;
-
-        let form_data = new FormData();
-        form_data.append('action', 'check_team_name');
-        form_data.append('team_name', team_name);
-
         let form, btn, func;
         if (e.target.dataset.action == 'create-team') {
             form = createTeamForm;
@@ -42,6 +35,21 @@ teamNameInputs.forEach(input => {
             form = editTeamForm;
             btn = editTeamBtn;
             func = edit_team;
+        }
+
+        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let team_name = e.target.value;
+
+        if (!team_name.trim()) {
+            btn.removeEventListener('click', func);
+            return;
+        }
+
+        let form_data = new FormData();
+        form_data.append('action', 'check_team_name');
+        form_data.append('team_name', team_name);
+
+        if (e.target.dataset.action == 'edit-team') {
             let team_id = form.querySelector('[name=team_id]').value;
             form_data.append('team_id', team_id);
         }
@@ -136,8 +144,22 @@ function search_users(e) {
         });
 }
 
-searchUserBtns.forEach(btn => {
-    btn.addEventListener('click', search_users);
+// ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА ПОЛЬЗОВАТЕЛЯ
+userNameInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+        let form;
+        if (e.target.dataset.action == 'create-team') {
+            form = createTeamForm;
+        } else {
+            form = editTeamForm;
+        }
+
+        if (!input.value.trim()) {
+            form.querySelector('.searchUserBtn').removeEventListener('click', search_users);
+        } else {
+            form.querySelector('.searchUserBtn').addEventListener('click', search_users);
+        }
+    });
 });
 
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
@@ -205,10 +227,6 @@ function create_team() {
     let token = createTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
     let team_name = createTeamForm.querySelector('[name=team_name]').value;
 
-    if (!team_name) {
-        return;
-    }
-
     let members_id = [];
     let members = createTeamForm.querySelectorAll('.member');
     members.forEach(member => {
@@ -237,10 +255,6 @@ function edit_team() {
     let token = editTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
     let team_id = editTeamForm.querySelector('[name=team_id]').value;
     let team_name = editTeamForm.querySelector('[name=team_name]').value;
-
-    if (!team_name) {
-        return;
-    }
 
     let members_id = [];
     let members = editTeamForm.querySelectorAll('.member');
@@ -318,8 +332,6 @@ editTeamBtns.forEach(btn => {
                     editTeamForm.querySelector('.members').appendChild(member);
                 });
             })
-
-        editTeamBtn.addEventListener('click', edit_team);
     });
 });
 
