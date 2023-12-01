@@ -88,6 +88,21 @@ class TeamsView(APIView):
             Team.objects.get(id=team_id).delete()
             return JsonResponse({'success': True})
 
+        if action == 'check_team_name':
+            new_team_name = request.data.get('team_name').strip()
+
+            if request.data.get('team_id'):
+                team_id = request.data.get('team_id')
+                old_team_name = Team.objects.get(id=team_id).name
+                if new_team_name == old_team_name:
+                    return JsonResponse({
+                        'unique': True}
+                    )
+
+            return JsonResponse({
+                'unique': not Team.objects.filter(name=new_team_name).exists()
+            })
+
         if action == 'search_user':
             user_name = request.data.get('user_name')
             leader_id = request.data.get('leader_id')
