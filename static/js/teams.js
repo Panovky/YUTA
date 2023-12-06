@@ -124,10 +124,10 @@ function search_users(e) {
 
                 let img = document.createElement('img');
                 img.style.width = '100px';
-                img.src = u.photo;
+                img.src = u.cropped_photo;
 
                 let name = document.createElement('p');
-                name.innerHTML = `${u.last_name} ${u.first_name} ${u.patronymic}`;
+                name.innerHTML = `${u.last_name} ${u.first_name} ${u.patronymic ? u.patronymic : ''}`;
 
                 let button = document.createElement('button');
                 button.innerHTML = 'Добавить';

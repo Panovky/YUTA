@@ -88,10 +88,10 @@ def search_user(user_name, leader_id, members_id):
         'users': [
             {
                 'id': user.id,
-                'photo': user.cropped_photo.url,
+                'cropped_photo': user.cropped_photo.url,
                 'last_name': user.last_name,
                 'first_name': user.first_name,
-                'patronymic': user.patronymic if user.patronymic else "",
+                'patronymic': user.patronymic,
             }
             for user in users
         ]
