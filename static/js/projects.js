@@ -40,6 +40,24 @@ radios.forEach(radio => radio.addEventListener('change', (e) => {
     }
 }));
 
+// ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА КОМАНДЫ
+teamNameInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+        let form;
+        if (e.target.dataset.action == 'create-project') {
+            form = createProjectForm;
+        } else {
+            form = editProjectForm;
+        }
+
+        if (!input.value.trim()) {
+            form.querySelector('.search-team-btn').removeEventListener('click', searchTeam);
+        } else {
+            form.querySelector('.search-team-btn').addEventListener('click', searchTeam);
+        }
+    });
+});
+
 // ПОИСК КОМАНДЫ
 function searchTeam(e) {
     let form, action;
@@ -78,6 +96,12 @@ function searchTeam(e) {
         .then(data => {
             clearSearchResults(form);
             let searchedTeams = data.teams;
+            if (searchedTeams.length == 0) {
+                form.querySelector('.empty-results-text').style.display = 'block';
+                return;
+            } else {
+                form.querySelector('.empty-results-text').style.display = 'none';
+            }
 
             searchedTeams.forEach(team => {
                 let teamElement = document.createElement('div');
@@ -103,26 +127,9 @@ function searchTeam(e) {
         });
 }
 
-// ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА КОМАНДЫ
-teamNameInputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-        let form;
-        if (e.target.dataset.action == 'create-project') {
-            form = createProjectForm;
-        } else {
-            form = editProjectForm;
-        }
-
-        if (!input.value.trim()) {
-            form.querySelector('.search-team-btn').removeEventListener('click', searchTeam);
-        } else {
-            form.querySelector('.search-team-btn').addEventListener('click', searchTeam);
-        }
-    });
-});
-
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
 function clearSearchResults(form) {
+    form.querySelector('.empty-results-text').style.display = 'none';
     form.querySelectorAll('.searched-team').forEach(team => {
         team.remove();
     });
@@ -178,8 +185,9 @@ function detachTeam(e) {
         form = editProjectForm;
     }
 
-    form.querySelector('.project-team').remove();
+    e.target.parentElement.remove();
     form.querySelector('.project-teams-text').style.display = 'none';
+    clearSearchResults(form);
 }
 
 // РЕДАКТИРОВАНИЕ ПРОЕКТА

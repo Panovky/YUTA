@@ -30,33 +30,33 @@ teamNameInputs.forEach(input => {
         if (e.target.dataset.action == 'create-team') {
             form = createTeamForm;
             btn = createTeamBtn;
-            func = create_team;
+            func = createTeam;
         } else {
             form = editTeamForm;
             btn = editTeamBtn;
-            func = edit_team;
+            func = editTeam;
         }
 
         let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        let team_name = e.target.value;
+        let teamName = e.target.value;
 
-        if (!team_name.trim()) {
+        if (!teamName.trim()) {
             btn.removeEventListener('click', func);
             return;
         }
 
-        let form_data = new FormData();
-        form_data.append('action', 'check_team_name');
-        form_data.append('team_name', team_name);
+        let formData = new FormData();
+        formData.append('action', 'check_team_name');
+        formData.append('team_name', teamName);
 
         if (e.target.dataset.action == 'edit-team') {
-            let team_id = form.querySelector('[name=team_id]').value;
-            form_data.append('team_id', team_id);
+            let teamId = form.querySelector('[name=team_id]').value;
+            formData.append('team_id', teamId);
         }
 
         fetch('', {
             method: 'POST',
-            body: form_data,
+            body: formData,
             headers: {
                 "X-CSRFToken": token,
             }
@@ -76,74 +76,6 @@ teamNameInputs.forEach(input => {
     });
 });
 
-// ПОИСК ПОЛЬЗОВАТЕЛЯ
-function search_users(e) {
-    let form, action;
-    if (e.target.dataset.action == 'create-team') {
-        form = createTeamForm;
-        action = 'create-team';
-    } else {
-        form = editTeamForm;
-        action = 'edit-team';
-    }
-
-    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
-    let user_name = form.querySelector('[name=user_name]').value;
-
-    let members_id = [];
-    let members = form.querySelectorAll('.member');
-    members.forEach(member => {
-        members_id.push(+member.dataset.memberId);
-    });
-
-    let form_data = new FormData();
-    form_data.append('action', 'search_user');
-    form_data.append('user_name', user_name);
-    form_data.append('members_id', JSON.stringify(members_id));
-
-    fetch('', {
-        method: 'POST',
-        body: form_data,
-        headers: {
-            "X-CSRFToken": token,
-        }
-    })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            clearSearchResults(form);
-            let new_users = data.users;
-            new_users.forEach(u => {
-                let user = document.createElement('div');
-                user.dataset.userId = u.id;
-                user.classList.add('user', 'd-flex', 'justify-content-between', 'align-items-center');
-                user.style.width = '80%';
-                user.style.border = '2px solid orange';
-                user.style.marginTop = '30px';
-
-                let img = document.createElement('img');
-                img.style.width = '100px';
-                img.src = u.cropped_photo;
-
-                let name = document.createElement('p');
-                name.innerHTML = `${u.last_name} ${u.first_name} ${u.patronymic ? u.patronymic : ''}`;
-
-                let button = document.createElement('button');
-                button.innerHTML = 'Добавить';
-                button.classList.add('addMemberBtn', 'orange-btn');
-                button.dataset.action = action;
-                button.addEventListener('click', addMember);
-
-                user.appendChild(img);
-                user.appendChild(name);
-                user.appendChild(button);
-
-                form.querySelector('.searched-users').appendChild(user);
-            });
-        });
-}
-
 // ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА ПОЛЬЗОВАТЕЛЯ
 userNameInputs.forEach(input => {
     input.addEventListener('input', (e) => {
@@ -155,17 +87,92 @@ userNameInputs.forEach(input => {
         }
 
         if (!input.value.trim()) {
-            form.querySelector('.search-user-btn').removeEventListener('click', search_users);
+            form.querySelector('.search-user-btn').removeEventListener('click', searchUser);
         } else {
-            form.querySelector('.search-user-btn').addEventListener('click', search_users);
+            form.querySelector('.search-user-btn').addEventListener('click', searchUser);
         }
     });
 });
 
+// ПОИСК ПОЛЬЗОВАТЕЛЯ
+function searchUser(e) {
+    let form, action;
+    if (e.target.dataset.action == 'create-team') {
+        form = createTeamForm;
+        action = 'create-team';
+    } else {
+        form = editTeamForm;
+        action = 'edit-team';
+    }
+
+    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    let userName = form.querySelector('[name=user_name]').value;
+
+    let membersId = [];
+    let members = form.querySelectorAll('.member');
+    members.forEach(member => {
+        membersId.push(+member.dataset.memberId);
+    });
+
+    let formData = new FormData();
+    formData.append('action', 'search_user');
+    formData.append('user_name', userName);
+    formData.append('members_id', JSON.stringify(membersId));
+
+    fetch('', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            "X-CSRFToken": token,
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            clearSearchResults(form);
+            let searchedUsers = data.users;
+            if (searchedUsers.length == 0) {
+                form.querySelector('.empty-results-text').style.display = 'block';
+                return;
+            } else {
+                form.querySelector('.empty-results-text').style.display = 'none';
+            }
+
+            searchedUsers.forEach(user => {
+                let userElement = document.createElement('div');
+                userElement.dataset.userId = user.id;
+                userElement.classList.add('searched-user', 'd-flex', 'justify-content-between', 'align-items-center');
+                userElement.style.width = '80%';
+                userElement.style.border = '2px solid orange';
+                userElement.style.marginTop = '30px';
+
+                let img = document.createElement('img');
+                img.style.width = '100px';
+                img.src = user.cropped_photo;
+
+                let name = document.createElement('p');
+                name.innerHTML = `${user.last_name} ${user.first_name} ${user.patronymic ? user.patronymic : ''}`;
+
+                let button = document.createElement('button');
+                button.innerHTML = 'Добавить';
+                button.classList.add('addMemberBtn', 'orange-btn');
+                button.dataset.action = action;
+                button.addEventListener('click', addMember);
+
+                userElement.appendChild(img);
+                userElement.appendChild(name);
+                userElement.appendChild(button);
+                form.querySelector('.searched-users').appendChild(userElement);
+            });
+        });
+}
+
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
 function clearSearchResults(form) {
-    form.querySelectorAll('.user').forEach(u => {
-        form.querySelector('.searched-users').removeChild(u);
+    form.querySelector('.empty-results-text').style.display = 'none';
+    form.querySelectorAll('.searched-user').forEach(user => {
+        user.remove();
     });
 }
 
@@ -180,32 +187,33 @@ function addMember(e) {
         action = 'edit-team';
     }
 
-    let user = e.target.parentElement;
+    let chosenUser = e.target.parentElement;
 
-    let member = document.createElement('div');
-    member.dataset.memberId = user.dataset.userId;
-    member.classList.add('member', 'd-flex', 'justify-content-between', 'align-items-center');
-    member.style.width = '80%';
-    member.style.border = '2px solid orange';
-    member.style.marginTop = '30px';
+    let memberElement = document.createElement('div');
+    memberElement.dataset.memberId = chosenUser.dataset.userId;
+    memberElement.classList.add('member', 'd-flex', 'justify-content-between', 'align-items-center');
+    memberElement.style.width = '80%';
+    memberElement.style.border = '2px solid orange';
+    memberElement.style.marginTop = '30px';
 
     let img = document.createElement('img');
     img.style.width = '100px';
-    img.src = user.querySelector('img').src;
+    img.src = chosenUser.querySelector('img').src;
 
     let name = document.createElement('p');
-    name.innerHTML = user.querySelector('p').innerHTML;
+    name.innerHTML = chosenUser.querySelector('p').innerHTML;
 
     let button = document.createElement('button');
     button.innerHTML = 'Удалить';
-    button.classList.add('deleteMemberBtn', 'orange-btn');
+    button.classList.add('delete-member-btn', 'orange-btn');
     button.dataset.action = action;
     button.addEventListener('click', deleteMember);
 
-    member.appendChild(img);
-    member.appendChild(name);
-    member.appendChild(button);
-    form.querySelector('.members').appendChild(member);
+    memberElement.appendChild(img);
+    memberElement.appendChild(name);
+    memberElement.appendChild(button);
+    form.querySelector('.members-text').style.display = 'block';
+    form.querySelector('.members').appendChild(memberElement);
     clearSearchResults(form);
 }
 
@@ -218,29 +226,32 @@ function deleteMember(e) {
         form = editTeamForm;
     }
 
-    let member = e.target.parentElement;
-    form.querySelector('.members').removeChild(member);
+    e.target.parentElement.remove();
+    if (!form.querySelector('.member')) {
+        form.querySelector('.members-text').style.display = 'none';
+    }
+    clearSearchResults(form);
 }
 
 // СОЗДАНИЕ КОМАНДЫ
-function create_team() {
+function createTeam() {
     let token = createTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
-    let team_name = createTeamForm.querySelector('[name=team_name]').value;
+    let teamName = createTeamForm.querySelector('[name=team_name]').value;
 
-    let members_id = [];
+    let membersId = [];
     let members = createTeamForm.querySelectorAll('.member');
     members.forEach(member => {
-        members_id.push(+member.dataset.memberId);
+        membersId.push(+member.dataset.memberId);
     });
 
-    let form_data = new FormData();
-    form_data.append('action', 'create_team');
-    form_data.append('team_name', team_name);
-    form_data.append('members_id', JSON.stringify(members_id));
+    let formData = new FormData();
+    formData.append('action', 'create_team');
+    formData.append('team_name', teamName);
+    formData.append('members_id', JSON.stringify(membersId));
 
     fetch('', {
         method: 'POST',
-        body: form_data,
+        body: formData,
         headers: {
             "X-CSRFToken": token,
         }
@@ -251,26 +262,26 @@ function create_team() {
 }
 
 // РЕДАКТИРОВАНИЕ КОМАНДЫ
-function edit_team() {
+function editTeam() {
     let token = editTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
-    let team_id = editTeamForm.querySelector('[name=team_id]').value;
-    let team_name = editTeamForm.querySelector('[name=team_name]').value;
+    let teamId = editTeamForm.querySelector('[name=team_id]').value;
+    let teamName = editTeamForm.querySelector('[name=team_name]').value;
 
-    let members_id = [];
+    let membersId = [];
     let members = editTeamForm.querySelectorAll('.member');
     members.forEach(member => {
-        members_id.push(+member.dataset.memberId);
+        membersId.push(+member.dataset.memberId);
     });
 
-    let form_data = new FormData();
-    form_data.append('action', 'edit_team');
-    form_data.append('team_id', team_id);
-    form_data.append('team_name', team_name);
-    form_data.append('members_id', JSON.stringify(members_id));
+    let formData = new FormData();
+    formData.append('action', 'edit_team');
+    formData.append('team_id', teamId);
+    formData.append('team_name', teamName);
+    formData.append('members_id', JSON.stringify(membersId));
 
     fetch('', {
         method: 'POST',
-        body: form_data,
+        body: formData,
         headers: {
             "X-CSRFToken": token,
         }
@@ -284,15 +295,15 @@ function edit_team() {
 editTeamBtns.forEach(btn => {
     btn.addEventListener('click', e => {
         let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        let team_id = e.currentTarget.dataset.teamId;
+        let teamId = e.currentTarget.dataset.teamId;
 
-        let form_data = new FormData();
-        form_data.append('action', 'get_team_info');
-        form_data.append('team_id', team_id);
+        let formData = new FormData();
+        formData.append('action', 'get_team_info');
+        formData.append('team_id', teamId);
 
         fetch('', {
             method: 'POST',
-            body: form_data,
+            body: formData,
             headers: {
                 "X-CSRFToken": token,
             }
@@ -301,7 +312,7 @@ editTeamBtns.forEach(btn => {
                 return response.json();
             })
             .then(data => {
-                editTeamForm.querySelector('[name=team_id]').value = team_id;
+                editTeamForm.querySelector('[name=team_id]').value = teamId;
                 editTeamForm.querySelector('[name=team_name]').value = data.name;
 
                 let members = data.members;
