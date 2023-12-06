@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user
+from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user, get_team_info
 from teams.models import Team
 from users.models import User
 
@@ -120,7 +120,9 @@ class TeamsView(APIView):
 
             members_id = request.data.get('members_id')
             for member_id in members_id:
-                team.members.add(User.objects.get(id=member_id))
+                member = User.objects.get(id=member_id)
+                team.members.add(member)
+                member.teams.add(team)
 
             return JsonResponse({'success': True})
 
@@ -139,3 +141,6 @@ class TeamsView(APIView):
             team.save()
             return JsonResponse({'success': True})
 
+        if action == 'get_team_info':
+            team_id = request.data.get('team_id')
+            return JsonResponse(data=get_team_info(team_id))

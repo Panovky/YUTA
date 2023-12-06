@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from YUTA.utils import search_user
+from YUTA.utils import search_user, get_team_info
 from teams.models import Team
 from users.models import User
 
@@ -70,7 +70,10 @@ class TeamsView(View):
             )
 
             for member_id in team_members_id:
-                team.members.add(User.objects.get(id=member_id))
+                member = User.objects.get(id=member_id)
+                team.members.add(member)
+                member.teams.add(team)
+
 
         if action == 'edit_team':
             team_id = request.POST.get('team_id')
@@ -88,20 +91,4 @@ class TeamsView(View):
 
         if action == 'get_team_info':
             team_id = request.POST.get('team_id')
-            team = Team.objects.get(id=team_id)
-
-            response_data = {
-                'name': team.name,
-                'members': [
-                    {
-                        'id': member.id,
-                        'first_name': member.first_name,
-                        'last_name': member.last_name,
-                        'patronymic': member.patronymic if member.patronymic else '',
-                        'cropped_photo': member.cropped_photo.url
-                    }
-                    for member in team.members.all()
-                ]
-            }
-
-            return JsonResponse(data=response_data)
+            return JsonResponse(data=get_team_info(team_id))
