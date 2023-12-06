@@ -43,7 +43,7 @@
             </div>
 
             <!--ФОРМА СОЗДАНИЯ КОМАНДЫ-->
-            <div id="createTeamForm"
+            <div id="create-team-form"
                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
                 {% csrf_token %}
 
@@ -52,13 +52,13 @@
                 <p>Придумайте краткое наименование команды!</p><br>
                 <input data-action="create-team" class="form-control" type="text" name="team_name" maxlength="50"
                        placeholder="Наименование" autocomplete="off">
-                <p class="notUniqueWarning" style="display: none; color: red">Команда с таким наименованием уже
+                <p class="not-unique-warning" style="display: none; color: red">Команда с таким наименованием уже
                     существует.</p>
 
                 <br><br><p>Добавленные участники</p><br>
                 <div class="members d-flex flex-column"></div>
 
-                <div class="searchUserForm">
+                <div class="search-user-form">
                     {% csrf_token %}
 
                     <br><br>
@@ -66,20 +66,20 @@
                     <div class="d-flex align-items-center">
                         <input class="form-control" data-action="create-team" type="text" name="user_name"
                                placeholder="Фамилия Имя (Отчество)">
-                        <button class="searchUserBtn orange-btn" data-action="create-team" type="button">Поиск</button>
+                        <button class="search-user-btn orange-btn" data-action="create-team" type="button">Поиск</button>
                     </div>
 
-                    <div class="searchedUsers d-flex flex-column"></div>
+                    <div class="searched-users d-flex flex-column"></div>
                 </div>
                 <br><br>
 
                 <div class="d-flex justify-content-center">
-                    <button id="createTeamBtn" class="orange-btn" type="button">Создать</button>
+                    <button id="create-team-btn" class="orange-btn" type="button">Создать</button>
                 </div>
             </div>
 
             <!--ФОРМА РЕДАКТИРОВАНИЯ КОМАНДЫ-->
-            <div id="editTeamForm"
+            <div id="edit-team-form"
                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
                 {% csrf_token %}
 
@@ -90,13 +90,13 @@
                 <p>Придумайте краткое наименование команды!</p><br>
                 <input data-action="edit-team" class="form-control" type="text" name="team_name" maxlength="50"
                        placeholder="Наименование" autocomplete="off">
-                <p class="notUniqueWarning" style="display: none; color: red">Команда с таким наименованием уже
+                <p class="not-unique-warning" style="display: none; color: red">Команда с таким наименованием уже
                     существует.</p>
 
                 <br><br><p>Добавленные участники</p><br>
                 <div class="members d-flex flex-column"></div>
 
-                <div class="searchUserForm">
+                <div class="search-user-form">
                     {% csrf_token %}
 
                     <br><br>
@@ -104,16 +104,16 @@
                     <div class="d-flex align-items-center">
                         <input class="form-control" data-action="edit-team" type="text" name="user_name"
                                placeholder="Фамилия Имя (Отчество)">
-                        <button class="searchUserBtn orange-btn" data-action="edit-team" type="button">Поиск</button>
+                        <button class="search-user-btn orange-btn" data-action="edit-team" type="button">Поиск</button>
                     </div>
 
-                    <div class="searchedUsers d-flex flex-column"></div>
+                    <div class="searched-users d-flex flex-column"></div>
                 </div>
                 <br><br>
 
                 <br><br>
                 <div class="d-flex justify-content-center">
-                    <button id="editTeamBtn" class="orange-btn" type="button">Редактировать</button>
+                    <button id="edit-team-btn" class="orange-btn" type="button">Редактировать</button>
                 </div>
             </div>
 
@@ -142,7 +142,7 @@
                                                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#edit-orange"></use>
                                             </svg>
                                         </button>
-                                        <button type="button" class="deleteTeamBtn" style="width: 26px; height: 26px;"
+                                        <button type="button" class="delete-team-btn" style="width: 26px; height: 26px;"
                                                 data-team-id="{{ team.id }}"
                                                 data-team-name="{{ team.name }}">
                                             <svg style="width: 100%; height: 100%;">
@@ -275,7 +275,7 @@
                     </div>
                     <p class="modal-title text-center">Предупреждение</p>
                     <div class="modal-devider"></div>
-                    <form method="POST" class="mt-2" id="deleteTeamForm">
+                    <form method="POST" class="mt-2" id="delete-team-form">
                         {% csrf_token %}
                         <input class="form-control" type="hidden" name="action" value="delete_team">
                         <p class="text-start fs-5 my-3">Вы действительно хотите удалить команду "<span></span>"?</p>
