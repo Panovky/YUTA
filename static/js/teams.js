@@ -318,7 +318,7 @@ editTeamBtns.forEach(btn => {
                     img.src = m.cropped_photo;
 
                     let name = document.createElement('p');
-                    name.innerHTML = `${m.last_name} ${m.first_name} ${m.patronymic}`;
+                    name.innerHTML = `${m.last_name} ${m.first_name} ${m.patronymic ? m.patronymic : ''}`;
 
                     let button = document.createElement('button');
                     button.innerHTML = 'Удалить';

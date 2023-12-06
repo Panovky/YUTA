@@ -1,5 +1,6 @@
 import requests
 from YUTA.scripts import parse_lk
+from teams.models import Team
 from users.models import User
 
 
@@ -94,5 +95,23 @@ def search_user(user_name, leader_id, members_id):
                 'patronymic': user.patronymic,
             }
             for user in users
+        ]
+    }
+
+
+def get_team_info(team_id):
+    team = Team.objects.get(id=team_id)
+
+    return {
+        'name': team.name,
+        'members': [
+            {
+                'id': member.id,
+                'first_name': member.first_name,
+                'last_name': member.last_name,
+                'patronymic': member.patronymic,
+                'cropped_photo': member.cropped_photo.url
+            }
+            for member in team.members.all()
         ]
     }

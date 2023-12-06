@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user
+from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user, get_team_info
 from teams.models import Team
 from users.models import User
 
@@ -138,4 +138,8 @@ class TeamsView(APIView):
 
             team.save()
             return JsonResponse({'success': True})
+
+        if action == 'get_team_info':
+            team_id = request.data.get('team_id')
+            return JsonResponse(data=get_team_info(team_id))
 
