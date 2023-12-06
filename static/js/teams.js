@@ -1,20 +1,20 @@
 // ЭЛЕМЕНТЫ
 const deleteTeamForm = document.querySelector('#delete-team');
-const createTeamForm = document.querySelector('#createTeamForm');
-const createTeamBtn = document.querySelector('#createTeamBtn');
-const editTeamForm = document.querySelector('#editTeamForm');
-const editTeamBtn = document.querySelector('#editTeamBtn');
+const createTeamForm = document.querySelector('#create-team-form');
+const createTeamBtn = document.querySelector('#create-team-btn');
+const editTeamForm = document.querySelector('#edit-team-form');
+const editTeamBtn = document.querySelector('#edit-team-btn');
 const editTeamBtns = document.querySelectorAll('.edit-team-btn');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const userNameInputs = document.querySelectorAll('[name=user_name]');
 
 // УДАЛЕНИЕ КОМАНДЫ
 document.addEventListener('DOMContentLoaded', () => {
-    let deleteTeamBtns = document.querySelectorAll('.deleteTeamBtn');
+    let deleteTeamBtns = document.querySelectorAll('.delete-team-btn');
     const modalDelete = new bootstrap.Modal(document.querySelector('#delete-team'));
     deleteTeamBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
-            let span = document.querySelector('#deleteTeamForm span');
+            let span = document.querySelector('#delete-team-form span');
             let teamIdInput = deleteTeamForm.querySelector('[name=team_id]');
             span.innerHTML = e.currentTarget.dataset.teamName;
             teamIdInput.value = e.currentTarget.dataset.teamId;
@@ -66,10 +66,10 @@ teamNameInputs.forEach(input => {
             })
             .then(data => {
                 if (!data.unique) {
-                    form.querySelector('.notUniqueWarning').style.display = 'block';
+                    form.querySelector('.not-unique-warning').style.display = 'block';
                     btn.removeEventListener('click', func);
                 } else {
-                    form.querySelector('.notUniqueWarning').style.display = 'none';
+                    form.querySelector('.not-unique-warning').style.display = 'none';
                     btn.addEventListener('click', func);
                 }
             });
@@ -139,7 +139,7 @@ function search_users(e) {
                 user.appendChild(name);
                 user.appendChild(button);
 
-                form.querySelector('.searchedUsers').appendChild(user);
+                form.querySelector('.searched-users').appendChild(user);
             });
         });
 }
@@ -155,9 +155,9 @@ userNameInputs.forEach(input => {
         }
 
         if (!input.value.trim()) {
-            form.querySelector('.searchUserBtn').removeEventListener('click', search_users);
+            form.querySelector('.search-user-btn').removeEventListener('click', search_users);
         } else {
-            form.querySelector('.searchUserBtn').addEventListener('click', search_users);
+            form.querySelector('.search-user-btn').addEventListener('click', search_users);
         }
     });
 });
@@ -165,7 +165,7 @@ userNameInputs.forEach(input => {
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
 function clearSearchResults(form) {
     form.querySelectorAll('.user').forEach(u => {
-        form.querySelector('.searchedUsers').removeChild(u);
+        form.querySelector('.searched-users').removeChild(u);
     });
 }
 
