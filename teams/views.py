@@ -70,7 +70,10 @@ class TeamsView(View):
             )
 
             for member_id in team_members_id:
-                team.members.add(User.objects.get(id=member_id))
+                member = User.objects.get(id=member_id)
+                team.members.add(member)
+                member.teams.add(team)
+
 
         if action == 'edit_team':
             team_id = request.POST.get('team_id')
