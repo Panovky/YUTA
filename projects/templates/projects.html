@@ -43,97 +43,68 @@
 
 
             <!--ФОРМА СОЗДАНИЯ ПРОЕКТА-->
-            <form method="POST" enctype="multipart/form-data" id="createProjectForm"
-                  style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+            <div id="create-project-form"
+                 style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
                 {% csrf_token %}
-                <input class="form-control" type="hidden" name="action" value="create_project">
-                <div class="mb-3">
 
-                    <label class="form-label">Наименование проекта
-                        <input class="form-control" type="text" maxlength="30" name="project_name" required>
-                    </label>
-                    <p style="display: none;" class="message">Проект с таким именем уже существует!</p>
+                <p class="text-center">Создание проекта</p><br><br>
 
-                    <br>
-                    <br>
+                <p>Придумайте краткое наименование проекта!</p><br>
+                <input data-action="create-project" class="form-control" type="text" maxlength="30" name="project_name"
+                       placeholder="Наименование" autocomplete="off"><br><br>
 
-                    <label class="form-label">Руководитель проекта
-                        {% if user.patronymic %}
-                            <input class="form-control" type="text" name="project_manager"
-                                   value="{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}" readonly>
-                        {% else %}
-                            <input class="form-control" type="text" name="project_manager"
-                                   value="{{ user.last_name }} {{ user.first_name }}" readonly>
-                        {% endif %}
-                    </label>
+                <label class="form-label">Техническое задание
+                    <input class="form-control" type="file" name="project_tech_task" multiple accept=".pdf">
+                </label>
+                <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
 
-                    <br>
-                    <br>
+                <label class="form-label">Дедлайн
+                    <input class="form-control" type="date" min="{{ today }}" name="project_deadline">
+                </label><br><br><br>
 
-                    <label class="form-label">Техническое задание
-                        <input class="form-control" type="file" name="project_tech_task" multiple accept=".pdf">
-                    </label>
-                    <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p>
+                <textarea class="form-control" name="project_description" maxlength="1000"
+                          placeholder="Краткое описание проекта"></textarea><br><br>
 
-                    <br>
-                    <br>
+                <p>Вы можете:</p><br>
 
-                    <label class="form-label">Дедлайн
-                        <input class="form-control" type="date" min="{{ today }}" name="project_deadline" required>
-                    </label>
+                <label>
+                    <input data-action="create-project" class="pass-radio" type="radio" name="team_radio" value="pass"
+                           checked>
+                    Создать проект без команды и добавить ее позже
+                </label><br><br>
 
-                    <br>
-                    <br>
+                <label>
+                    <input data-action="create-project" class="attach-radio" type="radio" name="team_radio"
+                           value="attach">Прикрепить к проекту одну из своих команд
+                </label><br><br>
 
-                    <label class="form-label">Описание проекта
-                        <textarea class="form-control" name="project_description" maxlength="1000" required></textarea>
-                    </label>
+                <label>
+                    <input data-action="create-project" class="create-radio" type="radio" name="team_radio"
+                           value="create">Создать новую команду для проекта
+                </label>
 
-                    <br>
-                    <br>
+                <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
+                <div class="project-teams d-flex flex-column"></div>
 
-                    <p>Вы можете:</p>
-
-                    <br>
-
-                    <label>
-                        <input type="radio" name="team_radio" value="create" checked>Создать новую команду для проекта
-                    </label>
-
-                    <br>
-                    <br>
-
-                    <label>
-                        <input type="radio" name="team_radio" value="search">Прикрепить к проекту одну из своих команд
-                    </label>
-
-                    <br>
-                    <br>
-
-                    <label>
-                        <input type="radio" name="team_radio" value="pass">Создать проект без команды и добавить ее
-                        позже
-                    </label>
-
-                    <input type="hidden" name="team_id">
-
-                    <br>
-                    <br>
-                    <button class="orange-btn">Отмена</button>
-                    <button type="submit" class="orange-btn">Создать проект</button>
-                </div>
-            </form>
-
-            <div style="display: none; width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                <form method="POST" id="searchTeamForm">
+                <div class="search-team-form" style="display: none">
                     {% csrf_token %}
-                    <input type="hidden" name="action" value="search_team">
-                    <div class="d-flex">
-                        <input class="form-control" type="text" name="team_name" placeholder="Наименование команды"
-                               required>
-                        <button type="submit" class="orange-btn">Поиск</button>
+
+                    <br><br>
+                    <p>Прикрепите команду к проекту:</p><br>
+                    <div class="d-flex align-items-center">
+                        <input class="form-control" data-action="create-project" type="text" name="team_name"
+                               placeholder="Наименование команды" autocomplete="off">
+                        <button class="search-team-btn orange-btn" data-action="create-project" type="button">Поиск
+                        </button>
                     </div>
-                </form>
+
+                    <div class="searched-teams d-flex flex-column"></div>
+                </div>
+                <br><br>
+
+                <div class="d-flex justify-content-center">
+                    <button id="create-project-btn" class="orange-btn" type="button">Создать</button>
+                </div>
             </div>
 
 

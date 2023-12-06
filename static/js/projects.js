@@ -1,3 +1,9 @@
+//ЭЛЕМЕНТЫ
+const createProjectForm = document.querySelector('#create-project-form');
+const editProjectForm = document.querySelector('#edit-project-form');
+const teamNameInputs = document.querySelectorAll('[name=team_name]');
+const radios = document.querySelectorAll('[name=team_radio]');
+
 // УДАЛЕНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {
     let deleteTeamBtns = document.querySelectorAll('.deleteProjectBtn');
@@ -13,76 +19,168 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
-
-// СОЗДАНИЕ ПРОЕКТА
-const createProjectBtn = document.querySelector('#createProjectBtn');
-const createProjectForm = document.querySelector('#createProjectForm');
-
-createProjectBtn.addEventListener('click', e => {
-    console.log('click')
-    createProjectForm.style.display = 'block';
-});
-
 // ДЕЙСТВИЕ ПО ВЫБОРУ RADIO
-const radios = document.querySelectorAll('[name=team_radio]');
 radios.forEach(radio => radio.addEventListener('change', (e) => {
+    let form;
+    if (e.target.dataset.action == 'create-project') {
+        form = createProjectForm;
+    } else {
+        form = editProjectForm;
+    }
     if (radio.checked) {
-        if (radio.value == 'create') {
-            document.querySelector('#searchTeamForm').parentElement.style.display = 'none';
-        }
-        if (radio.value == 'search') {
-            document.querySelector('#searchTeamForm').parentElement.style.display = 'block';
-        }
         if (radio.value == 'pass') {
-            document.querySelector('#searchTeamForm').parentElement.style.display = 'none';
+            form.querySelector('.search-team-form').style.display = 'none';
+        }
+        if (radio.value == 'attach') {
+            form.querySelector('.search-team-form').style.display = 'block';
+        }
+        if (radio.value == 'create') {
+            form.querySelector('.search-team-form').style.display = 'none';
         }
     }
 }));
 
 // ПОИСК КОМАНДЫ
-const searchTeamForm = document.querySelector('#searchTeamForm');
-searchTeamForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const headers = {
-        'X-Requested-With': 'XMLHttpRequest',
+function searchTeam(e) {
+    let form, action;
+    if (e.target.dataset.action == 'create-project') {
+        form = createProjectForm;
+        action = 'create-project';
+    } else {
+        form = editProjectForm;
+        action = 'edit-project';
     }
+
+    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    let teamName = form.querySelector('[name=team_name]').value;
+
+    let projectTeamsId = [];
+    let projectTeams = form.querySelectorAll('.project-team');
+    projectTeams.forEach(projectTeam => {
+        projectTeamsId.push(+projectTeam.dataset.teamId);
+    });
+
+    let formData = new FormData();
+    formData.append('action', 'search_team');
+    formData.append('team_name', teamName);
+    formData.append('project_teams_id', JSON.stringify(projectTeamsId));
+
     fetch('', {
         method: 'POST',
-        body: new FormData(searchTeamForm),
-        headers: headers,
+        body: formData,
+        headers: {
+            "X-CSRFToken": token,
+        }
     })
         .then(response => {
             return response.json();
         })
         .then(data => {
-            let result_div = document.createElement('div');
-            result_div.classList.add('d-flex', 'flex-column');
+            clearSearchResults(form);
+            let searchedTeams = data.teams;
 
-            let teams = data.teams;
-            teams.forEach((team) => {
-                let team_div = document.createElement('div');
-                team_div.classList.add('d-flex', 'justify-content-between');
-                team_div.style.width = '80%';
-                team_div.style.border = '2px solid orange';
-                team_div.style.marginTop = '30px';
-                let p = document.createElement('p');
-                p.innerHTML = team.name;
+            searchedTeams.forEach(team => {
+                let teamElement = document.createElement('div');
+                teamElement.dataset.teamId = team.id;
+                teamElement.classList.add('searched-team', 'd-flex', 'justify-content-between', 'align-items-center');
+                teamElement.style.width = '80%';
+                teamElement.style.border = '2px solid orange';
+                teamElement.style.marginTop = '30px';
+
+                let name = document.createElement('p');
+                name.innerHTML = team.name;
 
                 let button = document.createElement('button');
                 button.innerHTML = 'Прикрепить';
-                button.classList.add('orange-btn');
-                button.dataset.teamId = team.id;
-                button.onclick = function (e) {
-                    document.querySelector('[name=team_id]').value = +e.target.dataset.teamId;
-                };
-                team_div.appendChild(p);
-                team_div.appendChild(button);
-                result_div.appendChild(team_div);
+                button.classList.add('attach-team-btn', 'orange-btn');
+                button.dataset.action = action;
+                button.addEventListener('click', attachTeam);
+
+                teamElement.appendChild(name);
+                teamElement.appendChild(button);
+                form.querySelector('.searched-teams').appendChild(teamElement);
             });
-            searchTeamForm.parentElement.appendChild(result_div);
         });
+}
+
+// ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА КОМАНДЫ
+teamNameInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+        let form;
+        if (e.target.dataset.action == 'create-project') {
+            form = createProjectForm;
+        } else {
+            form = editProjectForm;
+        }
+
+        if (!input.value.trim()) {
+            form.querySelector('.search-team-btn').removeEventListener('click', searchTeam);
+        } else {
+            form.querySelector('.search-team-btn').addEventListener('click', searchTeam);
+        }
+    });
 });
 
+// ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
+function clearSearchResults(form) {
+    form.querySelectorAll('.searched-team').forEach(team => {
+        team.remove();
+    });
+}
+
+// ПРИКРЕПЛЕНИЕ КОМАНДЫ К ПРОЕКТУ
+function attachTeam(e) {
+    let form, action;
+    if (e.target.dataset.action == 'create-project') {
+        form = createProjectForm;
+        action = 'create-project';
+    } else {
+        form = editProjectForm;
+        action = 'edit-project';
+    }
+
+    let chosenTeam = e.target.parentElement;
+
+    let teamElement = document.createElement('div');
+    teamElement.dataset.teamId = chosenTeam.dataset.teamId;
+    teamElement.classList.add('project-team', 'd-flex', 'justify-content-between', 'align-items-center');
+    teamElement.style.width = '80%';
+    teamElement.style.border = '2px solid orange';
+
+    let name = document.createElement('p');
+    name.innerHTML = chosenTeam.querySelector('p').innerHTML;
+
+    let button = document.createElement('button');
+    button.innerHTML = 'Открепить';
+    button.classList.add('detach-team-btn', 'orange-btn');
+    button.dataset.action = action;
+    button.addEventListener('click', detachTeam);
+
+    teamElement.appendChild(name);
+    teamElement.appendChild(button);
+
+    let projectTeam = form.querySelector('.project-team');
+    if (projectTeam) {
+        projectTeam.remove();
+    }
+
+    form.querySelector('.project-teams-text').style.display = 'block';
+    form.querySelector('.project-teams').appendChild(teamElement);
+    clearSearchResults(form);
+}
+
+// ОТКРЕПЛЕНИЕ КОМАНДЫ ОТ ПРОЕКТА
+function detachTeam(e) {
+    let form;
+    if (e.target.dataset.action == 'create-project') {
+        form = createProjectForm;
+    } else {
+        form = editProjectForm;
+    }
+
+    form.querySelector('.project-team').remove();
+    form.querySelector('.project-teams-text').style.display = 'none';
+}
 
 // РЕДАКТИРОВАНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {
