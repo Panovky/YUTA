@@ -1,6 +1,13 @@
 //ЭЛЕМЕНТЫ
 const createProjectForm = document.querySelector('#create-project-form');
+const createProjectBtn = document.querySelector('#create-project-btn');
 const editProjectForm = document.querySelector('#edit-project-form');
+const editProjectBtn = document.querySelector('#edit-project-btn');
+const projectNameInputs = document.querySelectorAll('[name=project_name]');
+const projectTechTaskInputs = document.querySelectorAll('[name=project_tech_task]');
+const projectDeadlineInputs = document.querySelectorAll('[name=project_deadline]');
+const projectDescrInputs = document.querySelectorAll('[name=project_description]');
+const projectTeamIdInputs = document.querySelectorAll('[name=project_team_id]');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const radios = document.querySelectorAll('[name=team_radio]');
 
@@ -36,6 +43,74 @@ radios.forEach(radio => radio.addEventListener('change', (e) => {
         }
     }
 }));
+
+// ПРОВЕРКА ЗАПОЛНЕНИЯ ПОЛЕЙ В ФОРМАХ СОЗДАНИЯ И РЕДАКТИРОВАНИЯ ПРОЕКТА
+function checkInputs(action) {
+    let form, btn, func;
+    if (action == 'create-project') {
+        form = createProjectForm;
+        btn = createProjectBtn;
+        // func = createProject;
+    } else {
+        form = editProjectForm;
+        btn = editProjectBtn;
+        // func = editProject;
+    }
+
+    if (!form.querySelector('[name=project_name]').value.trim()) {
+        // btn.removeEventListener('click', func);
+        btn.classList.add('grey-btn');
+        return;
+    }
+
+    if (!form.querySelector('[name=project_deadline]').value) {
+        // btn.removeEventListener('click', func);
+        btn.classList.add('grey-btn');
+        return;
+    }
+
+    if (!form.querySelector('[name=project_description]').value.trim()) {
+        // btn.removeEventListener('click', func);
+        btn.classList.add('grey-btn');
+        return;
+    }
+
+    let checkedRadio;
+    form.querySelectorAll('[name=team_radio]').forEach(radio => {
+        if (radio.checked) {
+            checkedRadio = radio;
+        }
+    });
+
+    if (checkedRadio.value == 'attach' && !form.querySelector('[name=project_team_id]').value) {
+        // btn.removeEventListener('click', func);
+        btn.classList.add('grey-btn');
+        return;
+    }
+
+    // btn.addEventListener('click', func);
+    btn.classList.remove('grey-btn');
+}
+
+projectNameInputs.forEach(input => input.addEventListener('input', () => {
+        checkInputs(input.dataset.action);
+    })
+);
+
+projectDeadlineInputs.forEach(input => input.addEventListener('input', () => {
+        checkInputs(input.dataset.action);
+    })
+);
+
+projectDescrInputs.forEach(input => input.addEventListener('input', () => {
+        checkInputs(input.dataset.action);
+    })
+);
+
+radios.forEach(radio => radio.addEventListener('change', () => {
+        checkInputs(radio.dataset.action);
+    })
+);
 
 // ПРОВЕРКА НАЛИЧИЯ ЗАПРОСА В ФОРМАХ ПОИСКА КОМАНДЫ
 teamNameInputs.forEach(input => {
@@ -172,20 +247,26 @@ function attachTeam(e) {
 
     form.querySelector('.project-teams-text').style.display = 'block';
     form.querySelector('.project-teams').appendChild(teamElement);
+    form.querySelector('[name=project_team_id]').value = chosenTeam.dataset.teamId;
+    checkInputs(action);
     clearSearchResults(form);
 }
 
 // ОТКРЕПЛЕНИЕ КОМАНДЫ ОТ ПРОЕКТА
 function detachTeam(e) {
-    let form;
+    let form, action;
     if (e.target.dataset.action == 'create-project') {
         form = createProjectForm;
+        action = 'create-project';
     } else {
         form = editProjectForm;
+        action = 'edit-project';
     }
 
     e.target.parentElement.remove();
     form.querySelector('.project-teams-text').style.display = 'none';
+    form.querySelector('[name=project_team_id]').value = '';
+    checkInputs(action);
     clearSearchResults(form);
 }
 

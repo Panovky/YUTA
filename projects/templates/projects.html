@@ -50,10 +50,10 @@
                 <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
 
                 <label class="form-label">Дедлайн
-                    <input class="form-control" type="date" min="{{ today }}" name="project_deadline">
+                    <input data-action="create-project" class="form-control" type="date" min="{{ today }}" name="project_deadline">
                 </label><br><br><br>
 
-                <textarea class="form-control" name="project_description" maxlength="1000"
+                <textarea data-action="create-project" class="form-control" name="project_description" maxlength="100"
                           placeholder="Краткое описание проекта"></textarea><br><br>
 
                 <p>Вы можете:</p><br>
@@ -71,6 +71,7 @@
 
                 <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
                 <div class="project-teams d-flex flex-column"></div>
+                <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
 
                 <div class="search-team-form" style="display: none">
                     {% csrf_token %}

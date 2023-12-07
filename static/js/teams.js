@@ -39,7 +39,6 @@ function checkTeamName(action) {
     let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
     let teamName = form.querySelector('[name=team_name]').value;
 
-    console.log(action, teamName)
     if (!teamName.trim()) {
         btn.removeEventListener('click', func);
         btn.classList.add('grey-btn');
