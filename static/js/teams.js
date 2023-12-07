@@ -24,58 +24,63 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ПРОВЕРКА НАЛИЧИЯ НАИМЕНОВАНИЯ КОМАНДЫ И ЕГО УНИКАЛЬНОСТИ
-teamNameInputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-        let form, btn, func;
-        if (e.target.dataset.action == 'create-team') {
-            form = createTeamForm;
-            btn = createTeamBtn;
-            func = createTeam;
-        } else {
-            form = editTeamForm;
-            btn = editTeamBtn;
-            func = editTeam;
+function checkTeamName(action) {
+    let form, btn, func;
+    if (action == 'create-team') {
+        form = createTeamForm;
+        btn = createTeamBtn;
+        func = createTeam;
+    } else {
+        form = editTeamForm;
+        btn = editTeamBtn;
+        func = editTeam;
+    }
+
+    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let teamName = form.querySelector('[name=team_name]').value;
+
+    console.log(action, teamName)
+    if (!teamName.trim()) {
+        btn.removeEventListener('click', func);
+        btn.classList.add('grey-btn');
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('action', 'check_team_name');
+    formData.append('team_name', teamName);
+
+    if (action == 'edit-team') {
+        let teamId = form.querySelector('[name=team_id]').value;
+        formData.append('team_id', teamId);
+    }
+
+    fetch('', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            "X-CSRFToken": token,
         }
-
-        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        let teamName = e.target.value;
-
-        if (!teamName.trim()) {
-            btn.removeEventListener('click', func);
-            btn.classList.add('grey-btn');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('action', 'check_team_name');
-        formData.append('team_name', teamName);
-
-        if (e.target.dataset.action == 'edit-team') {
-            let teamId = form.querySelector('[name=team_id]').value;
-            formData.append('team_id', teamId);
-        }
-
-        fetch('', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                "X-CSRFToken": token,
-            }
+    })
+        .then(response => {
+            return response.json();
         })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                if (!data.unique) {
-                    form.querySelector('.not-unique-warning').style.display = 'block';
-                    btn.removeEventListener('click', func);
-                    btn.classList.add('grey-btn');
-                } else {
-                    form.querySelector('.not-unique-warning').style.display = 'none';
-                    btn.addEventListener('click', func);
-                    btn.classList.remove('grey-btn');
-                }
-            });
+        .then(data => {
+            if (!data.unique) {
+                form.querySelector('.not-unique-warning').style.display = 'block';
+                btn.removeEventListener('click', func);
+                btn.classList.add('grey-btn');
+            } else {
+                form.querySelector('.not-unique-warning').style.display = 'none';
+                btn.addEventListener('click', func);
+                btn.classList.remove('grey-btn');
+            }
+        });
+}
+
+teamNameInputs.forEach(input => {
+    input.addEventListener('input', () => {
+        checkTeamName(input.dataset.action);
     });
 });
 
@@ -190,6 +195,7 @@ function addMember(e) {
     } else {
         form = editTeamForm;
         action = 'edit-team';
+        checkTeamName(action);
     }
 
     let chosenUser = e.target.parentElement;
@@ -229,6 +235,7 @@ function deleteMember(e) {
         form = createTeamForm;
     } else {
         form = editTeamForm;
+        checkTeamName('edit-team');
     }
 
     e.target.parentElement.remove();

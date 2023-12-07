@@ -136,7 +136,9 @@ class TeamsView(APIView):
             team.members.clear()
             members_id = request.data.get('members_id')
             for member_id in members_id:
-                team.members.add(User.objects.get(id=member_id))
+                member = User.objects.get(id=member_id)
+                team.members.add(member)
+                member.teams.add(team)
 
             team.save()
             return JsonResponse({'success': True})

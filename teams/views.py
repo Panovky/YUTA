@@ -62,30 +62,31 @@ class TeamsView(View):
         if action == 'create_team':
             team_name = request.POST.get('team_name').strip()
             team_leader = User.objects.get(id=request.session.get('user_id'))
-            team_members_id = json.loads(request.POST.get('members_id'))
 
             team = Team.objects.create(
                 name=team_name,
                 leader=team_leader
             )
 
+            team_members_id = json.loads(request.POST.get('members_id'))
             for member_id in team_members_id:
                 member = User.objects.get(id=member_id)
                 team.members.add(member)
                 member.teams.add(team)
 
-
         if action == 'edit_team':
             team_id = request.POST.get('team_id')
-            team_name = request.POST.get('team_name').strip()
-            team_members_id = json.loads(request.POST.get('members_id'))
-
             team = Team.objects.get(id=team_id)
+
+            team_name = request.POST.get('team_name').strip()
             team.name = team_name
 
             team.members.clear()
+            team_members_id = json.loads(request.POST.get('members_id'))
             for member_id in team_members_id:
-                team.members.add(User.objects.get(id=member_id))
+                member = User.objects.get(id=member_id)
+                team.members.add(member)
+                member.teams.add(team)
 
             team.save()
 
