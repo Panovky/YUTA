@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -35,18 +36,25 @@ class ProjectsView(View):
         if not request.session.get('user_id'):
             return redirect('main')
         session_user_id = request.session.get('user_id')
+        action = request.POST.get('action')
 
-        if request.POST.get('action') == 'delete_project':
+        if action == 'delete_project':
             project_id = request.POST.get('project_id')
             Project.objects.get(id=project_id).delete()
             return redirect('projects')
 
-        if request.POST.get('action') == 'create_team':
+        if action == 'create_team':
             pass
 
-        if request.POST.get('action') == 'search_team':
-            team_name = request.POST.get('team_name')
-            teams = Team.objects.filter(name__contains=team_name)
+        if action == 'search_team':
+            team_name = request.POST.get('team_name').strip()
+            leader = User.objects.get(id=session_user_id)
+            teams = Team.objects.filter(name__istartswith=team_name) & Team.objects.filter(leader=leader)
+
+            project_teams_id = json.loads(request.POST.get('project_teams_id'))
+            prohibited_id = [project_team_id for project_team_id in project_teams_id]
+            teams = teams.exclude(id__in=prohibited_id)
+
             response_data = {
                 'teams': [
                     {
@@ -58,7 +66,7 @@ class ProjectsView(View):
             }
             return JsonResponse(data=response_data)
 
-        if request.POST.get('action') == 'create_project':
+        if action == 'create_project':
             name = request.POST.get('project_name').strip()
             if Project.objects.filter(name=request.POST.get('project_name')).exists():
                 response_data = {
