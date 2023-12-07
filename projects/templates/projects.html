@@ -28,15 +28,6 @@
                         </div>
                         <p class="modal-title text-center">Создание проекта</p>
                         <div class="modal-devider"></div>
-                        <form method="POST" name="createProjectForm" enctype="multipart/form-data" class="mt-2">
-                            {% csrf_token %}
-                            <input class="form-control" type="hidden" name="action" value="create_project">
-                            <div class="mt-3 d-flex justify-content-end">
-                                <button type="submit" class="orange-btn modal-btn my-0">
-                                    <p>Создать проект</p>
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -78,11 +69,6 @@
                            value="attach">Прикрепить к проекту одну из своих команд
                 </label><br><br>
 
-                <label>
-                    <input data-action="create-project" class="create-radio" type="radio" name="team_radio"
-                           value="create">Создать новую команду для проекта
-                </label>
-
                 <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
                 <div class="project-teams d-flex flex-column"></div>
 
@@ -94,7 +80,7 @@
                     <div class="d-flex align-items-center">
                         <input class="form-control" data-action="create-project" type="text" name="team_name"
                                placeholder="Наименование команды" autocomplete="off">
-                        <button class="search-team-btn orange-btn" data-action="create-project" type="button">Поиск
+                        <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="create-project" type="button">Поиск
                         </button>
                     </div>
 
@@ -104,7 +90,7 @@
                 <br><br>
 
                 <div class="d-flex justify-content-center">
-                    <button id="create-project-btn" class="orange-btn" type="button">Создать</button>
+                    <button id="create-project-btn" class="orange-btn grey-btn" type="button">Создать</button>
                 </div>
             </div>
 
@@ -371,19 +357,6 @@
                     </div>
                     <p class="modal-title text-center">Редактирование проекта</p>
                     <div class="modal-devider"></div>
-                    <form method="POST" class="mt-2" id="updateProjectForm">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update-project">
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit"
-                                    class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                <svg style="width: 19px; height: 17px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#save"></use>
-                                </svg>
-                                <p>Сохранить</p>
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

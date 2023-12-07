@@ -34,9 +34,6 @@ radios.forEach(radio => radio.addEventListener('change', (e) => {
         if (radio.value == 'attach') {
             form.querySelector('.search-team-form').style.display = 'block';
         }
-        if (radio.value == 'create') {
-            form.querySelector('.search-team-form').style.display = 'none';
-        }
     }
 }));
 
@@ -52,8 +49,10 @@ teamNameInputs.forEach(input => {
 
         if (!input.value.trim()) {
             form.querySelector('.search-team-btn').removeEventListener('click', searchTeam);
+            form.querySelector('.search-team-btn').classList.add('grey-btn');
         } else {
             form.querySelector('.search-team-btn').addEventListener('click', searchTeam);
+            form.querySelector('.search-team-btn').classList.remove('grey-btn');
         }
     });
 });

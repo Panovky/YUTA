@@ -42,6 +42,7 @@ teamNameInputs.forEach(input => {
 
         if (!teamName.trim()) {
             btn.removeEventListener('click', func);
+            btn.classList.add('grey-btn');
             return;
         }
 
@@ -68,9 +69,11 @@ teamNameInputs.forEach(input => {
                 if (!data.unique) {
                     form.querySelector('.not-unique-warning').style.display = 'block';
                     btn.removeEventListener('click', func);
+                    btn.classList.add('grey-btn');
                 } else {
                     form.querySelector('.not-unique-warning').style.display = 'none';
                     btn.addEventListener('click', func);
+                    btn.classList.remove('grey-btn');
                 }
             });
     });
@@ -88,8 +91,10 @@ userNameInputs.forEach(input => {
 
         if (!input.value.trim()) {
             form.querySelector('.search-user-btn').removeEventListener('click', searchUser);
+            form.querySelector('.search-user-btn').classList.add('grey-btn');
         } else {
             form.querySelector('.search-user-btn').addEventListener('click', searchUser);
+            form.querySelector('.search-user-btn').classList.remove('grey-btn');
         }
     });
 });
