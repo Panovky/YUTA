@@ -4,10 +4,8 @@ const createProjectBtn = document.querySelector('#create-project-btn');
 const editProjectForm = document.querySelector('#edit-project-form');
 const editProjectBtn = document.querySelector('#edit-project-btn');
 const projectNameInputs = document.querySelectorAll('[name=project_name]');
-const projectTechTaskInputs = document.querySelectorAll('[name=project_tech_task]');
 const projectDeadlineInputs = document.querySelectorAll('[name=project_deadline]');
 const projectDescrInputs = document.querySelectorAll('[name=project_description]');
-const projectTeamIdInputs = document.querySelectorAll('[name=project_team_id]');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const radios = document.querySelectorAll('[name=team_radio]');
 
@@ -50,27 +48,27 @@ function checkInputs(action) {
     if (action == 'create-project') {
         form = createProjectForm;
         btn = createProjectBtn;
-        // func = createProject;
+        func = createProject;
     } else {
         form = editProjectForm;
         btn = editProjectBtn;
-        // func = editProject;
+        func = editProject;
     }
 
     if (!form.querySelector('[name=project_name]').value.trim()) {
-        // btn.removeEventListener('click', func);
+        btn.removeEventListener('click', func);
         btn.classList.add('grey-btn');
         return;
     }
 
     if (!form.querySelector('[name=project_deadline]').value) {
-        // btn.removeEventListener('click', func);
+        btn.removeEventListener('click', func);
         btn.classList.add('grey-btn');
         return;
     }
 
     if (!form.querySelector('[name=project_description]').value.trim()) {
-        // btn.removeEventListener('click', func);
+        btn.removeEventListener('click', func);
         btn.classList.add('grey-btn');
         return;
     }
@@ -83,12 +81,12 @@ function checkInputs(action) {
     });
 
     if (checkedRadio.value == 'attach' && !form.querySelector('[name=project_team_id]').value) {
-        // btn.removeEventListener('click', func);
+        btn.removeEventListener('click', func);
         btn.classList.add('grey-btn');
         return;
     }
 
-    // btn.addEventListener('click', func);
+    btn.addEventListener('click', func);
     btn.classList.remove('grey-btn');
 }
 
@@ -269,6 +267,41 @@ function detachTeam(e) {
     checkInputs(action);
     clearSearchResults(form);
 }
+
+// СОЗДАНИЕ ПРОЕКТА
+function createProject() {
+    let token = createProjectForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let projectName = createProjectForm.querySelector('[name=project_name]').value;
+    let projectTechTask = createProjectForm.querySelector('[name=project_tech_task]').files[0];
+    let projectDeadline = createProjectForm.querySelector('[name=project_deadline]').value;
+    let projectDescr = createProjectForm.querySelector('[name=project_description]').value;
+    let projectTeamId = createProjectForm.querySelector('[name=project_team_id]').value;
+
+    let formData = new FormData();
+    formData.append('action', 'create_project');
+    formData.append('project_name', projectName);
+    if (projectTechTask) {
+        formData.append('project_tech_task', projectTechTask, projectTechTask.name);
+    }
+    formData.append('project_deadline', projectDeadline);
+    formData.append('project_descr', projectDescr);
+    if (projectTeamId) {
+           formData.append('project_team_id', projectTeamId);
+    }
+
+    fetch('', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            "X-CSRFToken": token,
+        }
+    })
+        .then(() => {
+            document.location.reload();
+        });
+}
+
+function editProject() {}
 
 // РЕДАКТИРОВАНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {

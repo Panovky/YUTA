@@ -43,9 +43,6 @@ class ProjectsView(View):
             Project.objects.get(id=project_id).delete()
             return redirect('projects')
 
-        if action == 'create_team':
-            pass
-
         if action == 'search_team':
             team_name = request.POST.get('team_name').strip()
             leader = User.objects.get(id=session_user_id)
@@ -68,18 +65,11 @@ class ProjectsView(View):
 
         if action == 'create_project':
             name = request.POST.get('project_name').strip()
-            if Project.objects.filter(name=request.POST.get('project_name')).exists():
-                response_data = {
-                    'allowed': False,
-                }
-                return JsonResponse(response_data)
-
-            description = request.POST.get('project_description').strip()
+            description = request.POST.get('project_descr').strip()
 
             if request.FILES.get('project_tech_task'):
                 file = request.FILES.get('project_tech_task')
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_tech_tasks')
-
                 file_name = fs.save(file.name, file)
                 technical_task = f'projects_tech_tasks/{file_name}'
             else:
@@ -88,8 +78,8 @@ class ProjectsView(View):
             deadline = request.POST.get('project_deadline')
             manager = User.objects.get(id=session_user_id)
 
-            if request.POST.get('team_id'):
-                team = Team.objects.get(id=request.POST.get('team_id'))
+            if request.POST.get('project_team_id'):
+                team = Team.objects.get(id=request.POST.get('project_team_id'))
             else:
                 team = None
 
@@ -103,4 +93,3 @@ class ProjectsView(View):
             )
             return redirect('projects')
 
-        return redirect('projects')
