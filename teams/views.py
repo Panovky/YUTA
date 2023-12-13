@@ -29,8 +29,6 @@ class TeamsView(View):
     def post(self, request):
         if not request.session.get('user_id'):
             return redirect('main')
-        session_user_id = request.session.get('user_id')
-
         action = request.POST.get('action')
 
         if action == 'delete_team':

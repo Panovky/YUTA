@@ -29,8 +29,8 @@ class ProfileView(View):
     def post(self, request, url_user_id):
         if not request.session.get('user_id'):
             return redirect('main')
-        user = User.objects.get(id=url_user_id)
-
+        session_user_id = request.session.get('user_id')
+        user = User.objects.get(id=session_user_id)
         action = request.POST.get('action')
 
         if action == 'update_photo':
@@ -62,10 +62,13 @@ class ProfileView(View):
                 f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
                 request.POST
             )
+            return redirect('profile', session_user_id)
 
         if action == 'delete_photo':
             user.photo = 'images/default_user_photo.png'
             user.cropped_photo = 'images/cropped-default_user_photo.png'
+            user.save()
+            return redirect('profile', session_user_id)
 
         if action == 'edit_data':
             data = {
@@ -74,8 +77,8 @@ class ProfileView(View):
                 'e_mail': request.POST.get('e_mail'),
                 'vk': request.POST.get('vk')
             }
-
             edit_user_data(user, data)
+            return redirect('profile', session_user_id)
 
         if action == 'update_data':
             password = request.POST.get('password')
@@ -95,5 +98,5 @@ class ProfileView(View):
                     }
                 )
 
-        user.save()
-        return redirect('profile', url_user_id)
+            return redirect('profile', session_user_id)
+

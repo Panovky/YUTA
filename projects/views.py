@@ -1,5 +1,4 @@
 import datetime
-import json
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -48,9 +47,8 @@ class ProjectsView(View):
             leader = User.objects.get(id=session_user_id)
             teams = Team.objects.filter(name__istartswith=team_name) & Team.objects.filter(leader=leader)
 
-            project_teams_id = json.loads(request.POST.get('project_teams_id'))
-            prohibited_id = [project_team_id for project_team_id in project_teams_id]
-            teams = teams.exclude(id__in=prohibited_id)
+            if request.POST.get('project_team_id'):
+                teams = teams.exclude(id=request.POST.get('project_team_id'))
 
             response_data = {
                 'teams': [
@@ -65,13 +63,14 @@ class ProjectsView(View):
 
         if action == 'create_project':
             name = request.POST.get('project_name').strip()
-            description = request.POST.get('project_descr').strip()
+            description = request.POST.get('project_description').strip()
 
-            if request.FILES.get('project_tech_task'):
-                file = request.FILES.get('project_tech_task')
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_tech_tasks')
+            if request.FILES.get('project_technical_task'):
+                file = request.FILES.get('project_technical_task')
+                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+
                 file_name = fs.save(file.name, file)
-                technical_task = f'projects_tech_tasks/{file_name}'
+                technical_task = f'projects_technical_tasks/{file_name}'
             else:
                 technical_task = None
 

@@ -8,6 +8,11 @@ const editTeamBtns = document.querySelectorAll('.edit-team-btn');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const userNameInputs = document.querySelectorAll('[name=user_name]');
 
+// получение csrf токена из cookie
+function getCSRFToken() {
+    return document.cookie.split(';').find((pair) => pair.includes('csrftoken')).split('=')[1]
+}
+
 // УДАЛЕНИЕ КОМАНДЫ
 document.addEventListener('DOMContentLoaded', () => {
     let deleteTeamBtns = document.querySelectorAll('.delete-team-btn');
@@ -36,7 +41,7 @@ function checkTeamName(action) {
         func = editTeam;
     }
 
-    let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = getCSRFToken();
     let teamName = form.querySelector('[name=team_name]').value;
 
     if (!teamName.trim()) {
@@ -114,7 +119,7 @@ function searchUser(e) {
         action = 'edit-team';
     }
 
-    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = getCSRFToken();
     let userName = form.querySelector('[name=user_name]').value;
 
     let membersId = [];
@@ -158,7 +163,7 @@ function searchUser(e) {
 
                 let img = document.createElement('img');
                 img.style.width = '100px';
-                img.src = user.cropped_photo;
+                img.src = user.cropped_photo_url;
 
                 let name = document.createElement('p');
                 name.innerHTML = `${user.last_name} ${user.first_name} ${user.patronymic ? user.patronymic : ''}`;
@@ -246,7 +251,7 @@ function deleteMember(e) {
 
 // СОЗДАНИЕ КОМАНДЫ
 function createTeam() {
-    let token = createTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token =getCSRFToken();
     let teamName = createTeamForm.querySelector('[name=team_name]').value;
 
     let membersId = [];
@@ -274,7 +279,7 @@ function createTeam() {
 
 // РЕДАКТИРОВАНИЕ КОМАНДЫ
 function editTeam() {
-    let token = editTeamForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = getCSRFToken();
     let teamId = editTeamForm.querySelector('[name=team_id]').value;
     let teamName = editTeamForm.querySelector('[name=team_name]').value;
 
@@ -305,7 +310,7 @@ function editTeam() {
 // ВСТАВКА ДАННЫХ О КОМАНДЕ ДЛЯ РЕДАКТИРОВАНИЯ
 editTeamBtns.forEach(btn => {
     btn.addEventListener('click', e => {
-        let token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let token = getCSRFToken();
         let teamId = e.currentTarget.dataset.teamId;
 
         let formData = new FormData();
@@ -337,7 +342,7 @@ editTeamBtns.forEach(btn => {
 
                     let img = document.createElement('img');
                     img.style.width = '100px';
-                    img.src = m.cropped_photo;
+                    img.src = m.cropped_photo_url;
 
                     let name = document.createElement('p');
                     name.innerHTML = `${m.last_name} ${m.first_name} ${m.patronymic ? m.patronymic : ''}`;

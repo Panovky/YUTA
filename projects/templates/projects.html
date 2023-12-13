@@ -36,8 +36,6 @@
             <!--ФОРМА СОЗДАНИЯ ПРОЕКТА-->
             <div id="create-project-form"
                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                {% csrf_token %}
-
                 <p class="text-center">Создание проекта</p><br><br>
 
                 <p>Придумайте краткое наименование проекта!</p><br>
@@ -45,7 +43,7 @@
                        placeholder="Наименование" autocomplete="off"><br><br>
 
                 <label class="form-label">Техническое задание
-                    <input class="form-control" type="file" name="project_tech_task" multiple accept=".pdf">
+                    <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
                 </label>
                 <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
 
@@ -74,8 +72,6 @@
                 <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
 
                 <div class="search-team-form" style="display: none">
-                    {% csrf_token %}
-
                     <br><br>
                     <p>Прикрепите команду к проекту:</p><br>
                     <div class="d-flex align-items-center">
@@ -328,7 +324,7 @@
                     <form method="POST" class="mt-2" id="deleteProjectForm">
                         {% csrf_token %}
                         <input class="form-control" type="hidden" name="action" value="delete_project">
-                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить проект "<span></span>"?</p>
+                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить проект «<span></span>»?</p>
                         <input class="form-control" type="hidden" name="project_id">
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit"

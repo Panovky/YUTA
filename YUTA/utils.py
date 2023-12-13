@@ -8,7 +8,7 @@ def authorize_user(login, password):
     response = requests.post('https://www.ystu.ru/WPROG/auth1.php', data={'login': login, 'password': password})
 
     if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
-        return False
+        return None
 
     if response.url == 'https://www.ystu.ru/WPROG/lk/lkstud.php':
         if User.objects.filter(login=login).exists():
@@ -89,7 +89,7 @@ def search_user(user_name, leader_id, members_id):
         'users': [
             {
                 'id': user.id,
-                'cropped_photo': user.cropped_photo.url,
+                'cropped_photo_url': user.cropped_photo.url,
                 'last_name': user.last_name,
                 'first_name': user.first_name,
                 'patronymic': user.patronymic,
@@ -110,7 +110,7 @@ def get_team_info(team_id):
                 'first_name': member.first_name,
                 'last_name': member.last_name,
                 'patronymic': member.patronymic,
-                'cropped_photo': member.cropped_photo.url
+                'cropped_photo_url': member.cropped_photo.url
             }
             for member in team.members.all()
         ]

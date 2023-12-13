@@ -29,10 +29,10 @@
                     <form method="POST" id="authorizationForm" class="mt-2">
                         {% csrf_token %}
                         <div class="text-field__icon mb-3 text-field__icon_person">
-                            <input id="Login" type="text" name="login" placeholder="Логин" maxlength="30">
+                            <input id="Login" type="text" name="login" placeholder="Логин" maxlength="30" required>
                         </div>
                         <div class="text-field__icon mb-3 text-field__icon_password">
-                            <input id="Password" type="password" name="password" placeholder="Пароль" maxlength="30">
+                            <input id="Password" type="password" name="password" placeholder="Пароль" maxlength="30" required>
                         </div>
                         {% if message %}
                         <p id="errorMessage" class="text-start text-danger">{{ message }}</p>
@@ -151,7 +151,7 @@
                         <img src="{% static 'images/3.jpg' %}" alt="аватарка">
                     </div>
                     <p class="name mt-lg-3 mt-md-2 mt-sm-2">Панова Ксения</p>
-                    <p class="role mt-1">Backend-разработчик</p>
+                    <p class="role mt-1">Fullstack-разработчик</p>
                 </div>
                 <div class="about-item">
                     <div class="hover-image-scale">

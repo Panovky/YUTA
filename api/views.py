@@ -24,8 +24,8 @@ class ProfileView(APIView):
 
         response_data = {
             'login': user.login,
-            'photo': user.photo.url,
-            'cropped_photo': user.cropped_photo.url,
+            'photo_url': user.photo.url,
+            'cropped_photo_url': user.cropped_photo.url,
             'last_name': user.last_name,
             'first_name': user.first_name,
             'patronymic': user.patronymic,
