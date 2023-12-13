@@ -12,7 +12,6 @@ class MainView(View):
     def post(self, request):
         login = request.POST.get('login')
         password = request.POST.get('password')
-
         user = authorize_user(login, password)
 
         if user:

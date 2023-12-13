@@ -16,7 +16,7 @@ class Project(models.Model):
     name = models.CharField(max_length=30)
     photo = models.ImageField(blank=True, upload_to='images/projects_photos', default='images/project_default.png')
     description = models.CharField(max_length=100)
-    technical_task = models.FileField(blank=True, null=True, upload_to='projects_tech_tasks',)
+    technical_task = models.FileField(blank=True, null=True, upload_to='projects_technical_tasks',)
     creation_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='в работе')

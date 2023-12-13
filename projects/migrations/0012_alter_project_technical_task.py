@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='technical_task',
-            field=models.FileField(blank=True, null=True, upload_to='projects_tech_tasks'),
+            field=models.FileField(blank=True, null=True, upload_to='projects_technical_tasks'),
         ),
     ]

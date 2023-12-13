@@ -36,8 +36,6 @@
             <!--ФОРМА СОЗДАНИЯ КОМАНДЫ-->
             <div id="create-team-form"
                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                {% csrf_token %}
-
                 <p class="text-center">Создание команды</p><br><br>
 
                 <p>Придумайте краткое наименование команды!</p><br>
@@ -50,8 +48,6 @@
                 <div class="members d-flex flex-column"></div>
 
                 <div class="search-user-form">
-                    {% csrf_token %}
-
                     <br><br>
                     <p>Добавьте участников команды:</p><br>
                     <div class="d-flex align-items-center">
@@ -76,8 +72,6 @@
             <!--ФОРМА РЕДАКТИРОВАНИЯ КОМАНДЫ-->
             <div id="edit-team-form"
                  style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                {% csrf_token %}
-
                 <p class="text-center">Редактирование команды</p><br><br>
 
                 <input type="hidden" name="team_id">
@@ -92,8 +86,6 @@
                 <div class="members d-flex flex-column"></div>
 
                 <div class="search-user-form">
-                    {% csrf_token %}
-
                     <br><br>
                     <p>Добавьте участников команды:</p><br>
                     <div class="d-flex align-items-center">
@@ -277,7 +269,7 @@
                     <form method="POST" class="mt-2" id="delete-team-form">
                         {% csrf_token %}
                         <input class="form-control" type="hidden" name="action" value="delete_team">
-                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить команду "<span></span>"?</p>
+                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить команду «<span></span>»?</p>
                         <input class="form-control" type="hidden" name="team_id">
                         <div class="d-flex justify-content-end mt-4">
                             <button type="submit"

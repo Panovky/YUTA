@@ -4,10 +4,16 @@ const createProjectBtn = document.querySelector('#create-project-btn');
 const editProjectForm = document.querySelector('#edit-project-form');
 const editProjectBtn = document.querySelector('#edit-project-btn');
 const projectNameInputs = document.querySelectorAll('[name=project_name]');
+const projectTechnicalTaskInputs = document.querySelectorAll('[name=project_technical_task]');
 const projectDeadlineInputs = document.querySelectorAll('[name=project_deadline]');
 const projectDescrInputs = document.querySelectorAll('[name=project_description]');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const radios = document.querySelectorAll('[name=team_radio]');
+
+// получение csrf токена из cookie
+function getCSRFToken() {
+    return document.cookie.split(';').find((pair) => pair.includes('csrftoken')).split('=')[1]
+}
 
 // УДАЛЕНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {
@@ -141,19 +147,17 @@ function searchTeam(e) {
         action = 'edit-project';
     }
 
-    let token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = getCSRFToken();
     let teamName = form.querySelector('[name=team_name]').value;
-
-    let projectTeamsId = [];
-    let projectTeams = form.querySelectorAll('.project-team');
-    projectTeams.forEach(projectTeam => {
-        projectTeamsId.push(+projectTeam.dataset.teamId);
-    });
+    let projectTeamId = form.querySelector('[name=project_team_id]').value;
 
     let formData = new FormData();
     formData.append('action', 'search_team');
     formData.append('team_name', teamName);
-    formData.append('project_teams_id', JSON.stringify(projectTeamsId));
+
+    if (projectTeamId) {
+         formData.append('project_team_id', projectTeamId);
+    }
 
     fetch('', {
         method: 'POST',
@@ -270,23 +274,23 @@ function detachTeam(e) {
 
 // СОЗДАНИЕ ПРОЕКТА
 function createProject() {
-    let token = createProjectForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    let token = getCSRFToken();
     let projectName = createProjectForm.querySelector('[name=project_name]').value;
-    let projectTechTask = createProjectForm.querySelector('[name=project_tech_task]').files[0];
+    let projectTechnicalTask = createProjectForm.querySelector('[name=project_technical_task]').files[0];
     let projectDeadline = createProjectForm.querySelector('[name=project_deadline]').value;
-    let projectDescr = createProjectForm.querySelector('[name=project_description]').value;
+    let projectDescription = createProjectForm.querySelector('[name=project_description]').value;
     let projectTeamId = createProjectForm.querySelector('[name=project_team_id]').value;
 
     let formData = new FormData();
     formData.append('action', 'create_project');
     formData.append('project_name', projectName);
-    if (projectTechTask) {
-        formData.append('project_tech_task', projectTechTask, projectTechTask.name);
+    if (projectTechnicalTask) {
+        formData.append('project_technical_task', projectTechnicalTask, projectTechnicalTask.name);
     }
     formData.append('project_deadline', projectDeadline);
-    formData.append('project_descr', projectDescr);
+    formData.append('project_description', projectDescription);
     if (projectTeamId) {
-           formData.append('project_team_id', projectTeamId);
+        formData.append('project_team_id', projectTeamId);
     }
 
     fetch('', {
@@ -301,7 +305,8 @@ function createProject() {
         });
 }
 
-function editProject() {}
+function editProject() {
+}
 
 // РЕДАКТИРОВАНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {
