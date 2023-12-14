@@ -8,8 +8,8 @@
 
     <main>
         <div class="container">
-            <button class="orange-btn blue-btn blue-btn-sm my-4 d-flex gap-2 align-items-center" data-bs-toggle="modal"
-                    data-bs-target="#create-team">
+            <button class="orange-btn blue-btn blue-btn-sm my-4 d-flex gap-2 align-items-center"
+                    id="create-team-btn-modal">
                 <svg style="width: 20px; height: 26px;">
                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#create"></use>
                 </svg>
@@ -18,10 +18,10 @@
             <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ КОМАНДЫ -->
             <div class="modal fade modal-custom" id="create-team" tabindex="-1" aria-labelledby="create-team"
                  aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content modal-content-teams">
                         <div class="modal-header position-relative">
-                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <button type="button" class="close-modal-btn close-modal-btn-teams" data-bs-dismiss="modal" aria-label="Закрыть">
                                 <svg style="width: 28px; height: 28px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
                                 </svg>
@@ -29,86 +29,43 @@
                         </div>
                         <p class="modal-title text-center">Создание команды</p>
                         <div class="modal-devider"></div>
+                        <div id="create-team-form">
+                            <p class="modal-text text-start">Придумайте краткое наименование команды:</p>
+                            <div class="text-field__noticon mb-2 mt-3 position-relative">
+                                <input data-action="create-team"  class="nameTeamInput" type="text" name="team_name" maxlength="50"
+                                       placeholder="Наименование" autocomplete="off" required>
+                                <span>*</span>
+                            </div>
+                            <p class="not-unique-warning mb-2" style="display: none; color: red">Команда с таким наименованием уже
+                                существует!</p>
+
+                            <p class="members-text modal-text text-start mt-4 mb-3" style="display:none;">Добавленные участники:</p>
+                            <div class="members d-flex flex-column"></div>
+
+                            <div class="search-user-form mt-3 mb-2">
+                                <p class="modal-text text-start">Добавьте участников команды:</p><br>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="text-field__noticon flex-grow-1">
+                                        <input data-action="create-team" class="searchInput" type="text" name="user_name"
+                                               placeholder="ФИО" autocomplete="off">
+                                    </div>
+                                    <button class="search-user-btn orange-btn blue-btn grey-btn" data-action="create-team"
+                                            type="button">Поиск
+                                    </button>
+                                </div>
+                                <p class="empty-results-text mt-2" style="display:none;">По вашему запросу пользователи не найдены!</p>
+                                <div class="searched-users mt-3 d-flex flex-column"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-4">
+                                <button id="create-team-btn" class="orange-btn grey-btn" type="button">Создать</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!--ФОРМА СОЗДАНИЯ КОМАНДЫ-->
-            <div id="create-team-form"
-                 style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                <p class="text-center">Создание команды</p><br><br>
-
-                <p>Придумайте краткое наименование команды!</p><br>
-                <input data-action="create-team" class="form-control" type="text" name="team_name" maxlength="50"
-                       placeholder="Наименование" autocomplete="off">
-                <p class="not-unique-warning" style="display: none; color: red">Команда с таким наименованием уже
-                    существует.</p>
-
-                <p class="members-text" style="display:none; margin-top: 30px">Добавленные участники</p><br>
-                <div class="members d-flex flex-column"></div>
-
-                <div class="search-user-form">
-                    <br><br>
-                    <p>Добавьте участников команды:</p><br>
-                    <div class="d-flex align-items-center">
-                        <input class="form-control" data-action="create-team" type="text" name="user_name"
-                               placeholder="Фамилия Имя (Отчество)" autocomplete="off">
-                        <button class="search-user-btn orange-btn blue-btn grey-btn" data-action="create-team"
-                                type="button">Поиск
-                        </button>
-                    </div>
-
-                    <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу пользователи
-                        не найдены</p><br>
-                    <div class="searched-users d-flex flex-column"></div>
-                </div>
-                <br><br>
-
-                <div class="d-flex justify-content-center">
-                    <button id="create-team-btn" class="orange-btn grey-btn" type="button">Создать</button>
-                </div>
-            </div>
-
-            <!--ФОРМА РЕДАКТИРОВАНИЯ КОМАНДЫ-->
-            <div id="edit-team-form"
-                 style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                <p class="text-center">Редактирование команды</p><br><br>
-
-                <input type="hidden" name="team_id">
-
-                <p>Придумайте краткое наименование команды!</p><br>
-                <input data-action="edit-team" class="form-control" type="text" name="team_name" maxlength="50"
-                       placeholder="Наименование" autocomplete="off">
-                <p class="not-unique-warning" style="display: none; color: red">Команда с таким наименованием уже
-                    существует.</p>
-
-                <p class="members-text" style="display:none; margin-top: 30px">Добавленные участники</p><br>
-                <div class="members d-flex flex-column"></div>
-
-                <div class="search-user-form">
-                    <br><br>
-                    <p>Добавьте участников команды:</p><br>
-                    <div class="d-flex align-items-center">
-                        <input class="form-control" data-action="edit-team" type="text" name="user_name"
-                               placeholder="Фамилия Имя (Отчество)" autocomplete="off">
-                        <button class="search-user-btn orange-btn blue-btn grey-btn" data-action="edit-team"
-                                type="button">Поиск
-                        </button>
-                    </div>
-
-                    <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу пользователи
-                        не найдены</p><br>
-                    <div class="searched-users d-flex flex-column"></div>
-                </div>
-                <br><br>
-
-                <br><br>
-                <div class="d-flex justify-content-center">
-                    <button id="edit-team-btn" class="orange-btn grey-btn" type="button">Редактировать</button>
-                </div>
-            </div>
-
-
+            
             <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
                 <button type="button" id="filter-boss-tab" data-bs-toggle="tab" data-bs-target="#filter-boss" role="tab"
                         class="tab-btn">Вы руководитель команды
@@ -288,10 +245,10 @@
         <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ КОМАНДЫ -->
         <div class="modal fade modal-custom" id="edit-team" tabindex="-1" aria-labelledby="edit-team"
              aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content modal-content-teams">
                     <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                        <button type="button" class="close-modal-btn close-modal-btn-teams" data-bs-dismiss="modal" aria-label="Закрыть">
                             <svg style="width: 28px; height: 28px;">
                                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
                             </svg>
@@ -299,6 +256,39 @@
                     </div>
                     <p class="modal-title text-center">Редактирование команды</p>
                     <div class="modal-devider"></div>
+                    <div id="edit-team-form">
+                        <input type="hidden" name="team_id">
+                        <p class="modal-text text-start">Наименование команды:</p>
+                        <div class="text-field__noticon mb-2 mt-3 position-relative">
+                            <input data-action="edit-team" type="text" name="team_name" maxlength="50"
+                                   placeholder="Наименование" autocomplete="off" required>
+                            <span>*</span>
+                        </div>
+                        <p class="not-unique-warning mb-2" style="display: none; color: red">Команда с таким наименованием уже
+                            существует!</p>
+
+                        <p class="members-text modal-text text-start mt-4 mb-3" style="display:none;">Добавленные участники:</p>
+                        <div class="members d-flex flex-column"></div>
+
+                        <div class="search-user-form mt-3 mb-2">
+                            <p class="modal-text text-start">Добавьте участников команды:</p><br>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="text-field__noticon flex-grow-1">
+                                    <input data-action="edit-team" class="searchInput" type="text" name="user_name"
+                                           placeholder="ФИО" autocomplete="off">
+                                </div>
+                                <button class="search-user-btn orange-btn blue-btn grey-btn" data-action="edit-team"
+                                        type="button">Поиск
+                                </button>
+                            </div>
+                            <p class="empty-results-text mt-2" style="display:none;">По вашему запросу пользователи не найдены!</p>
+                            <div class="searched-users mt-3 d-flex flex-column"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <button id="edit-team-btn" class="orange-btn grey-btn" type="button">Сохранить</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
