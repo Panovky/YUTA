@@ -51,7 +51,7 @@
                     <input data-action="create-project" class="form-control" type="date" min="{{ today }}" name="project_deadline">
                 </label><br><br><br>
 
-                <textarea data-action="create-project" class="form-control" name="project_description" maxlength="100"
+                <textarea data-action="create-project" class="form-control" name="project_description" maxlength="150"
                           placeholder="Краткое описание проекта"></textarea><br><br>
 
                 <p>Вы можете:</p><br>
@@ -92,218 +92,222 @@
             </div>
 
 
-            <!--КОНТЕНТ-->
-            <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
-                <button type="button" id="filter-boss-tab" data-bs-toggle="tab" data-bs-target="#filter-boss" role="tab"
-                        class="tab-btn">Вы руководитель проекта
-                </button>
-                <button type="button" class="tab-btn active" id="filter-participant-tab" data-bs-toggle="tab"
-                        data-bs-target="#filter-participant"
-                        role="tab">Вы участник проекта
-                </button>
-            </div>
-            <div class="tab-content" id="myTabContent">
-                <div id="filter-boss" class="tab-pane fade" role="tabpanel" aria-labelledby="filter-date-tab">
-                    {% if managed_projects %}
-                        <div class="project-list">
-                            {% for project in managed_projects %}
-                                <div class="project-card">
-                                    <div class="header">
-                                        <div class="img-wrapper">
-                                            <img src="{{ project.photo.url }}" alt="Обложка проекта">
-                                        </div>
-                                        <div class="header-content d-flex flex-column justify-content-center">
-                                            <p class="title">{{ project.name }}</p>
-                                            {% if project.technical_task %}
-                                                <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
-                                                   class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
-                                                    <svg style="width: 14px; height: 14px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
-                                                    </svg>
-                                                    <p>Техническое задание</p>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                        <button type="button" class="context-menu-btn">
-                                            <svg style="width: 22px; height: 22px;">
-                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#context-menu"></use>
+        <!--КОНТЕНТ-->
+        <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
+            <button type="button" id="filter-boss-tab" data-bs-toggle="tab" data-bs-target="#filter-boss" role="tab"
+                    class="tab-btn">Вы руководитель проекта
+            </button>
+            <button type="button" class="tab-btn active" id="filter-participant-tab" data-bs-toggle="tab"
+                    data-bs-target="#filter-participant"
+                    role="tab">Вы участник проекта
+            </button>
+        </div>
+        <div class="tab-content" id="myTabContent">
+            <div id="filter-boss" class="tab-pane fade" role="tabpanel" aria-labelledby="filter-date-tab">
+                {% if managed_projects %}
+                <div class="project-list">
+                    {% for project in managed_projects %}
+                    <div class="project-card">
+                        <div class="header">
+                            <div class="d-flex justify-content-start align-items-center gap-3">
+                                <div class="img-wrapper">
+                                    <img src="{{ project.photo.url }}" alt="Обложка проекта">
+                                </div>
+                                <div class="header-content d-flex flex-column justify-content-center">
+                                    <p class="title">{{ project.name }}</p>
+                                </div>
+                            </div>
+                            <button type="button" class="context-menu-btn">
+                                <svg style="width: 22px; height: 22px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#context-menu"></use>
+                                </svg>
+                            </button>
+                            <ul class="dropdown-context-menu">
+                                <li>
+                                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center updateProjectBtn"
+                                            type="button">
+                                        Редактировать проект
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center deleteProjectBtn"
+                                            type="button"
+                                            data-project-id="{{ project.id }}"
+                                            data-project-name="{{ project.name }}">
+                                        Удалить проект
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content">
+                            {% if project.technical_task %}
+                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                               class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center">
+                                <svg style="width: 14px; height: 14px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
+                                </svg>
+                                <p>Техническое задание</p>
+                            </a>
+                            {% endif %}
+                            <div class="content__text">
+                                <div class="d-flex mb-2">
+                                    <svg style="width: 18px; height: 19px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
+                                    </svg>
+                                    <p class="ms-2">
+                                        <span class="fw-semibold">Статус:</span> {{ project.status }}
+                                    </p>
+                                </div>
+                                {% if project.status == 'в работе' %}
+                                <div class="d-flex mb-2">
+                                    <p class="flex-shrink-0">
+                                        <svg style="width: 19px; height: 20px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
+                                        </svg>
+                                    </p>
+                                    <p class="ms-2">
+                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
+                                    </p>
+                                </div>
+                                {% endif %}
+                                <div class="d-flex mb-2">
+                                    <p class="flex-shrink-0">
+                                        <svg style="width: 19px; height: 19px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
+                                        </svg>
+                                    </p>
+                                    <p class="ms-2 project-description"><span
+                                            class="fw-semibold">Описание:</span> {{ project.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-center fw-semibold mb-3">Команда</p>
+                                <div class="d-flex justify-content-center align-items-start content__team">
+                                    <a href="{% url 'profile' project.manager.id %}" target="_blank"
+                                       class="d-flex justify-content-center align-items-center flex-column">
+                                        <img src="{{ project.manager.cropped_photo.url }}">
+                                        <div class="crown-boss">
+                                            <svg style="width: 21px; height: 21px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
                                             </svg>
-                                        </button>
-                                        <ul class="dropdown-context-menu">
-                                            <li>
-                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center updateProjectBtn"
-                                                        type="button">
-                                                    Редактировать проект
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center deleteProjectBtn"
-                                                        type="button"
-                                                        data-project-id="{{ project.id }}"
-                                                        data-project-name="{{ project.name }}">
-                                                    Удалить проект
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="content">
-                                        <div class="content__text">
-                                            <div class="d-flex mb-2">
-                                                <svg style="width: 18px; height: 19px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
-                                                </svg>
-                                                <p class="ms-2">
-                                                    <span class="fw-semibold">Статус:</span> {{ project.status }}
-                                                </p>
-                                            </div>
-                                            {% if project.status == 'в работе' %}
-                                                <div class="d-flex mb-2">
-                                                    <p class="flex-shrink-0">
-                                                        <svg style="width: 19px; height: 20px;">
-                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
-                                                        </svg>
-                                                    </p>
-                                                    <p class="ms-2">
-                                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
-                                                    </p>
-                                                </div>
-                                            {% endif %}
-                                            <div class="d-flex mb-2">
-                                                <p class="flex-shrink-0">
-                                                    <svg style="width: 19px; height: 19px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
-                                                    </svg>
-                                                </p>
-                                                <p class="ms-2 project-description"><span
-                                                        class="fw-semibold">Описание:</span> {{ project.description }}
-                                                </p>
-                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="text-center fw-semibold mb-3">Команда</p>
-                                            <div class="d-flex justify-content-center align-items-start content__team">
-                                                <a href="{% url 'profile' project.manager.id %}" target="_blank"
-                                                   class="d-flex justify-content-center align-items-center flex-column">
-                                                    <img src="{{ project.manager.cropped_photo.url }}">
-                                                    <div class="crown-boss">
-                                                        <svg style="width: 21px; height: 21px;">
-                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
-                                                        </svg>
-                                                    </div>
-                                                    <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
-                                                </a>
-                                                {% if project.team %}
-                                                    {% for member in project.team.members.all %}
-                                                        <a href="{% url 'profile' member.id %}" target="_blank"
-                                                           class="d-flex justify-content-center align-items-center flex-column">
-                                                            <img src="{{ member.cropped_photo.url }}">
-                                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
-                                                        </a>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
+                                        <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
+                                    </a>
+                                    {% if project.team %}
+                                    {% for member in project.team.members.all %}
+                                    <a href="{% url 'profile' member.id %}" target="_blank"
+                                       class="d-flex justify-content-center align-items-center flex-column">
+                                        <img src="{{ member.cropped_photo.url }}">
+                                        <p>{{ member.last_name }} {{ member.first_name }}</p>
+                                    </a>
+                                    {% endfor %}
+                                    {% endif %}
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
-                    {% else %}
-                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не руководите ни одним проектом.
-                            Хотите
-                            создать новый проект?</p>
-                    {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
-                <div id="filter-participant" class="tab-pane fade show active" role="tabpanel"
-                     aria-labelledby="filter-participant-tab">
-                    {% if others_projects %}
-                        <div class="project-list">
-                            {% for project in others_projects %}
-                                <div class="project-card">
-                                    <div class="header">
-                                        <div class="img-wrapper">
-                                            <img src="{{ project.photo.url }}" alt="Обложка проекта">
-                                        </div>
-                                        <div class="header-content d-flex flex-column justify-content-center">
-                                            <p class="title">{{ project.name }}</p>
-                                            {% if project.technical_task %}
-                                                <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
-                                                   class="orange-btn blue-btn mt-3 btn-tz d-flex gap-2 align-items-center">
-                                                    <svg style="width: 14px; height: 14px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
-                                                    </svg>
-                                                    <p>Техническое задание</p>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="content__text">
-                                            <div class="d-flex mb-2">
-                                                <svg style="width: 18px; height: 19px;">
-                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
-                                                </svg>
-                                                <p class="ms-2">
-                                                    <span class="fw-semibold">Статус:</span> {{ project.status }}
-                                                </p>
-                                            </div>
-                                            {% if project.status == 'в работе' %}
-                                                <div class="d-flex mb-2">
-                                                    <p class="flex-shrink-0">
-                                                        <svg style="width: 19px; height: 20px;">
-                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
-                                                        </svg>
-                                                    </p>
-                                                    <p class="ms-2">
-                                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
-                                                    </p>
-                                                </div>
-                                            {% endif %}
-                                            <div class="d-flex mb-2">
-                                                <p class="flex-shrink-0">
-                                                    <svg style="width: 19px; height: 19px;">
-                                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
-                                                    </svg>
-                                                </p>
-                                                <p class="ms-2 project-description"><span
-                                                        class="fw-semibold">Описание:</span> {{ project.description }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p class="text-center fw-semibold mb-3">Команда</p>
-                                            <div class="d-flex justify-content-center align-items-start content__team">
-                                                <a href="{% url 'profile' project.manager.id %}" target="_blank"
-                                                   class="d-flex justify-content-center align-items-center flex-column">
-                                                    <img src="{{ project.manager.cropped_photo.url }}">
-                                                    <div class="crown-boss">
-                                                        <svg style="width: 21px; height: 21px;">
-                                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
-                                                        </svg>
-                                                    </div>
-                                                    <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
-                                                </a>
-                                                {% if project.team %}
-                                                    {% for member in project.team.members.all %}
-                                                        <a href="{% url 'profile' member.id %}" target="_blank"
-                                                           class="d-flex justify-content-center align-items-center flex-column">
-                                                            <img src="{{ member.cropped_photo.url }}">
-                                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
-                                                        </a>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не участвуете ни одном в проекте.
-                            Хотите
-                            создать новый проект?</p>
-                    {% endif %}
-                </div>
+                {% else %}
+                <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не руководите ни одним проектом.
+                    Хотите
+                    создать новый проект?</p>
+                {% endif %}
             </div>
+            <div id="filter-participant" class="tab-pane fade show active" role="tabpanel"
+                 aria-labelledby="filter-participant-tab">
+                {% if others_projects %}
+                <div class="project-list">
+                    {% for project in others_projects %}
+                    <div class="project-card">
+                        <div class="header">
+                            <div class="d-flex justify-content-start align-items-center gap-3">
+                                <div class="img-wrapper">
+                                    <img src="{{ project.photo.url }}" alt="Обложка проекта">
+                                </div>
+                                <div class="header-content d-flex flex-column justify-content-center">
+                                    <p class="title">{{ project.name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            {% if project.technical_task %}
+                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                               class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center">
+                                <svg style="width: 14px; height: 14px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
+                                </svg>
+                                <p>Техническое задание</p>
+                            </a>
+                            {% endif %}
+                            <div class="content__text">
+                                <div class="d-flex mb-2">
+                                    <svg style="width: 18px; height: 19px;">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#status"></use>
+                                    </svg>
+                                    <p class="ms-2">
+                                        <span class="fw-semibold">Статус:</span> {{ project.status }}
+                                    </p>
+                                </div>
+                                {% if project.status == 'в работе' %}
+                                <div class="d-flex mb-2">
+                                    <p class="flex-shrink-0">
+                                        <svg style="width: 19px; height: 20px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#deadline"></use>
+                                        </svg>
+                                    </p>
+                                    <p class="ms-2">
+                                        <span class="fw-semibold">{{ project.deadline_str }}</span>
+                                    </p>
+                                </div>
+                                {% endif %}
+                                <div class="d-flex mb-2">
+                                    <p class="flex-shrink-0">
+                                        <svg style="width: 19px; height: 19px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#description"></use>
+                                        </svg>
+                                    </p>
+                                    <p class="ms-2 project-description"><span
+                                            class="fw-semibold">Описание:</span> {{ project.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-center fw-semibold mb-3">Команда</p>
+                                <div class="d-flex justify-content-center align-items-start content__team">
+                                    <a href="{% url 'profile' project.manager.id %}" target="_blank"
+                                       class="d-flex justify-content-center align-items-center flex-column">
+                                        <img src="{{ project.manager.cropped_photo.url }}">
+                                        <div class="crown-boss">
+                                            <svg style="width: 21px; height: 21px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                            </svg>
+                                        </div>
+                                        <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
+                                    </a>
+                                    {% if project.team %}
+                                    {% for member in project.team.members.all %}
+                                    <a href="{% url 'profile' member.id %}" target="_blank"
+                                       class="d-flex justify-content-center align-items-center flex-column">
+                                        <img src="{{ member.cropped_photo.url }}">
+                                        <p>{{ member.last_name }} {{ member.first_name }}</p>
+                                    </a>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center mt-5 mb-5 fs-4">К сожалению, вы еще не участвуете ни одном в проекте.
+                    Хотите
+                    создать новый проект?</p>
+                {% endif %}
+            </div>
+        </div>
         </div>
 
 

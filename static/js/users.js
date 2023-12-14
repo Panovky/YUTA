@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const openModalReloadBtn = document.querySelector('#openModalReloadBtn');
     const modalReload = new bootstrap.Modal(document.querySelector('#reload'));
     const reloadForm = document.querySelector('#reloadForm');
+    const inputPassword = document.querySelector('#Password');
+    const authBtn = document.querySelector('#auth-btn');
 
     openModalReloadBtn.addEventListener('click', () => {
         modalReload.show()
@@ -11,11 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (reloadForm.contains(document.querySelector('#errorMessage'))) {
         modalReload.show()
     }
+
+    reloadForm.addEventListener('input', () => {
+        let isAnyFieldEmpty = [inputPassword].some(input => !input.value.trim());
+        authBtn.disabled = isAnyFieldEmpty;
+    })
 });
-
-
-// ДОБАВЛЕНИЕ ГРАДИЕНТА В ФОН
-document.querySelector('.navbar').classList.add('gradient');
 
 
 // ИЗМЕНЕНИЕ ФОТОГРАФИИ АВАТАРКИ
@@ -140,8 +143,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // МАСКА ДЛЯ ВВОДА НОМЕРА ТЕЛЕФОНА
 document.addEventListener("DOMContentLoaded", () => {
-    const phoneInput = document.querySelector('.phone');
-    const mask = new IMask(phoneInput, {
-        mask: "+{7} (000) 000-00-00"
-    });
+    const phoneInput = document.querySelectorAll('.phone');
+    const vkInput = document.querySelectorAll('.link-vk');
+
+    phoneInput.forEach(item => {
+        const maskPhone = new IMask(item, {
+            mask: "+{7} (000) 000-00-00"
+        });
+    })
+
+    vkInput.forEach(item => {
+        const maskVk = new IMask(item, {
+            mask: "{https://vk.com/}*[**********************************************]",
+        });
+    })
 });

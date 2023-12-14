@@ -5,9 +5,11 @@
 {% block menu %}
 <div class="header-top">
     <div class="container-xxl">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between py-2">
             <div class="logo">
-                {% block logo %}<img src="{% static 'images/blue-logo.png' %}" alt="Логотип YUTA">{% endblock logo %}
+                {% block logo %}
+                <img src="{% static 'images/logo.png' %}" alt="YUTA">
+                {% endblock logo %}
             </div>
             <p class="align-self-center header-title d-lg-block d-md-block d-sm-block d-none">Добро пожаловать в YUTA!</p>
             <div class="align-self-center">
@@ -28,17 +30,19 @@
                     <div class="modal-devider"></div>
                     <form method="POST" id="authorizationForm" class="mt-2">
                         {% csrf_token %}
-                        <div class="text-field__icon mb-3 text-field__icon_person">
+                        <div class="text-field__icon mb-3 text-field__icon_person position-relative">
                             <input id="Login" type="text" name="login" placeholder="Логин" maxlength="30" required>
+                            <span>*</span>
                         </div>
-                        <div class="text-field__icon mb-3 text-field__icon_password">
-                            <input id="Password" type="password" name="password" placeholder="Пароль" maxlength="30" required>
+                        <div class="text-field__icon mb-3 text-field__icon_password position-relative">
+                            <input id="Password" class="required" type="password" name="password" placeholder="Пароль" maxlength="30" required>
+                            <span>*</span>
                         </div>
                         {% if message %}
                         <p id="errorMessage" class="text-start text-danger">{{ message }}</p>
                         {% endif %}
                         <div class="d-flex mt-4 justify-content-end">
-                            <button type="submit" class="orange-btn modal-btn">Войти</button>
+                            <button type="submit" id="auth-btn" class="orange-btn modal-btn" disabled>Войти</button>
                         </div>
                     </form>
                 </div>

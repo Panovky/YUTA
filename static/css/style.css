@@ -29,6 +29,14 @@ main {
     flex: 1 0 auto;
 }
 
+button:disabled,
+button[disabled],
+button:disabled:hover,
+button[disabled]:hover {
+    background-color: rgba(148, 148, 148, 0.9);
+    color: var(--white-color);
+}
+
 .orange-btn {
     color: var(--white-color);
     font-size: 0.9rem;
@@ -58,7 +66,7 @@ main {
 }
 
 .blue-btn {
-    padding: 10px 45px;
+    padding: 12px 45px;
     background-color: rgba(22, 56, 157, 0.9);
     transition: all 0.2s;
 }
@@ -162,7 +170,7 @@ main {
     padding: 10px 20px 10px 20px;
     color: var(--dark-gray-color);
     background-color: var(--light-gray-color);
-    border-radius: 15px;
+    border-radius: 20px;
     opacity: 1;
 }
 
@@ -197,4 +205,18 @@ main {
     background-position: center;
     background-size: contain;
     z-index: 100;
+}
+
+input + span{
+    display: none;
+}
+
+input:required + span{
+    position: absolute;
+    right: -17px;
+    top: 33%;
+    display: inline-block;
+    color: red;
+    opacity: 90%;
+    font-size: 1.6rem;
 }

@@ -11,12 +11,12 @@
 }
 
 .logo img {
-    width: 75px;
-    height: 75px;
+    width: 89px;
+    height: 37px;
 }
 
 .header-title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
     color: var(--white-color);
     margin-bottom: 0;

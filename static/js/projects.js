@@ -318,3 +318,32 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     })
 });
+
+
+// ПОКАЗ ВСПЛЫВАЮЩЕГО ОКНА СО ВСЕЙ КОМАНДОЙ
+let btnsCloseAllTeam = document.querySelectorAll('.close-block-team-btn');
+let btnsShowAllTeams = document.querySelectorAll('.show-all-teams-btn');
+
+const countPersonInTeam = document.querySelector('#content__team').childNodes.length-1;
+btnsShowAllTeams.forEach(btn => {
+
+    if (countPersonInTeam <= 5) {
+        btn.style.display = "none";
+    } else {
+        btn.style.display = "block";
+        console.log(document.querySelector('.all-person-list').childNodes.length);
+        document.querySelector('#count-person').innerHTML = document.querySelector('.all-person-list').childNodes.length;
+    }
+
+    btn.addEventListener('click', (e) => {
+        let items = document.querySelectorAll('.all-person')[0];
+        items.classList.add("show-all-team");
+    })
+});
+
+btnsCloseAllTeam.forEach(function (btn) {
+    btn.addEventListener('click', (e) => {
+        let items = document.querySelectorAll('.all-person')[0];
+        items.classList.remove("show-all-team");
+    })
+});
