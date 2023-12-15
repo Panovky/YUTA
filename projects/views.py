@@ -7,6 +7,7 @@ from YUTA.settings import MEDIA_ROOT
 from projects.models import Project
 from teams.models import Team
 from users.models import User
+from YUTA.utils import get_project_info
 
 
 class ProjectsView(View):
@@ -64,16 +65,6 @@ class ProjectsView(View):
         if action == 'create_project':
             name = request.POST.get('project_name').strip()
             description = request.POST.get('project_description').strip()
-
-            if request.FILES.get('project_technical_task'):
-                file = request.FILES.get('project_technical_task')
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-
-                file_name = fs.save(file.name, file)
-                technical_task = f'projects_technical_tasks/{file_name}'
-            else:
-                technical_task = None
-
             deadline = request.POST.get('project_deadline')
             manager = User.objects.get(id=session_user_id)
 
@@ -82,13 +73,56 @@ class ProjectsView(View):
             else:
                 team = None
 
-            Project.objects.create(
+            project = Project.objects.create(
                 name=name,
                 description=description,
-                technical_task=technical_task,
                 deadline=deadline,
                 manager=manager,
                 team=team
             )
+
+            if request.FILES.get('project_technical_task'):
+                file = request.FILES.get('project_technical_task')
+                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+                file_name = f'tech_task_{project.id}.pdf'
+                fs.save(file_name, file)
+                project.technical_task = f'projects_technical_tasks/{file_name}'
+                project.save()
+
             return redirect('projects')
 
+        if action == 'edit_project':
+            project = Project.objects.get(id=request.POST.get('project_id'))
+            name = request.POST.get('project_name').strip()
+            description = request.POST.get('project_description').strip()
+            deadline = request.POST.get('project_deadline')
+            status = request.POST.get('project_status')
+
+            if request.FILES.get('project_technical_task'):
+                file = request.FILES.get('project_technical_task')
+                file_name = f'tech_task_{project.id}.pdf'
+                if file.name != file_name:
+                    fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+                    fs.delete(file_name)
+                    fs.save(file_name, file)
+                technical_task = f'projects_technical_tasks/{file_name}'
+            else:
+                technical_task = None
+
+            if request.POST.get('project_team_id'):
+                team = Team.objects.get(id=request.POST.get('project_team_id'))
+            else:
+                team = None
+
+            project.name = name
+            project.description = description
+            project.technical_task = technical_task
+            project.deadline = deadline
+            project.status = status
+            project.team = team
+            project.save()
+            return redirect('projects')
+
+        if action == 'get_project_info':
+            project_id = request.POST.get('project_id')
+            return JsonResponse(data=get_project_info(project_id))

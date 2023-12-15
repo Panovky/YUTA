@@ -192,6 +192,9 @@ function searchUser(e) {
 
 // ОЧИЩЕНИЕ РЕЗУЛЬТАТОВ ПОИСКА
 function clearSearchResults(form) {
+    form.querySelector('[name=user_name]').value = '';
+    form.querySelector('.search-user-btn').removeEventListener('click', searchUser);
+    form.querySelector('.search-user-btn').classList.add('grey-btn');
     form.querySelector('.empty-results-text').style.display = 'none';
     form.querySelectorAll('.searched-user').forEach(user => {
         user.remove();

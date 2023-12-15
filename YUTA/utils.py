@@ -1,5 +1,8 @@
+import io
 import requests
 from YUTA.scripts import parse_lk
+from YUTA.settings import MEDIA_ROOT
+from projects.models import Project
 from teams.models import Team
 from users.models import User
 
@@ -114,4 +117,26 @@ def get_team_info(team_id):
             }
             for member in team.members.all()
         ]
+    }
+
+
+def get_project_info(project_id):
+    project = Project.objects.get(id=project_id)
+
+    if project.technical_task:
+        technical_task_path = project.technical_task.url
+        technical_task_name = technical_task_path.replace('/media/projects_technical_tasks/', '')
+    else:
+        technical_task_name = None
+
+    return {
+        'name': project.name,
+        'technical_task_name': technical_task_name,
+        'deadline': project.deadline,
+        'status': project.status,
+        'description': project.description,
+        'team': {
+            'id': project.team.id,
+            'name': project.team.name
+        } if project.team else None
     }
