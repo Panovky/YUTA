@@ -6,91 +6,161 @@
 
 {% block content %}
 
-    <main>
-        <div class="container">
-            <button id="createProjectBtn" class="orange-btn blue-btn blue-btn-sm my-4 d-flex gap-2 align-items-center">
-                <svg style="width: 20px; height: 26px;">
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#create"></use>
-                </svg>
-                <p>Создать проект</p>
-            </button>
-            <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ ПРОЕКТА-->
-            <div class="modal fade modal-custom" id="create-project" tabindex="-1" aria-labelledby="create-team"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header position-relative">
-                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                                <svg style="width: 28px; height: 28px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="modal-title text-center">Создание проекта</p>
-                        <div class="modal-devider"></div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!--ФОРМА СОЗДАНИЯ ПРОЕКТА-->
-            <div id="create-project-form"
-                 style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-                <p class="text-center">Создание проекта</p><br><br>
-
-                <p>Придумайте краткое наименование проекта!</p><br>
-                <input data-action="create-project" class="form-control" type="text" maxlength="30" name="project_name"
-                       placeholder="Наименование" autocomplete="off"><br><br>
-
-                <label class="form-label">Техническое задание
-                    <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
-                </label>
-                <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
-
-                <label class="form-label">Дедлайн
-                    <input data-action="create-project" class="form-control" type="date" min="{{ today }}" name="project_deadline">
-                </label><br><br><br>
-
-                <textarea data-action="create-project" class="form-control" name="project_description" maxlength="150"
-                          placeholder="Краткое описание проекта"></textarea><br><br>
-
-                <p>Вы можете:</p><br>
-
-                <label>
-                    <input data-action="create-project" class="pass-radio" type="radio" name="team_radio" value="pass"
-                           checked>
-                    Создать проект без команды и добавить ее позже
-                </label><br><br>
-
-                <label>
-                    <input data-action="create-project" class="attach-radio" type="radio" name="team_radio"
-                           value="attach">Прикрепить к проекту одну из своих команд
-                </label><br><br>
-
-                <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
-                <div class="project-teams d-flex flex-column"></div>
-                <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
-
-                <div class="search-team-form" style="display: none">
-                    <br><br>
-                    <p>Прикрепите команду к проекту:</p><br>
-                    <div class="d-flex align-items-center">
-                        <input class="form-control" data-action="create-project" type="text" name="team_name"
-                               placeholder="Наименование команды" autocomplete="off">
-                        <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="create-project" type="button">Поиск
+<main>
+    <div class="container">
+        <button id="createProjectBtn" class="orange-btn blue-btn blue-btn-sm my-4 d-flex gap-2 align-items-center">
+            <svg style="width: 20px; height: 26px;">
+                <use xlink:href="{% static 'images/svg/sprite.svg' %}#create"></use>
+            </svg>
+            <p>Создать проект</p>
+        </button>
+        <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ ПРОЕКТА-->
+        <div class="modal fade modal-custom" id="create-project" tabindex="-1" aria-labelledby="create-team"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header position-relative">
+                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                            <svg style="width: 28px; height: 28px;">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                            </svg>
                         </button>
                     </div>
-
-                    <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу команды не найдены</p><br>
-                    <div class="searched-teams d-flex flex-column"></div>
-                </div>
-                <br><br>
-
-                <div class="d-flex justify-content-center">
-                    <button id="create-project-btn" class="orange-btn grey-btn" type="button">Создать</button>
+                    <p class="modal-title text-center">Создание проекта</p>
+                    <div class="modal-devider"></div>
                 </div>
             </div>
+        </div>
 
+
+        <!--ФОРМА СОЗДАНИЯ ПРОЕКТА-->
+        <div id="create-project-form"
+             style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+            <p class="text-center">Создание проекта</p><br><br>
+
+            <p>Придумайте краткое наименование проекта!</p><br>
+            <input data-action="create-project" class="form-control" type="text" maxlength="30" name="project_name"
+                   placeholder="Наименование" autocomplete="off"><br><br>
+
+            <label class="form-label">Техническое задание
+                <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
+            </label>
+            <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
+
+            <label class="form-label">Дедлайн
+                <input data-action="create-project" class="form-control" type="date" min="{{ today }}"
+                       name="project_deadline">
+            </label><br><br><br>
+
+            <textarea data-action="create-project" class="form-control" name="project_description" maxlength="150"
+                      placeholder="Краткое описание проекта"></textarea><br><br>
+
+            <p>Вы можете:</p><br>
+
+            <label>
+                <input data-action="create-project" class="pass-radio" type="radio" name="team_radio" value="pass"  checked>
+                Создать проект без команды и добавить ее позже
+            </label><br><br>
+
+            <label>
+                <input data-action="create-project" class="attach-radio" type="radio" name="team_radio"
+                       value="attach">Прикрепить к проекту одну из своих команд
+            </label><br><br>
+
+            <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
+            <div class="project-teams d-flex flex-column"></div>
+            <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
+
+            <div class="search-team-form" style="display: none">
+                <br><br>
+                <p>Прикрепите команду к проекту:</p><br>
+                <div class="d-flex align-items-center">
+                    <input class="form-control" data-action="create-project" type="text" name="team_name"
+                           placeholder="Наименование команды" autocomplete="off">
+                    <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="create-project"
+                            type="button">Поиск
+                    </button>
+                </div>
+
+                <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу команды не
+                    найдены</p><br>
+                <div class="searched-teams d-flex flex-column"></div>
+            </div>
+            <br><br>
+
+            <div class="d-flex justify-content-center">
+                <button id="create-project-btn" class="orange-btn grey-btn" type="button">Создать</button>
+            </div>
+        </div>
+
+        <!--ФОРМА РЕДАКТИРОВАНИЯ ПРОЕКТА-->
+        <div id="edit-project-form"
+             style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
+            <input type="hidden" name="project_id">
+            <p class="text-center">Редактирование проекта</p><br><br>
+
+            <p>Придумайте краткое наименование проекта!</p><br>
+            <input data-action="edit-project" class="form-control" type="text" maxlength="30" name="project_name"
+                   placeholder="Наименование" autocomplete="off"><br><br>
+
+            <label class="form-label">Техническое задание
+                <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
+            </label>
+            <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
+
+            <label class="form-label">Дедлайн
+                <input data-action="edit-project" class="form-control" type="date" min="{{ today }}"
+                       name="project_deadline">
+            </label><br><br><br>
+
+            <label class="form-label">Статус
+                <select class="form-control" name="project_status">
+                    <option value="в работе">в работе</option>
+                    <option value="приостановлен">приостановлен</option>
+                    <option value="завершен">завершен</option>
+                </select>
+            </label><br><br><br>
+
+            <textarea data-action="edit-project" class="form-control" name="project_description" maxlength="150"
+                      placeholder="Краткое описание проекта"></textarea><br><br>
+
+            <p>Вы можете:</p><br>
+
+            <label>
+                <input data-action="edit-project" class="pass-radio" type="radio" name="team_radio" value="pass">
+                Оставить проект без команды и добавить ее позже
+            </label><br><br>
+
+            <label>
+                <input data-action="edit-project" class="attach-radio" type="radio" name="team_radio"
+                       value="attach">Прикрепить к проекту одну из своих команд
+            </label><br><br>
+
+            <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
+            <div class="project-teams d-flex flex-column"></div>
+            <input data-action="edit-project" class="form-control" type="hidden" name="project_team_id">
+
+            <div class="search-team-form" style="display: none">
+                <br><br>
+                <p>Прикрепите команду к проекту:</p><br>
+                <div class="d-flex align-items-center">
+                    <input class="form-control" data-action="edit-project" type="text" name="team_name"
+                           placeholder="Наименование команды" autocomplete="off">
+                    <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="edit-project"
+                            type="button">Поиск
+                    </button>
+                </div>
+
+                <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу команды не
+                    найдены</p><br>
+                <div class="searched-teams d-flex flex-column"></div>
+            </div>
+            <br><br>
+
+            <div class="d-flex justify-content-center">
+                <button id="edit-project-btn" class="orange-btn grey-btn" type="button">Сохранить</button>
+            </div>
+        </div>
 
         <!--КОНТЕНТ-->
         <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
@@ -124,7 +194,7 @@
                             </button>
                             <ul class="dropdown-context-menu">
                                 <li>
-                                    <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center updateProjectBtn"
+                                    <button data-project-id="{{ project.id }}" class="dropdown-item d-flex gap-2 justify-content-start align-items-center edit-project-btn"
                                             type="button">
                                         Редактировать проект
                                     </button>
@@ -308,62 +378,62 @@
                 {% endif %}
             </div>
         </div>
-        </div>
+    </div>
 
 
-        <!--  МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ ПРОЕКТА -->
-        <div class="modal fade modal-custom" id="delete-project" tabindex="-1" aria-labelledby="delete"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                            <svg style="width: 28px; height: 28px;">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+    <!--  МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ ПРОЕКТА -->
+    <div class="modal fade modal-custom" id="delete-project" tabindex="-1" aria-labelledby="delete"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header position-relative">
+                    <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                        <svg style="width: 28px; height: 28px;">
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                        </svg>
+                    </button>
+                </div>
+                <p class="modal-title text-center">Предупреждение</p>
+                <div class="modal-devider"></div>
+                <form method="POST" class="mt-2" id="deleteProjectForm">
+                    {% csrf_token %}
+                    <input class="form-control" type="hidden" name="action" value="delete_project">
+                    <p class="text-start fs-5 my-3">Вы действительно хотите удалить проект «<span></span>»?</p>
+                    <input class="form-control" type="hidden" name="project_id">
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit"
+                                class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
+                            <svg style="width: 19px; height: 17px;">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
                             </svg>
+                            <p>Да, удалить</p>
                         </button>
                     </div>
-                    <p class="modal-title text-center">Предупреждение</p>
-                    <div class="modal-devider"></div>
-                    <form method="POST" class="mt-2" id="deleteProjectForm">
-                        {% csrf_token %}
-                        <input class="form-control" type="hidden" name="action" value="delete_project">
-                        <p class="text-start fs-5 my-3">Вы действительно хотите удалить проект «<span></span>»?</p>
-                        <input class="form-control" type="hidden" name="project_id">
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit"
-                                    class="d-flex gap-2 justify-content-center align-items-center orange-btn modal-btn">
-                                <svg style="width: 19px; height: 17px;">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
-                                </svg>
-                                <p>Да, удалить</p>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ПРОЕКТА -->
-        <div class="modal fade modal-custom" id="edit-project" tabindex="-1" aria-labelledby="edit-team"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
-                            <svg style="width: 28px; height: 28px;">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                            </svg>
-                        </button>
-                    </div>
-                    <p class="modal-title text-center">Редактирование проекта</p>
-                    <div class="modal-devider"></div>
+    <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ПРОЕКТА -->
+    <div class="modal fade modal-custom" id="edit-project" tabindex="-1" aria-labelledby="edit-team"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header position-relative">
+                    <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                        <svg style="width: 28px; height: 28px;">
+                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                        </svg>
+                    </button>
                 </div>
+                <p class="modal-title text-center">Редактирование проекта</p>
+                <div class="modal-devider"></div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    {% load static %}
-    <script src="{% static 'js/projects.js' %}"></script>
+{% load static %}
+<script src="{% static 'js/projects.js' %}"></script>
 
 {% endblock content %}
