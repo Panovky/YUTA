@@ -29,6 +29,11 @@ main {
     flex: 1 0 auto;
 }
 
+[data-simplebar] {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 button:disabled,
 button[disabled],
 button:disabled:hover,
@@ -207,11 +212,13 @@ button[disabled]:hover {
     z-index: 100;
 }
 
-input + span{
+input + span,
+textarea + span {
     display: none;
 }
 
-input:required + span{
+input:required + span,
+textarea:required + span {
     position: absolute;
     right: -17px;
     top: 33%;
