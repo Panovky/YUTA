@@ -69,11 +69,11 @@
 {% block content %}
     <div class="text-center avatar-block gradient">
         <div class="container-xxl">
+            {% if is_owner %}
             <div class="avatar-wrapper">
                 <div class="avatar-img-wrapper">
                     <img src="{{ user.cropped_photo.url }}" alt="аватарка">
                 </div>
-                {% if is_owner %}
                 <button type="button" id="choiceAvatartBtn" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg style="width: 40px; height: 40px;">
                         <use xlink:href="{% static 'images/svg/sprite.svg' %}#camera"></use>
@@ -108,8 +108,15 @@
                         </button>
                     </li>
                 </ul>
-                {% endif %}
             </div>
+            {% else %}
+            <div class="avatar-wrapper avatar-img-wrapper--not-owner">
+                <div class="avatar-img-wrapper">
+                    <img src="{{ user.cropped_photo.url }}" alt="аватарка">
+                </div>
+            </div>
+            {% endif %}
+
             {% if is_owner %}
                 <div class="modal fade modal-custom" id="foto" tabindex="-1" aria-labelledby="foto" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">

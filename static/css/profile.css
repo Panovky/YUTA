@@ -103,8 +103,19 @@
     transition: all 0.4s;
 }
 
+.avatar-block .avatar-img-wrapper--not-owner::before {
+    content: "";
+    background: transparent !important;
+    opacity: 0 !important;
+}
+
 .avatar-block .avatar-wrapper:hover::before {
     opacity: 1;
+    transition: all 0.3s;
+}
+
+.avatar-block .avatar-img-wrapper--not-owner:hover::before {
+    opacity: 0 !important;
     transition: all 0.3s;
 }
 
@@ -248,19 +259,21 @@
 }
 
 .input-file span {
-    position: relative;
-    display: inline-block;
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+    display: inline-block !important;
     cursor: pointer;
     outline: none;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1rem !important;
     vertical-align: middle;
-    color: var(--white-color);
+    color: var(--white-color) !important;
     text-align: center;
     border-radius: 20px;
     letter-spacing: 1px;
     background-color: var(--blue-color);
-    opacity: 0.85;
+    opacity: 0.85 !important;
     height: 40px;
     padding: 11px 22px;
     border: none;

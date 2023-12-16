@@ -174,7 +174,6 @@ function searchUser(e) {
                 </svg>
             `;
             button.addEventListener('click', (e) => {
-                console.log(e);
                 addMember(e);
             });
 

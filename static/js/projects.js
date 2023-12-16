@@ -113,7 +113,7 @@ projectNameInputs.forEach(input => input.addEventListener('input', () => {
     })
 );
 
-editProjectForm.querySelector('[name=project_technical_task').addEventListener('change', () => {
+editProjectForm.querySelector('[name=project_technical_task]').addEventListener('change', () => {
         checkInputs('edit-project');
 });
 
@@ -160,7 +160,7 @@ teamNameInputs.forEach(input => {
 // ПОИСК КОМАНДЫ
 function searchTeam(e) {
     let form, action;
-    if (e.target.dataset.action == 'create-project') {
+    if (e.currentTarget.dataset.action == 'create-project') {
         form = createProjectForm;
         action = 'create-project';
     } else {
@@ -203,18 +203,20 @@ function searchTeam(e) {
             searchedTeams.forEach(team => {
                 let teamElement = document.createElement('div');
                 teamElement.dataset.teamId = team.id;
-                teamElement.classList.add('searched-team', 'd-flex', 'justify-content-between', 'align-items-center');
-                teamElement.style.width = '80%';
-                teamElement.style.border = '2px solid orange';
-                teamElement.style.marginTop = '30px';
+                teamElement.classList.add('searched-team');
 
                 let name = document.createElement('p');
+                name.classList.add('modal-text', 'text-start');
                 name.innerHTML = team.name;
 
                 let button = document.createElement('button');
-                button.innerHTML = 'Прикрепить';
-                button.classList.add('attach-team-btn', 'orange-btn');
+                button.classList.add('attach-team-btn', 'add-team-in-project-btn');
                 button.dataset.action = action;
+                button.innerHTML = `
+                    <svg class="attach-team-btn" data-action="create-project" width="28" height="28" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M8.77778 15H15M15 15H21.2222M15 15V21.2222M15 15V8.77778M15 29C13.1615 29 11.341 28.6379 9.64243 27.9343C7.94387 27.2307 6.40053 26.1995 5.10051 24.8995C3.80048 23.5995 2.76925 22.0561 2.06569 20.3576C1.36212 18.659 1 16.8385 1 15C1 13.1615 1.36212 11.341 2.06569 9.64243C2.76925 7.94387 3.80048 6.40053 5.10051 5.1005C6.40053 3.80048 7.94387 2.76925 9.64243 2.06569C11.341 1.36212 13.1615 1 15 1C18.713 1 22.274 2.475 24.8995 5.1005C27.525 7.72601 29 11.287 29 15C29 18.713 27.525 22.274 24.8995 24.8995C22.274 27.525 18.713 29 15 29Z" stroke="#D96A10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
                 button.addEventListener('click', attachTeam);
 
                 teamElement.appendChild(name);
@@ -238,7 +240,7 @@ function clearSearchResults(form) {
 // ПРИКРЕПЛЕНИЕ КОМАНДЫ К ПРОЕКТУ
 function attachTeam(e) {
     let form, action;
-    if (e.target.dataset.action == 'create-project') {
+    if (e.currentTarget.dataset.action == 'create-project') {
         form = createProjectForm;
         action = 'create-project';
     } else {
@@ -246,21 +248,25 @@ function attachTeam(e) {
         action = 'edit-project';
     }
 
-    let chosenTeam = e.target.parentElement;
+    let chosenTeam = e.currentTarget.parentElement;
 
     let teamElement = document.createElement('div');
     teamElement.dataset.teamId = chosenTeam.dataset.teamId;
-    teamElement.classList.add('project-team', 'd-flex', 'justify-content-between', 'align-items-center');
-    teamElement.style.width = '80%';
-    teamElement.style.border = '2px solid orange';
+    teamElement.classList.add('project-team');
 
     let name = document.createElement('p');
+    name.classList.add('modal-text', 'text-start');
     name.innerHTML = chosenTeam.querySelector('p').innerHTML;
 
     let button = document.createElement('button');
-    button.innerHTML = 'Открепить';
-    button.classList.add('detach-team-btn', 'orange-btn');
+    button.classList.add('detach-team-btn', 'add-team-in-project-btn');
     button.dataset.action = action;
+    button.innerHTML = `
+        <svg width="28" height="28" class="detach-team-btn" data-action="create-project" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <path d="M8.77778 15H21.2222M15 29C13.1615 29 11.341 28.6379 9.64243 27.9343C7.94387 27.2307 6.40053 26.1995 5.10051 24.8995C3.80048 23.5995 2.76925 22.0561 2.06569 20.3576C1.36212 18.659 1 16.8385 1 15C1 13.1615 1.36212 11.341 2.06569 9.64243C2.76925 7.94387 3.80048 6.40053 5.10051 5.1005C6.40053 3.80048 7.94387 2.76925 9.64243 2.06569C11.341 1.36212 13.1615 1 15 1C18.713 1 22.274 2.475 24.8995 5.1005C27.525 7.72601 29 11.287 29 15C29 18.713 27.525 22.274 24.8995 24.8995C22.274 27.525 18.713 29 15 29Z" stroke="#D96A10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
+
     button.addEventListener('click', detachTeam);
 
     teamElement.appendChild(name);
@@ -281,7 +287,7 @@ function attachTeam(e) {
 // ОТКРЕПЛЕНИЕ КОМАНДЫ ОТ ПРОЕКТА
 function detachTeam(e) {
     let form, action;
-    if (e.target.dataset.action == 'create-project') {
+    if (e.currentTarget.dataset.action == 'create-project') {
         form = createProjectForm;
         action = 'create-project';
     } else {
@@ -289,7 +295,7 @@ function detachTeam(e) {
         action = 'edit-project';
     }
 
-    e.target.parentElement.remove();
+    e.currentTarget.parentElement.remove();
     form.querySelector('.project-teams-text').style.display = 'none';
     form.querySelector('[name=project_team_id]').value = '';
     checkInputs(action);
@@ -304,8 +310,6 @@ function createProject() {
     let projectDescription = createProjectForm.querySelector('[name=project_description]').value;
     let projectTechnicalTask = createProjectForm.querySelector('[name=project_technical_task]').files[0];
     let projectTeamId = createProjectForm.querySelector('[name=project_team_id]').value;
-
-    console.log(projectTechnicalTask);
 
     let formData = new FormData();
     formData.append('action', 'create_project');
@@ -364,6 +368,7 @@ editProjectBtns.forEach(btn => {
                     let dt  = new DataTransfer();
                     dt.items.add(new File([], data.technical_task_name));
                     editProjectForm.querySelector('[name=project_technical_task]').files = dt.files;
+                    editProjectForm.querySelector('.input-file-text').innerHTML = editProjectForm.querySelector('.tzInput').files[0].name
                 } else {
                     let dt  = new DataTransfer();
                     editProjectForm.querySelector('[name=project_technical_task]').files = dt.files;
@@ -375,17 +380,20 @@ editProjectBtns.forEach(btn => {
 
                     let teamElement = document.createElement('div');
                     teamElement.dataset.teamId = data.team.id;
-                    teamElement.classList.add('project-team', 'd-flex', 'justify-content-between', 'align-items-center');
-                    teamElement.style.width = '80%';
-                    teamElement.style.border = '2px solid orange';
+                    teamElement.classList.add('project-team');
 
                     let name = document.createElement('p');
+                    name.classList.add('modal-text', 'text-start');
                     name.innerHTML = data.team.name;
 
                     let button = document.createElement('button');
-                    button.innerHTML = 'Открепить';
-                    button.classList.add('detach-team-btn', 'orange-btn');
+                    button.classList.add('detach-team-btn', 'add-team-in-project-btn');
                     button.dataset.action = 'edit-project';
+                    button.innerHTML = `
+                        <svg width="28" height="28" class="detach-team-btn" data-action="edit-project" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M8.77778 15H21.2222M15 29C13.1615 29 11.341 28.6379 9.64243 27.9343C7.94387 27.2307 6.40053 26.1995 5.10051 24.8995C3.80048 23.5995 2.76925 22.0561 2.06569 20.3576C1.36212 18.659 1 16.8385 1 15C1 13.1615 1.36212 11.341 2.06569 9.64243C2.76925 7.94387 3.80048 6.40053 5.10051 5.1005C6.40053 3.80048 7.94387 2.76925 9.64243 2.06569C11.341 1.36212 13.1615 1 15 1C18.713 1 22.274 2.475 24.8995 5.1005C27.525 7.72601 29 11.287 29 15C29 18.713 27.525 22.274 24.8995 24.8995C22.274 27.525 18.713 29 15 29Z" stroke="#D96A10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    `;
                     button.addEventListener('click', detachTeam);
 
                     teamElement.appendChild(name);
@@ -447,42 +455,125 @@ function editProject() {
         });
 }
 
-// РЕДАКТИРОВАНИЕ ПРОЕКТА
-//document.addEventListener('DOMContentLoaded', () => {
-//    let updateTeamBtns = document.querySelectorAll('.edit-project-btn');
-//    const modalUpdate = new bootstrap.Modal(document.querySelector('#edit-project'));
-//    updateTeamBtns.forEach((btn) => {
-//        btn.addEventListener('click', (e) => {
-//            modalUpdate.show();
-//        })
-//    })
-//});
+
+// ПОКАЗ МОДАЛЬНОГО ОКНА СОЗДАНИЯ ПРОЕКТА
+document.addEventListener('DOMContentLoaded', () => {
+    const createProjectBtn = document.querySelector('#createProjectBtn');
+    const modalCreate = new bootstrap.Modal(document.querySelector('#create-project'));
+
+    createProjectBtn.addEventListener('click', (e) => {
+        modalCreate.show();
+
+        document.querySelectorAll('.empty-results-text').forEach(item => {
+            item.style.display = 'none';
+        });
+
+        document.querySelectorAll('.project-teams-text').forEach(item => {
+            item.style.display = 'none';
+        });
+
+        projectNameInputs.forEach(item => {
+            item.value = '';
+        });
+
+        projectDeadlineInputs.forEach(item => {
+            item.value = '';
+        });
+
+        projectDescrInputs.forEach(item => {
+            item.value = '';
+        });
+
+        document.querySelectorAll('.input-file-text').forEach(item => {
+            item.innerHTML = '';
+        });
+
+        document.querySelectorAll('.project-teams').forEach(item => {
+            item.innerHTML = '';
+        });
+
+        document.querySelectorAll('.searched-teams').forEach(item => {
+            item.innerHTML = '';
+        });
+    })
+});
+
+
+// ПОКАЗ МОДАЛЬНОГО ОКНА РЕДАКТИРОВАНИЯ ПРОЕКТА
+document.addEventListener('DOMContentLoaded', () => {
+   let updateTeamBtns = document.querySelectorAll('.edit-project-btn');
+   const modalUpdate = new bootstrap.Modal(document.querySelector('#edit-project'));
+   updateTeamBtns.forEach((btn) => {
+       btn.addEventListener('click', (e) => {
+           modalUpdate.show();
+
+           document.querySelectorAll('.empty-results-text').forEach(item => {
+               item.style.display = 'none';
+           });
+       })
+   })
+});
 
 
 // ПОКАЗ ВСПЛЫВАЮЩЕГО ОКНА СО ВСЕЙ КОМАНДОЙ
-//let btnsCloseAllTeam = document.querySelectorAll('.close-block-team-btn');
-//let btnsShowAllTeams = document.querySelectorAll('.show-all-teams-btn');
-//
-//const countPersonInTeam = document.querySelector('#content__team').childNodes.length-1;
-//btnsShowAllTeams.forEach(btn => {
-//
-//    if (countPersonInTeam <= 5) {
-//        btn.style.display = "none";
-//    } else {
-//        btn.style.display = "block";
-//        console.log(document.querySelector('.all-person-list').childNodes.length);
-//        document.querySelector('#count-person').innerHTML = document.querySelector('.all-person-list').childNodes.length;
-//    }
-//
-//    btn.addEventListener('click', (e) => {
-//        let items = document.querySelectorAll('.all-person')[0];
-//        items.classList.add("show-all-team");
-//    })
-//});
-//
-//btnsCloseAllTeam.forEach(function (btn) {
-//    btn.addEventListener('click', (e) => {
-//        let items = document.querySelectorAll('.all-person')[0];
-//        items.classList.remove("show-all-team");
-//    })
-//});
+const btnsCloseAllTeam = document.querySelectorAll('.close-block-team-btn');
+const btnsShowAllTeams = document.querySelectorAll('.show-all-teams-btn');
+const countPersonInTeam = document.querySelectorAll('.content__team');
+const allPersonBlock = document.querySelectorAll('.all-person');
+let countPerson = [];
+
+countPersonInTeam.forEach(item => {
+    let PersonArray = item. querySelectorAll('.team-item');
+    countPerson.push(PersonArray.length);
+})
+
+btnsShowAllTeams.forEach((btn, index) => {
+    let currentTeam = countPersonInTeam[index];
+    if (countPerson[index] <= 4) {
+        btn.style.display = "none";
+        allPersonBlock[index].style.display = "none";
+    } else {
+        for (let i = countPerson[index]-1; i > 2 ; i--) {
+            currentTeam.querySelectorAll('.team-item')[i].style.display = "none";
+        }
+        btn.style.display = "block";
+        allPersonBlock[index].style.display = "block";
+
+        let arrayPersonInAllTeamBlock = document.querySelectorAll('.all-person-list')[index];
+        document.querySelectorAll('.count-person')[index].innerHTML = (arrayPersonInAllTeamBlock.querySelectorAll('a').length)-3;
+    }
+
+    btn.addEventListener('click', (event) => {
+        allPersonBlock[index].classList.add("show-all-team");
+    })
+});
+
+btnsCloseAllTeam.forEach((btn, index) => {
+    btn.addEventListener('click', (event) => {
+        allPersonBlock[index].classList.remove("show-all-team");
+    })
+});
+
+// УДАЛЕНИЕ ТЗ ИЗ ФОРМЫ
+document.querySelectorAll('.deleteTzBtn').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.tzInput').forEach(field => {
+            field.value = '';
+        })
+        document.querySelectorAll('.input-file-text').forEach(field => {
+            field.innerHTML = '';
+        })
+        editProjectBtn.classList.remove('grey-btn');
+        checkInputs('edit-form');
+    });
+})
+
+// ПОКАЗ НАЗВАНИЯ ЗАГРУЖЕННОГО ФАЙЛА
+document.querySelectorAll('.tzInput').forEach(item => {
+    item.addEventListener('change', (e) => {
+        let filename = e.target.files[0].name;
+        document.querySelectorAll('.input-file-text').forEach(item => {
+            item.innerHTML = `<div>${filename}</div>`;
+        })
+    })
+});

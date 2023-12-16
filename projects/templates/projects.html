@@ -17,10 +17,10 @@
         <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ ПРОЕКТА-->
         <div class="modal fade modal-custom" id="create-project" tabindex="-1" aria-labelledby="create-team"
              aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content modal-content-projects">
                     <div class="modal-header position-relative">
-                        <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
+                        <button type="button" class="close-modal-btn close-modal-btn-projects" data-bs-dismiss="modal" aria-label="Закрыть">
                             <svg style="width: 28px; height: 28px;">
                                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
                             </svg>
@@ -28,139 +28,96 @@
                     </div>
                     <p class="modal-title text-center">Создание проекта</p>
                     <div class="modal-devider"></div>
+
+                    <div id="create-project-form">
+                        <p class="modal-text text-start modal-subtitle">Придумайте краткое наименование проекта:</p>
+                        <div class="text-field__noticon mb-2 mt-3 position-relative">
+                            <input data-action="create-project" type="text" maxlength="30" name="project_name"
+                                   placeholder="Наименование" autocomplete="off" required>
+                            <span>*</span>
+                        </div>
+
+                        <div class="two-column-block">
+                            <div class="tz-deadline-block">
+                                <div class="my-4">
+                                    <p class="modal-text text-start modal-subtitle">Техническое задание:</p>
+                                    <div class="gap-3 mt-3 mb-2">
+                                        <label class="input-file-tz">
+                                            <span class="input-file-btn">Выберите файл</span>
+                                            <p class="input-file-text"></p>
+                                            <input type="file" class="tzInput" name="project_technical_task" multiple accept=".pdf">
+                                        </label>
+                                        <button type="button" class="d-flex justify-content-center align-items-center orange-btn blue-btn modal-btn deleteTzBtn">
+                                            <svg style="width: 15px; height: 22px;">
+                                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <p class="rule-tz">* вы можете загрузить файл с техническим заданием в формате PDF</p>
+                                </div>
+
+
+                                <div class="text-field__noticon deadline gap-4 my-4">
+                                    <p class="modal-text text-start modal-subtitle flex-grow-0">Дедлайн проекта:</p>
+                                    <input data-action="create-project" class="flex-grow-0 deadline-field" type="date" min="{{ today }}"
+                                           name="project_deadline" required>
+                                    <span>*</span>
+                                </div>
+                            </div>
+
+
+                            <div class="text-field__noticon text-field__noticon--project-form mt-5 mb-3 ms-1 position-relative">
+                              <textarea data-action="create-project" name="project_description" maxlength="150"
+                                        placeholder="Краткое описание проекта" required></textarea>
+                              <span>*</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="modal-text text-start modal-subtitle">Команда:</p>
+                            <div class="d-flex gap-2 mt-2">
+                                <input data-action="create-project" id="radio1" class="pass-radio" type="radio" name="team_radio" value="pass" checked>
+                                <label for="radio1" class="modal-text text-start">Создать проект без команды и добавить ее позже</label>
+                            </div>
+                            <div class="d-flex gap-2 mt-1">
+                                <input data-action="create-project" id="radio2" class="attach-radio" type="radio" name="team_radio"
+                                       value="attach">
+                                <label for="radio2" class="modal-text text-start">Прикрепить к проекту одну из своих команд</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="project-teams-text modal-text text-start mb-2 mt-4" style="display:none;">Прикрепленная команда:</p>
+                            <div class="project-teams d-flex flex-column mb-2"></div>
+                        </div>
+
+                        <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
+
+                        <div class="search-team-form mt-3" style="display: none">
+                            <p class="modal-text text-start mb-2">Прикрепите команду к проекту:</p>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="text-field__noticon flex-grow-1">
+                                    <input data-action="create-project" type="text" name="team_name"
+                                           placeholder="Наименование команды" autocomplete="off">
+                                </div>
+                                <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="create-project"
+                                        type="button">Поиск
+                                </button>
+                            </div>
+
+                            <p class="empty-results-text mt-2" style="display:none;">По вашему запросу команды не найдены!</p>
+                            <div class="searched-teams d-flex flex-column"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <button id="create-project-btn" class="orange-btn grey-btn" type="button">Создать</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-
-        <!--ФОРМА СОЗДАНИЯ ПРОЕКТА-->
-        <div id="create-project-form"
-             style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-            <p class="text-center">Создание проекта</p><br><br>
-
-            <p>Придумайте краткое наименование проекта!</p><br>
-            <input data-action="create-project" class="form-control" type="text" maxlength="30" name="project_name"
-                   placeholder="Наименование" autocomplete="off"><br><br>
-
-            <label class="form-label">Техническое задание
-                <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
-            </label>
-            <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
-
-            <label class="form-label">Дедлайн
-                <input data-action="create-project" class="form-control" type="date" min="{{ today }}"
-                       name="project_deadline">
-            </label><br><br><br>
-
-            <textarea data-action="create-project" class="form-control" name="project_description" maxlength="150"
-                      placeholder="Краткое описание проекта"></textarea><br><br>
-
-            <p>Вы можете:</p><br>
-
-            <label>
-                <input data-action="create-project" class="pass-radio" type="radio" name="team_radio" value="pass"  checked>
-                Создать проект без команды и добавить ее позже
-            </label><br><br>
-
-            <label>
-                <input data-action="create-project" class="attach-radio" type="radio" name="team_radio"
-                       value="attach">Прикрепить к проекту одну из своих команд
-            </label><br><br>
-
-            <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
-            <div class="project-teams d-flex flex-column"></div>
-            <input data-action="create-project" class="form-control" type="hidden" name="project_team_id">
-
-            <div class="search-team-form" style="display: none">
-                <br><br>
-                <p>Прикрепите команду к проекту:</p><br>
-                <div class="d-flex align-items-center">
-                    <input class="form-control" data-action="create-project" type="text" name="team_name"
-                           placeholder="Наименование команды" autocomplete="off">
-                    <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="create-project"
-                            type="button">Поиск
-                    </button>
-                </div>
-
-                <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу команды не
-                    найдены</p><br>
-                <div class="searched-teams d-flex flex-column"></div>
-            </div>
-            <br><br>
-
-            <div class="d-flex justify-content-center">
-                <button id="create-project-btn" class="orange-btn grey-btn" type="button">Создать</button>
-            </div>
-        </div>
-
-        <!--ФОРМА РЕДАКТИРОВАНИЯ ПРОЕКТА-->
-        <div id="edit-project-form"
-             style="width: 60%; border: 2px solid orange; margin-top: 30px; margin-bottom: 30px; padding: 30px;">
-            <input type="hidden" name="project_id">
-            <p class="text-center">Редактирование проекта</p><br><br>
-
-            <p>Придумайте краткое наименование проекта!</p><br>
-            <input data-action="edit-project" class="form-control" type="text" maxlength="30" name="project_name"
-                   placeholder="Наименование" autocomplete="off"><br><br>
-
-            <label class="form-label">Техническое задание
-                <input class="form-control" type="file" name="project_technical_task" multiple accept=".pdf">
-            </label>
-            <p>Вы можете загрузить файл с техническим заданием в формате PDF.</p><br><br>
-
-            <label class="form-label">Дедлайн
-                <input data-action="edit-project" class="form-control" type="date" min="{{ today }}"
-                       name="project_deadline">
-            </label><br><br><br>
-
-            <label class="form-label">Статус
-                <select class="form-control" name="project_status">
-                    <option value="в работе">в работе</option>
-                    <option value="приостановлен">приостановлен</option>
-                    <option value="завершен">завершен</option>
-                </select>
-            </label><br><br><br>
-
-            <textarea data-action="edit-project" class="form-control" name="project_description" maxlength="150"
-                      placeholder="Краткое описание проекта"></textarea><br><br>
-
-            <p>Вы можете:</p><br>
-
-            <label>
-                <input data-action="edit-project" class="pass-radio" type="radio" name="team_radio" value="pass">
-                Оставить проект без команды и добавить ее позже
-            </label><br><br>
-
-            <label>
-                <input data-action="edit-project" class="attach-radio" type="radio" name="team_radio"
-                       value="attach">Прикрепить к проекту одну из своих команд
-            </label><br><br>
-
-            <p class="project-teams-text" style="display:none; margin-top: 30px">Прикрепленная команда</p><br>
-            <div class="project-teams d-flex flex-column"></div>
-            <input data-action="edit-project" class="form-control" type="hidden" name="project_team_id">
-
-            <div class="search-team-form" style="display: none">
-                <br><br>
-                <p>Прикрепите команду к проекту:</p><br>
-                <div class="d-flex align-items-center">
-                    <input class="form-control" data-action="edit-project" type="text" name="team_name"
-                           placeholder="Наименование команды" autocomplete="off">
-                    <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="edit-project"
-                            type="button">Поиск
-                    </button>
-                </div>
-
-                <p class="empty-results-text" style="display:none; margin-top: 30px">По Вашему запросу команды не
-                    найдены</p><br>
-                <div class="searched-teams d-flex flex-column"></div>
-            </div>
-            <br><br>
-
-            <div class="d-flex justify-content-center">
-                <button id="edit-project-btn" class="orange-btn grey-btn" type="button">Сохранить</button>
-            </div>
-        </div>
 
         <!--КОНТЕНТ-->
         <div class="nav nav-tabs border-0 d-flex justify-content-start" id="myTab" role="tablist">
@@ -211,13 +168,20 @@
                         </div>
                         <div class="content">
                             {% if project.technical_task %}
-                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                            <a href="{{ project.technical_task.url }}" target="_blank"
                                class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center">
                                 <svg style="width: 14px; height: 14px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
                                 </svg>
                                 <p>Техническое задание</p>
                             </a>
+                            {% else %}
+                            <button class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center" disabled>
+                                <svg style="width: 14px; height: 14px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
+                                </svg>
+                                <p>Нет тз</p>
+                            </button>
                             {% endif %}
                             <div class="content__text">
                                 <div class="d-flex mb-2">
@@ -251,11 +215,13 @@
                                     </p>
                                 </div>
                             </div>
+
+
+
                             <div>
                                 <p class="text-center fw-semibold mb-3">Команда</p>
                                 <div class="d-flex justify-content-center align-items-start content__team">
-                                    <a href="{% url 'profile' project.manager.id %}" target="_blank"
-                                       class="d-flex justify-content-center align-items-center flex-column">
+                                    <a class="team-item" href="{% url 'profile' project.manager.id %}" target="_blank">
                                         <img src="{{ project.manager.cropped_photo.url }}">
                                         <div class="crown-boss">
                                             <svg style="width: 21px; height: 21px;">
@@ -266,15 +232,50 @@
                                     </a>
                                     {% if project.team %}
                                     {% for member in project.team.members.all %}
-                                    <a href="{% url 'profile' member.id %}" target="_blank"
-                                       class="d-flex justify-content-center align-items-center flex-column">
+                                    <a class="team-item" href="{% url 'profile' member.id %}" target="_blank">
                                         <img src="{{ member.cropped_photo.url }}">
                                         <p>{{ member.last_name }} {{ member.first_name }}</p>
                                     </a>
                                     {% endfor %}
                                     {% endif %}
+                                    <!-- КНОПКА ПОКАЗА ВСЕЙ КОМАНДЫ -->
+                                    <button class="show-all-teams-btn" type="button">
+                                        +<span class="count-person"></span>
+                                    </button>
                                 </div>
                             </div>
+
+                            <!-- ВСЯ КОМАНДА -->
+                            <div class="all-person" data-simplebar>
+                                <div class="all-person-inner">
+                                    <button type="button" class="close-block-team-btn">
+                                        <svg style="width: 25px; height: 25px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                        </svg>
+                                    </button>
+                                    <div class="d-flex justify-content-start align-items-start all-person-list">
+                                        <a href="{% url 'profile' project.manager.id %}" target="_blank">
+                                            <img src="{{ project.manager.cropped_photo.url }}">
+                                            <div class="crown-boss">
+                                                <svg style="width: 21px; height: 21px;">
+                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                                </svg>
+                                            </div>
+                                            <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
+                                        </a>
+                                        {% if project.team %}
+                                        {% for member in project.team.members.all %}
+                                        <a href="{% url 'profile' member.id %}" target="_blank">
+                                            <img src="{{ member.cropped_photo.url }}">
+                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
+                                        </a>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                     {% endfor %}
@@ -310,6 +311,13 @@
                                 </svg>
                                 <p>Техническое задание</p>
                             </a>
+                            {% else %}
+                            <button class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center" disabled>
+                                <svg style="width: 14px; height: 14px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
+                                </svg>
+                                <p>Нет тз</p>
+                            </button>
                             {% endif %}
                             <div class="content__text">
                                 <div class="d-flex mb-2">
@@ -343,11 +351,12 @@
                                     </p>
                                 </div>
                             </div>
+
+
                             <div>
                                 <p class="text-center fw-semibold mb-3">Команда</p>
                                 <div class="d-flex justify-content-center align-items-start content__team">
-                                    <a href="{% url 'profile' project.manager.id %}" target="_blank"
-                                       class="d-flex justify-content-center align-items-center flex-column">
+                                    <a class="team-item" href="{% url 'profile' project.manager.id %}" target="_blank">
                                         <img src="{{ project.manager.cropped_photo.url }}">
                                         <div class="crown-boss">
                                             <svg style="width: 21px; height: 21px;">
@@ -358,15 +367,51 @@
                                     </a>
                                     {% if project.team %}
                                     {% for member in project.team.members.all %}
-                                    <a href="{% url 'profile' member.id %}" target="_blank"
-                                       class="d-flex justify-content-center align-items-center flex-column">
+                                    <a class="team-item" href="{% url 'profile' member.id %}" target="_blank">
                                         <img src="{{ member.cropped_photo.url }}">
                                         <p>{{ member.last_name }} {{ member.first_name }}</p>
                                     </a>
                                     {% endfor %}
                                     {% endif %}
+                                    <!-- КНОПКА ПОКАЗА ВСЕЙ КОМАНДЫ -->
+                                    <button class="show-all-teams-btn" type="button">
+                                        +<span class="count-person"></span>
+                                    </button>
                                 </div>
                             </div>
+
+                            <!-- ВСЯ КОМАНДА -->
+                            <div class="all-person" data-simplebar>
+                                <div class="all-person-inner">
+                                    <button type="button" class="close-block-team-btn">
+                                        <svg style="width: 25px; height: 25px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                        </svg>
+                                    </button>
+                                    <div class="d-flex justify-content-start align-items-start all-person-list">
+                                        <a href="{% url 'profile' project.manager.id %}" target="_blank">
+                                            <img src="{{ project.manager.cropped_photo.url }}">
+                                            <div class="crown-boss">
+                                                <svg style="width: 21px; height: 21px;">
+                                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
+                                                </svg>
+                                            </div>
+                                            <p>{{ project.manager.last_name }} {{ project.manager.first_name }}</p>
+                                        </a>
+                                        {% if project.team %}
+                                        {% for member in project.team.members.all %}
+                                        <a href="{% url 'profile' member.id %}" target="_blank">
+                                            <img src="{{ member.cropped_photo.url }}">
+                                            <p>{{ member.last_name }} {{ member.first_name }}</p>
+                                        </a>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </div>
                     </div>
                     {% endfor %}
@@ -417,7 +462,7 @@
     <!--  МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ПРОЕКТА -->
     <div class="modal fade modal-custom" id="edit-project" tabindex="-1" aria-labelledby="edit-team"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header position-relative">
                     <button type="button" class="close-modal-btn" data-bs-dismiss="modal" aria-label="Закрыть">
@@ -428,6 +473,103 @@
                 </div>
                 <p class="modal-title text-center">Редактирование проекта</p>
                 <div class="modal-devider"></div>
+
+
+
+                <div id="edit-project-form">
+                    <input type="hidden" name="project_id">
+
+                    <p class="modal-text text-start modal-subtitle">Придумайте краткое наименование проекта:</p>
+                    <div class="text-field__noticon mb-2 mt-3 position-relative">
+                        <input data-action="edit-project" type="text" maxlength="30" name="project_name"
+                               placeholder="Наименование" autocomplete="off" required>
+                        <span>*</span>
+                    </div>
+
+                    <div class="two-column-block">
+                        <div class="tz-deadline-block">
+                            <div class="my-4">
+                                <p class="modal-text text-start modal-subtitle">Техническое задание:</p>
+                                <div class="gap-3 mt-3 mb-2">
+                                    <label class="input-file-tz">
+                                        <span class="input-file-btn">Выберите файл</span>
+                                        <p class="input-file-text"></p>
+                                        <input type="file" class="tzInput" name="project_technical_task" multiple accept=".pdf">
+                                    </label>
+                                    <button type="button" class="d-flex justify-content-center align-items-center orange-btn blue-btn modal-btn deleteTzBtn">
+                                        <svg style="width: 15px; height: 22px;">
+                                            <use xlink:href="{% static 'images/svg/sprite.svg' %}#delete"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <p class="rule-tz">* вы можете загрузить файл с техническим заданием в формате PDF</p>
+                            </div>
+
+                            <div class="text-field__noticon deadline gap-4 my-4">
+                                <p class="modal-text text-start modal-subtitle flex-grow-0">Дедлайн проекта:</p>
+                                <input data-action="edit-project" class="flex-grow-0 deadline-field" type="date" min="{{ today }}"
+                                       name="project_deadline" required>
+                                <span>*</span>
+                            </div>
+
+                            <div class="text-field__noticon d-flex justify-content-start align-items-center gap-4 mb-2 mt-3">
+                                <p class="modal-text text-start modal-subtitle">Статус:</p>
+                                <select name="project_status" class="project-status-select">
+                                    <option value="в работе">в работе</option>
+                                    <option value="приостановлен">приостановлен</option>
+                                    <option value="завершен">завершен</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-field__noticon text-field__noticon--project-form text-field__noticon--project-edit-form mt-5 mb-3 ms-1 position-relative">
+                              <textarea data-action="edit-project" name="project_description" maxlength="150"
+                                        placeholder="Краткое описание проекта" required></textarea>
+                            <span>*</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <p class="modal-text text-start modal-subtitle">Команда:</p>
+                        <div class="d-flex gap-2 mt-2">
+                            <input data-action="edit-project" id="radio3" class="pass-radio" type="radio" name="team_radio" value="pass"  checked>
+                            <label for="radio3" class="modal-text text-start">Создать проект без команды и добавить ее позже</label>
+                        </div>
+                        <div class="d-flex gap-2 mt-1">
+                            <input data-action="edit-project" id="radio4" class="attach-radio" type="radio" name="team_radio"
+                                   value="attach">
+                            <label for="radio4" class="modal-text text-start">Прикрепить к проекту одну из своих команд</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="project-teams-text modal-text text-start mb-2 mt-4" style="display:none;">Прикрепленная команда:</p>
+                        <div class="project-teams d-flex flex-column mb-2"></div>
+                    </div>
+
+                    <input data-action="edit-project" class="form-control" type="hidden" name="project_team_id">
+
+                    <div class="search-team-form mt-3" style="display: none">
+                        <p class="modal-text text-start mb-2">Прикрепите команду к проекту:</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-field__noticon flex-grow-1">
+                                <input data-action="edit-project" type="text" name="team_name"
+                                       placeholder="Наименование команды" autocomplete="off">
+                            </div>
+                            <button class="search-team-btn orange-btn blue-btn grey-btn" data-action="edit-project"
+                                    type="button">Поиск
+                            </button>
+                        </div>
+
+                        <p class="empty-results-text mt-2" style="display:none;">По вашему запросу команды не найдены!</p>
+                        <div class="searched-teams d-flex flex-column"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button id="edit-project-btn" class="orange-btn grey-btn" type="button">Сохранить</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
