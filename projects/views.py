@@ -124,5 +124,5 @@ class ProjectsView(View):
             return redirect('projects')
 
         if action == 'get_project_info':
-            project_id = request.POST.get('project_id')
+            project_id = request.POST['project_id']
             return JsonResponse(data=get_project_info(project_id))

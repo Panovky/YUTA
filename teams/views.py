@@ -52,9 +52,9 @@ class TeamsView(View):
             })
 
         if action == 'search_user':
-            user_name = request.POST.get('user_name')
-            leader_id = request.session.get('user_id')
-            members_id = json.loads(request.POST.get('members_id'))
+            user_name = request.POST['user_name']
+            leader_id = request.session['user_id']
+            members_id = json.loads(request.POST['members_id'])
             return JsonResponse(data=search_user(user_name, leader_id, members_id))
 
         if action == 'create_team':
@@ -89,5 +89,5 @@ class TeamsView(View):
             team.save()
 
         if action == 'get_team_info':
-            team_id = request.POST.get('team_id')
+            team_id = request.POST['team_id']
             return JsonResponse(data=get_team_info(team_id))

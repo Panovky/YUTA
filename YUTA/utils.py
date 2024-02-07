@@ -1,14 +1,33 @@
-import io
 import requests
 from YUTA.scripts import parse_lk
-from YUTA.settings import MEDIA_ROOT
 from projects.models import Project
 from teams.models import Team
 from users.models import User
 
 
-def authorize_user(login, password):
-    response = requests.post('https://www.ystu.ru/WPROG/auth1.php', data={'login': login, 'password': password})
+def authorize_user(login: str, password: str) -> User | None:
+    """
+    Принимает логин и пароль пользователя и производит попытку его авторизации в приложении.
+
+    Если пользователь не проходит авторизацию на сайте ЯГТУ, функция возвращает None.
+    Если авторизация на сайте ЯГТУ успешна, функция возвращает объект User. Возможны два варианта:
+
+    1. Новый пользователь приложения: для него создается запись в БД с информацией из его личного кабинета на сайте
+    ЯГТУ (посредством парсинга html-страницы).
+
+    2. Уже зарегистрированный в приложении пользователь: для него извлекается уже имеющаяся запись из базы данных.
+
+    :param login: логин от учетной записи в приложении и на сайте ЯГТУ
+    :param password: пароль от учетной записи в приложении и на сайте ЯГТУ
+    :return: объект пользователя User или None
+    """
+    response = requests.post(
+        'https://www.ystu.ru/WPROG/auth1.php',
+        data={
+            'login': login.strip(),
+            'password': password.strip()
+        }
+    )
 
     if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
         return None
@@ -32,17 +51,49 @@ def authorize_user(login, password):
         return user
 
 
-def edit_user_data(user, data):
-    user.biography = data.get('biography').strip() if data.get('biography') else None
-    user.phone_number = data.get('phone_number') if data.get('phone_number') else None
-    user.e_mail = data.get('e_mail').strip() if data.get('e_mail') else None
-    user.vk = data.get('vk').strip() if data.get('vk') else None
+def edit_user_data(user: User, data: dict[str, str]) -> None:
+    """
+    Принимает объект пользователя и обновляет его данные из переданного словаря.
+
+    Словарь с данными содержит: биографию, номер телефона, адрес электронной почты и ссылку на профиль ВКонтакте.
+    Каждое значение словаря является строкой (может быть пустой или непустой, может иметь лишние пробелы и табуляции).
+    Строка присваивается соответствующему атрибуту объекта, если она после удаления крайних пробелов и табуляций
+    является непустой. Иначе атрибуту объекта присваивается None.
+
+    :param user: объект пользователя User
+    :param data: словарь с данными о пользователе
+    """
+    biography = data['biography'].strip()
+    phone_number = data['phone_number'].strip()
+    e_mail = data['e_mail'].strip()
+    vk = data['vk'].strip()
+
+    user.biography = biography if biography != '' else None
+    user.phone_number = phone_number if phone_number != '' else None
+    user.e_mail = e_mail if e_mail != '' else None
+    user.vk = vk if vk != '' else None
     user.save()
 
 
-def update_user_data(user, password):
-    login = user.login
-    response = requests.post('https://www.ystu.ru/WPROG/auth1.php', data={'login': login, 'password': password})
+def update_user_data(user: User, password: str) -> bool:
+    """
+    Принимает объект пользователя, его пароль и производит попытку синхронизации данных приложения и данных сайта ЯГТУ.
+
+    Если указан неверный пароль от учетной записи, функция возвращает False.
+    Если пароль верный, новые данные с html-страницы личного кабинета на сайте ЯГТУ, полученные посредством ее парсинга,
+    записываются в атрибуты объекта пользователя, и функция возвращает True.
+
+    :param user: объект пользователя User, чьи данные нужно синхронизировать
+    :param password: пароль от учетной записи в приложении и на сайте ЯГТУ
+    :return: True, если синхронизация данных прошла успешно, иначе False
+    """
+    response = requests.post(
+        'https://www.ystu.ru/WPROG/auth1.php',
+        data={
+            'login': user.login,
+            'password': password.strip()
+        }
+    )
 
     if response.url == 'https://www.ystu.ru/WPROG/auth1.php':
         return False
@@ -60,32 +111,45 @@ def update_user_data(user, password):
         return True
 
 
-def search_user(user_name, leader_id, members_id):
-    user_name = [word.strip() for word in user_name.split()]
+def search_user(user_name: str, leader_id: int, members_id: list[int]) -> dict:
+    """
+    Принимает имя пользователя для поиска, id руководителя команды и список id текущих участников команды.
 
-    if len(user_name) > 3:
+    В результаты поиска по переданному имени не попадут руководитель команды и текущие участники команды.
+    Если переданный поисковый запрос является пустой строкой или слов в переданном имени больше 3, поиск невозможен:
+    функция завершит работу с пустым результатом.
+
+    :param user_name: поисковый запрос, имя искомого пользователя (полное или неполное)
+    :param leader_id: идентификатор руководителя команды в БД
+    :param members_id: список целых чисел - идентификаторов текущих участников команды в БД
+    :return: словарь с информацией о найденных пользователях или словарь с пустым списком по ключу 'users', если
+    пользователи не найдены
+    """
+    user_name_parts = [word.capitalize() for word in user_name.strip().split()]
+
+    if len(user_name_parts) == 0 or len(user_name_parts) > 3:
         return {'users': []}
 
-    if len(user_name) == 3:
+    if len(user_name_parts) == 3:
         users = \
-            User.objects.filter(last_name__istartswith=user_name[0]) & \
-            User.objects.filter(first_name__istartswith=user_name[1]) & \
-            User.objects.filter(patronymic__istartswith=user_name[2])
-    elif len(user_name) == 2:
+            User.objects.filter(last_name__startswith=user_name_parts[0]) & \
+            User.objects.filter(first_name__startswith=user_name_parts[1]) & \
+            User.objects.filter(patronymic__startswith=user_name_parts[2])
+    elif len(user_name_parts) == 2:
         users = \
-            User.objects.filter(last_name__istartswith=user_name[0]) & \
-            User.objects.filter(first_name__istartswith=user_name[1]) | \
-            User.objects.filter(first_name__istartswith=user_name[0]) & \
-            User.objects.filter(last_name__istartswith=user_name[1]) | \
-            User.objects.filter(first_name__istartswith=user_name[0]) & \
-            User.objects.filter(patronymic__istartswith=user_name[1])
+            User.objects.filter(last_name__startswith=user_name_parts[0]) & \
+            User.objects.filter(first_name__startswith=user_name_parts[1]) | \
+            User.objects.filter(first_name__startswith=user_name_parts[0]) & \
+            User.objects.filter(last_name__startswith=user_name_parts[1]) | \
+            User.objects.filter(first_name__startswith=user_name_parts[0]) & \
+            User.objects.filter(patronymic__startswith=user_name_parts[1])
     else:
         users = \
-            User.objects.filter(last_name__istartswith=user_name[0]) | \
-            User.objects.filter(first_name__istartswith=user_name[0]) | \
-            User.objects.filter(patronymic__istartswith=user_name[0])
+            User.objects.filter(last_name__startswith=user_name_parts[0]) | \
+            User.objects.filter(first_name__startswith=user_name_parts[0]) | \
+            User.objects.filter(patronymic__startswith=user_name_parts[0])
 
-    prohibited_id = [leader_id] + [member_id for member_id in members_id]
+    prohibited_id = [leader_id] + members_id
     users = users.exclude(id__in=prohibited_id)
 
     return {
@@ -102,7 +166,13 @@ def search_user(user_name, leader_id, members_id):
     }
 
 
-def get_team_info(team_id):
+def get_team_info(team_id: int) -> dict:
+    """
+    Принимает id команды в базе данных и возвращает словарь с информацией об этой команде.
+
+    :param team_id: идентификатор команды в базе данных
+    :return: словарь с информацией о команде
+    """
     team = Team.objects.get(id=team_id)
 
     return {
@@ -120,7 +190,13 @@ def get_team_info(team_id):
     }
 
 
-def get_project_info(project_id):
+def get_project_info(project_id: int) -> dict:
+    """
+    Принимает id проекта в базе данных и возвращает словарь с информацией об этом проекте.
+
+    :param project_id: идентификатор проекта в базе данных
+    :return: словарь с информацией о проекте
+    """
     project = Project.objects.get(id=project_id)
 
     if project.technical_task:
