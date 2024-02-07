@@ -72,16 +72,16 @@ class ProfileView(View):
 
         if action == 'edit_data':
             data = {
-                'biography': request.POST.get('biography'),
-                'phone_number': request.POST.get('phone_number'),
-                'e_mail': request.POST.get('e_mail'),
-                'vk': request.POST.get('vk')
+                'biography': request.POST['biography'],
+                'phone_number': request.POST['phone_number'],
+                'e_mail': request.POST['e_mail'],
+                'vk': request.POST['vk']
             }
             edit_user_data(user, data)
             return redirect('profile', session_user_id)
 
         if action == 'update_data':
-            password = request.POST.get('password')
+            password = request['password']
 
             if not update_user_data(user, password):
                 session_user_id = request.session['user_id']

@@ -53,17 +53,17 @@ class ProfileView(APIView):
 
         if action == 'edit_data':
             data = {
-                'biography': request.data.get('biography'),
-                'phone_number': request.data.get('phone_number'),
-                'e_mail': request.data.get('e_mail'),
-                'vk': request.data.get('vk')
+                'biography': request.data['biography'],
+                'phone_number': request.data['phone_number'],
+                'e_mail': request.data['e_mail'],
+                'vk': request.data['vk']
             }
 
             edit_user_data(user, data)
             return JsonResponse(data={'modified': True})
 
         if action == 'update_data':
-            password = request.data.get('password')
+            password = request.data['password']
             return JsonResponse(data={'success': update_user_data(user, password)})
 
 
@@ -104,9 +104,9 @@ class TeamsView(APIView):
             })
 
         if action == 'search_user':
-            user_name = request.data.get('user_name')
-            leader_id = request.data.get('leader_id')
-            members_id = request.data.get('members_id')
+            user_name = request.data['user_name']
+            leader_id = request.data['leader_id']
+            members_id = request.data['members_id']
             return JsonResponse(data=search_user(user_name, leader_id, members_id))
 
         if action == 'create_team':
@@ -144,5 +144,5 @@ class TeamsView(APIView):
             return JsonResponse({'success': True})
 
         if action == 'get_team_info':
-            team_id = request.data.get('team_id')
+            team_id = request.data['team_id']
             return JsonResponse(data=get_team_info(team_id))
