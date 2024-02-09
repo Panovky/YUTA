@@ -60,7 +60,11 @@ class ProfileView(View):
             crop_photo(
                 f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
                 f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
-                request.POST
+                (int(request.POST['container_width']), int(request.POST['container_height'])),
+                int(request.POST['width']),
+                int(request.POST['height']),
+                int(request.POST['delta_x']),
+                int(request.POST['delta_y'])
             )
             return redirect('profile', session_user_id)
 

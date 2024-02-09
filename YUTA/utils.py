@@ -18,8 +18,11 @@ def authorize_user(login: str, password: str) -> User | None:
     2. Уже зарегистрированный в приложении пользователь: для него извлекается уже имеющаяся запись из базы данных.
 
     :param login: логин от учетной записи в приложении и на сайте ЯГТУ
+    :type login: str
     :param password: пароль от учетной записи в приложении и на сайте ЯГТУ
+    :type password: str
     :return: объект пользователя User или None
+    :rtype: User | None
     """
     response = requests.post(
         'https://www.ystu.ru/WPROG/auth1.php',
@@ -61,7 +64,10 @@ def edit_user_data(user: User, data: dict[str, str]) -> None:
     является непустой. Иначе атрибуту объекта присваивается None.
 
     :param user: объект пользователя User
+    :type user: User
     :param data: словарь с данными о пользователе
+    :type data: dict[str, str]
+    :rtype: None
     """
     biography = data['biography'].strip()
     phone_number = data['phone_number'].strip()
@@ -84,8 +90,11 @@ def update_user_data(user: User, password: str) -> bool:
     записываются в атрибуты объекта пользователя, и функция возвращает True.
 
     :param user: объект пользователя User, чьи данные нужно синхронизировать
+    :type user: User
     :param password: пароль от учетной записи в приложении и на сайте ЯГТУ
+    :type password: str
     :return: True, если синхронизация данных прошла успешно, иначе False
+    :rtype: bool
     """
     response = requests.post(
         'https://www.ystu.ru/WPROG/auth1.php',
@@ -120,10 +129,14 @@ def search_user(user_name: str, leader_id: int, members_id: list[int]) -> dict:
     функция завершит работу с пустым результатом.
 
     :param user_name: поисковый запрос, имя искомого пользователя (полное или неполное)
+    :type user_name: str
     :param leader_id: идентификатор руководителя команды в БД
+    :type leader_id: int
     :param members_id: список целых чисел - идентификаторов текущих участников команды в БД
+    :type members_id: list[int]
     :return: словарь с информацией о найденных пользователях или словарь с пустым списком по ключу 'users', если
     пользователи не найдены
+    :rtype: dict
     """
     user_name_parts = [word.capitalize() for word in user_name.strip().split()]
 
@@ -171,7 +184,9 @@ def get_team_info(team_id: int) -> dict:
     Принимает id команды в базе данных и возвращает словарь с информацией об этой команде.
 
     :param team_id: идентификатор команды в базе данных
+    :type team_id: int
     :return: словарь с информацией о команде
+    :rtype: dict
     """
     team = Team.objects.get(id=team_id)
 
@@ -195,7 +210,9 @@ def get_project_info(project_id: int) -> dict:
     Принимает id проекта в базе данных и возвращает словарь с информацией об этом проекте.
 
     :param project_id: идентификатор проекта в базе данных
+    :type project_id: int
     :return: словарь с информацией о проекте
+    :rtype: dict
     """
     project = Project.objects.get(id=project_id)
 
