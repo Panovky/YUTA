@@ -9,9 +9,9 @@ from users.models import User
 
 class TeamsView(View):
     def get(self, request):
-        if not request.session.get('user_id'):
+        if not request.session['user_id']:
             return redirect('main')
-        session_user_id = request.session.get('user_id')
+        session_user_id = request.session['user_id']
         user = User.objects.get(id=session_user_id)
         managed_teams = user.leader_teams.all()
         others_teams = user.teams.all()
@@ -27,20 +27,20 @@ class TeamsView(View):
         )
 
     def post(self, request):
-        if not request.session.get('user_id'):
+        if not request.session['user_id']:
             return redirect('main')
-        action = request.POST.get('action')
+        action = request.POST['action']
 
         if action == 'delete_team':
-            team_id = request.POST.get('team_id')
+            team_id = request.POST['team_id']
             Team.objects.get(id=team_id).delete()
             return redirect('teams')
 
         if action == 'check_team_name':
-            new_team_name = request.POST.get('team_name').strip()
+            new_team_name = request.POST['team_name'].strip()
 
             if request.POST.get('team_id'):
-                team_id = request.POST.get('team_id')
+                team_id = request.POST['team_id']
                 old_team_name = Team.objects.get(id=team_id).name
                 if new_team_name == old_team_name:
                     return JsonResponse({
@@ -58,35 +58,37 @@ class TeamsView(View):
             return JsonResponse(data=search_user(user_name, leader_id, members_id))
 
         if action == 'create_team':
-            team_name = request.POST.get('team_name').strip()
-            team_leader = User.objects.get(id=request.session.get('user_id'))
+            team_name = request.POST['team_name'].strip()
+            team_leader = User.objects.get(id=request.session['user_id'])
 
             team = Team.objects.create(
                 name=team_name,
                 leader=team_leader
             )
 
-            team_members_id = json.loads(request.POST.get('members_id'))
+            team_members_id = json.loads(request.POST['members_id'])
             for member_id in team_members_id:
                 member = User.objects.get(id=member_id)
                 team.members.add(member)
                 member.teams.add(team)
 
-        if action == 'edit_team':
-            team_id = request.POST.get('team_id')
-            team = Team.objects.get(id=team_id)
+            return redirect('teams')
 
-            team_name = request.POST.get('team_name').strip()
+        if action == 'edit_team':
+            team_id = request.POST['team_id']
+            team_name = request.POST['team_name'].strip()
+            team = Team.objects.get(id=team_id)
             team.name = team_name
 
             team.members.clear()
-            team_members_id = json.loads(request.POST.get('members_id'))
+            team_members_id = json.loads(request.POST['members_id'])
             for member_id in team_members_id:
                 member = User.objects.get(id=member_id)
                 team.members.add(member)
                 member.teams.add(team)
 
             team.save()
+            return redirect('teams')
 
         if action == 'get_team_info':
             team_id = request.POST['team_id']

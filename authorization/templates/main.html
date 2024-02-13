@@ -31,11 +31,11 @@
                     <form method="POST" id="authorizationForm" class="mt-2">
                         {% csrf_token %}
                         <div class="text-field__icon mb-3 text-field__icon_person position-relative">
-                            <input id="Login" type="text" name="login" placeholder="Логин" maxlength="30" required>
+                            <input id="Login" type="text" name="login" placeholder="Логин" maxlength="50" required>
                             <span>*</span>
                         </div>
                         <div class="text-field__icon mb-3 text-field__icon_password position-relative">
-                            <input id="Password" class="required" type="password" name="password" placeholder="Пароль" maxlength="30" required>
+                            <input id="Password" class="required" type="password" name="password" placeholder="Пароль" maxlength="50" required>
                             <span>*</span>
                         </div>
                         {% if message %}

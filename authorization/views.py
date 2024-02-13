@@ -10,13 +10,13 @@ class MainView(View):
         return render(request, 'main.html')
 
     def post(self, request):
-        login = request.POST.get('login')
-        password = request.POST.get('password')
+        login = request.POST['login']
+        password = request.POST['password']
         user = authorize_user(login, password)
 
         if user:
             request.session['user_id'] = user.id
             return redirect('tasks')
-        else:
-            return render(request, 'main.html', context={'message': 'Неправильный логин или пароль.'})
+
+        return render(request, 'main.html', context={'message': 'Неправильный логин или пароль.'})
 
