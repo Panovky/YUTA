@@ -12,9 +12,9 @@ from YUTA.utils import get_project_info
 
 class ProjectsView(View):
     def get(self, request):
-        if not request.session.get('user_id'):
+        if not request.session['user_id']:
             return redirect('main')
-        session_user_id = request.session.get('user_id')
+        session_user_id = request.session['user_id']
         user = User.objects.get(id=session_user_id)
         today = datetime.date.today().isoformat()
         managed_projects = user.manager_projects.all()
@@ -33,23 +33,23 @@ class ProjectsView(View):
         )
 
     def post(self, request):
-        if not request.session.get('user_id'):
+        if not request.session['user_id']:
             return redirect('main')
-        session_user_id = request.session.get('user_id')
-        action = request.POST.get('action')
+        session_user_id = request.session['user_id']
+        action = request.POST['action']
 
         if action == 'delete_project':
-            project_id = request.POST.get('project_id')
+            project_id = request.POST['project_id']
             Project.objects.get(id=project_id).delete()
             return redirect('projects')
 
         if action == 'search_team':
-            team_name = request.POST.get('team_name').strip()
+            team_name = request.POST['team_name'].strip()
             leader = User.objects.get(id=session_user_id)
             teams = Team.objects.filter(name__istartswith=team_name) & Team.objects.filter(leader=leader)
 
             if request.POST.get('project_team_id'):
-                teams = teams.exclude(id=request.POST.get('project_team_id'))
+                teams = teams.exclude(id=request.POST['project_team_id'])
 
             response_data = {
                 'teams': [
@@ -63,43 +63,41 @@ class ProjectsView(View):
             return JsonResponse(data=response_data)
 
         if action == 'create_project':
-            name = request.POST.get('project_name').strip()
-            description = request.POST.get('project_description').strip()
-            deadline = request.POST.get('project_deadline')
+            name = request.POST['project_name'].strip()
+            description = request.POST['project_description'].strip()
+            deadline = request.POST['project_deadline']
             manager = User.objects.get(id=session_user_id)
-
-            if request.POST.get('project_team_id'):
-                team = Team.objects.get(id=request.POST.get('project_team_id'))
-            else:
-                team = None
 
             project = Project.objects.create(
                 name=name,
                 description=description,
                 deadline=deadline,
-                manager=manager,
-                team=team
+                manager=manager
             )
 
             if request.FILES.get('project_technical_task'):
-                file = request.FILES.get('project_technical_task')
+                file = request.FILES['project_technical_task']
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
                 file_name = f'tech_task_{project.id}.pdf'
                 fs.save(file_name, file)
                 project.technical_task = f'projects_technical_tasks/{file_name}'
                 project.save()
 
+            if request.POST.get('project_team_id'):
+                project.team = Team.objects.get(id=request.POST['project_team_id'])
+                project.save()
+
             return redirect('projects')
 
         if action == 'edit_project':
-            project = Project.objects.get(id=request.POST.get('project_id'))
-            name = request.POST.get('project_name').strip()
-            description = request.POST.get('project_description').strip()
-            deadline = request.POST.get('project_deadline')
-            status = request.POST.get('project_status')
+            project = Project.objects.get(id=request.POST['project_id'])
+            name = request.POST['project_name'].strip()
+            description = request.POST['project_description'].strip()
+            deadline = request.POST['project_deadline']
+            status = request.POST['project_status']
 
             if request.FILES.get('project_technical_task'):
-                file = request.FILES.get('project_technical_task')
+                file = request.FILES['project_technical_task']
                 file_name = f'tech_task_{project.id}.pdf'
                 if file.name != file_name:
                     fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
@@ -110,7 +108,7 @@ class ProjectsView(View):
                 technical_task = None
 
             if request.POST.get('project_team_id'):
-                team = Team.objects.get(id=request.POST.get('project_team_id'))
+                team = Team.objects.get(id=request.POST['project_team_id'])
             else:
                 team = None
 

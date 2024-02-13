@@ -5,9 +5,9 @@ from users.models import User
 
 class TasksView(View):
     def get(self, request):
-        if not request.session.get('user_id'):
+        if not request.session['user_id']:
             return redirect('main')
-        session_user_id = request.session.get('user_id')
+        session_user_id = request.session['user_id']
         user = User.objects.get(id=session_user_id)
 
         return render(
