@@ -21,6 +21,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     height: 120px;
     border-radius: 27px 27px 0 0;
     background: var(--blue-color);
@@ -29,14 +30,19 @@
 
 .project-card .header .img-wrapper {
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 25px;
+    border: 2px solid var(--blue-color);
 }
 
 .project-card .header .img-wrapper img {
     object-fit: cover;
-    width: 80px;
-    height: 80px;
-    border-radius: 25px;
-    border: 2px solid var(--blue-color);
+    width: 100%;
+    height: auto;
 }
 
 .header .context-menu-btn {

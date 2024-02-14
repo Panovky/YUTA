@@ -83,6 +83,11 @@
         margin-top: 20px;
         font-size: 1.2rem;
     }
+
+    /* ПРОЕКТЫ */
+    .project-card {
+        width: calc(50% - 20px) !important;
+    }
 }
 
 @media (max-width: 1199px) {
@@ -130,6 +135,10 @@
     .about-item .hover-image-scale img {
         width: 120px;
         height: 120px;
+    }
+
+    .lines {
+        display: none;
     }
 
     /* ФУТЕР */
@@ -224,6 +233,11 @@
     .swiper-navigation svg {
         width: 22px !important;
     }
+
+    /* ПРОЕКТЫ */
+    .content__team {
+        gap: 0;
+    }
 }
 
 @media (max-width: 850px) {
@@ -247,7 +261,7 @@
     }
 
     .header-foto {
-        margin-top: 30px;
+        display: none;
     }
 
     .mobile-foto {
@@ -336,6 +350,11 @@
     .team-title p {
         font-size: 1.6rem;
         font-weight: 700;
+    }
+
+    /* ПРОЕКТЫ */
+    .project-card {
+        width: 100% !important;
     }
 }
 

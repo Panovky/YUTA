@@ -70,6 +70,26 @@ button[disabled]:hover {
     transition: all 0.2s;
 }
 
+.white-btn {
+    color: var(--white-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: transparent;
+    border: 2px solid var(--white-color);
+    padding: 10px 45px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 80px;
+    transition: all 0.2s;
+}
+
+.white-btn:hover {
+    color: var(--orange-color);
+    background-color: var(--white-color);
+    border: 2px solid var(--white-color);
+    transition: all 0.2s;
+}
+
 .blue-btn {
     padding: 12px 45px;
     background-color: rgba(22, 56, 157, 0.9);

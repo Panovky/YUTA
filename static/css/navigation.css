@@ -1,5 +1,6 @@
 .navigation {
-    background-color: var(--orange-color);
+    background: var(--blue-color);
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
     color: var(--white-color);
 }
 
