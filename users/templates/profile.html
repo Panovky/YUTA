@@ -89,6 +89,7 @@
                             <p>Обновить фотографию</p>
                         </button>
                     </li>
+                    {% if not is_default_photo %}
                     <li>
                         <button class="dropdown-item d-flex gap-2 justify-content-start align-items-center"
                                 type="button" id="openThumbModal">
@@ -107,6 +108,7 @@
                             <p>Удалить фотографию</p>
                         </button>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
             {% else %}
