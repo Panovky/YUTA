@@ -15,6 +15,7 @@ class ProfileView(View):
         session_user_id = request.session['user_id']
         user = User.objects.get(id=url_user_id)
         is_owner = url_user_id == session_user_id
+        is_default_photo = 'default_user_photo' in user.photo.url
 
         return render(
             request,
@@ -22,6 +23,7 @@ class ProfileView(View):
             context={
                 'user': user,
                 'is_owner': is_owner,
+                'is_default_photo': is_default_photo,
                 'menu_user_id': session_user_id
             }
         )
@@ -35,22 +37,21 @@ class ProfileView(View):
 
         if action == 'update_photo':
             photo = request.FILES['photo']
+            photo_name = f'{user.login}.{photo.name.split(".")[-1]}'
             fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\images\\users_photos')
 
-            photo_name = user.login
-            if '.jpg' in photo.name:
-                photo_name += '.jpg'
-            elif '.jpeg' in photo.name:
-                photo_name += '.jpeg'
-            elif '.png' in photo.name:
-                photo_name += '.png'
+            if fs.exists(name := f'{user.login}.jpg') or fs.exists(name := f'{user.login}.jpeg') or \
+                    fs.exists(name := f'{user.login}.png'):
+                fs.delete(name)
+
+            if fs.exists(name := f'cropped-{user.login}.jpg') or fs.exists(name := f'cropped-{user.login}.jpeg') or \
+                    fs.exists(name := f'cropped-{user.login}.png'):
+                fs.delete(name)
 
             fs.save(photo_name, photo)
-            user.photo = f'images/users_photos/{photo_name}'
-
             fs.save('cropped-' + photo_name, photo)
+            user.photo = f'images/users_photos/{photo_name}'
             user.cropped_photo = f'images/users_photos/cropped-{photo_name}'
-
             user.save()
             return JsonResponse({'photo_url': user.photo.url})
 
@@ -90,6 +91,7 @@ class ProfileView(View):
             if not update_user_data(user, password):
                 session_user_id = request.session['user_id']
                 is_owner = url_user_id == session_user_id
+                is_default_photo = 'default_user_photo' in user.photo.url
 
                 return render(
                     request,
@@ -97,10 +99,10 @@ class ProfileView(View):
                     context={
                         'user': user,
                         'is_owner': is_owner,
+                        'is_default_photo': is_default_photo,
                         'message': 'Неправильный пароль.',
                         'menu_user_id': session_user_id
                     }
                 )
 
             return redirect('profile', session_user_id)
-

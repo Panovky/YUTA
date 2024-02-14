@@ -69,9 +69,12 @@ updateFotoForm.addEventListener('submit', (e) => {
 
 
 // ИЗМЕНЕНИЕ МИНИАТЮРЫ АВАТАРКИ
-btnOpenModalMiniature.addEventListener('click', () => {
-    modalMiniature.show();
-});
+if (btnOpenModalMiniature) {
+    btnOpenModalMiniature.addEventListener('click', () => {
+        modalMiniature.show();
+    });
+}
+
 
 document.querySelector('#thumb').addEventListener('shown.bs.modal', () => {
     const image = document.querySelector('#imageCrop');
