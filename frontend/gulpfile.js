@@ -102,7 +102,7 @@ export const js = () => {
 			mode: 'development',
 			entry: {
 				main: './src/js/main.js',
-				proects: './src/js/projects.js',
+				projects: './src/js/projects.js',
 				teams: './src/js/teams.js',
 				users: './src/js/users.js',
 			},
