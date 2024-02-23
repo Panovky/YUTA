@@ -31,6 +31,10 @@ class TeamsView(View):
             return redirect('main')
         action = request.POST['action']
 
+        if action == 'navbar_search_user':
+            user_name = request.POST['navbar_user_name']
+            return JsonResponse(data=search_user(user_name))
+
         if action == 'delete_team':
             team_id = request.POST['team_id']
             Team.objects.get(id=team_id).delete()
