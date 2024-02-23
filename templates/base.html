@@ -53,65 +53,82 @@
 
 <div class="wrapper">
     {% block menu %}
-        <nav class="navbar navbar-expand-md navigation">
-            <div class="container-xxl">
-                <div class="logo">
-                    {% block logo %}
-                    <img src="{% static 'images/logo.png' %}" alt="YUTA">
-                    {% endblock logo %}
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Переключатель навигации">
-                    <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-expand-md navigation">
+        <div class="container-xxl">
+            <div class="logo">
+                {% block logo %}
+                <img src="{% static 'images/logo.png' %}" alt="YUTA">
+                {% endblock logo %}
+            </div>
+            <div>
+                <input type="text" name="navbar_user_name" placeholder="ФИО" autocomplete="off">
+
+                <button id="navbar-search-user-btn" type="button" style="background-color: transparent" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30"
+                         viewBox="0,0,256,256">
+                        <g fill="white" fill-rule="nonzero" stroke="none" stroke-width="1"
+                           stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
+                           stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
+                           font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                            <g transform="scale(2,2)">
+                                <path d="M52.34961,14.40039c-9.725,0 -19.44961,3.69961 -26.84961,11.09961c-14.8,14.8 -14.8,38.89922 0,53.69922c7.4,7.4 17.10039,11.10156 26.90039,11.10156c9.8,0 19.50039,-3.70156 26.90039,-11.10156c14.7,-14.8 14.69844,-38.89922 -0.10156,-53.69922c-7.4,-7.4 -17.12461,-11.09961 -26.84961,-11.09961zM52.30078,20.30078c8.2,0 16.39961,3.09844 22.59961,9.39844c12.5,12.5 12.49961,32.80078 0.09961,45.30078c-12.5,12.5 -32.80078,12.5 -45.30078,0c-12.5,-12.5 -12.5,-32.80078 0,-45.30078c6.2,-6.2 14.40156,-9.39844 22.60156,-9.39844zM52.30078,26.30078c-6.9,0 -13.40078,2.69922 -18.30078,7.69922c-4.7,4.7 -7.29961,10.80039 -7.59961,17.40039c-0.1,1.7 1.20039,2.99961 2.90039,3.09961h0.09961c1.6,0 2.9,-1.30039 3,-2.90039c0.2,-5.1 2.29883,-9.80039 5.79883,-13.40039c3.8,-3.8 8.80156,-5.89844 14.10156,-5.89844c1.7,0 3,-1.3 3,-3c0,-1.7 -1.3,-3 -3,-3zM35,64c-1.65685,0 -3,1.34315 -3,3c0,1.65685 1.34315,3 3,3c1.65685,0 3,-1.34315 3,-3c0,-1.65685 -1.34315,-3 -3,-3zM83.36328,80.5c-0.7625,0 -1.5125,0.30039 -2.0625,0.90039c-1.2,1.2 -1.2,3.09922 0,4.19922l2.5,2.5c-0.6,1.2 -0.90039,2.50039 -0.90039,3.90039c0,2.4 0.89961,4.70039 2.59961,6.40039l12.80078,12.59961c1.8,1.8 4.09844,2.69922 6.39844,2.69922c2.3,0 4.60039,-0.89961 6.40039,-2.59961c3.5,-3.5 3.5,-9.19922 0,-12.69922l-12.79883,-12.80078c-1.7,-1.7 -4.00039,-2.59961 -6.40039,-2.59961c-1.4,0 -2.70039,0.30039 -3.90039,0.90039l-2.5,-2.5c-0.6,-0.6 -1.37422,-0.90039 -2.13672,-0.90039zM91.90039,88.90039c0.8,0 1.59961,0.30039 2.09961,0.90039l12.69922,12.69922c1.2,1.2 1.2,3.09922 0,4.19922c-1.2,1.2 -3.09922,1.2 -4.19922,0l-12.69922,-12.59961c-0.6,-0.6 -0.90039,-1.39922 -0.90039,-2.19922c0,-0.8 0.30039,-1.59961 0.90039,-2.09961c0.6,-0.6 1.29961,-0.90039 2.09961,-0.90039z"></path>
+                            </g>
+                        </g>
+                    </svg>
                 </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-lg-5 ms-md-3 ms-sm-0 ms-0 d-flex align-items-center">
-                        <li class="nav-item my-2 mt-md-2 mt-sm-0 mt-2 ms-lg-0 ms-md-0 ms-sm-0 ms-0">
-                            <a class="menu-link" href="{% url 'profile' menu_user_id %}">Профиль</a>
-                        </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
-                            <a class="menu-link" href="{% url 'projects' %}">Проекты</a>
-                        </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
-                            <a class="menu-link" href="{% url 'tasks' %}">Задачи</a>
-                        </li>
-                        <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
-                            <a class="menu-link" href="{% url 'teams' %}">Команды</a>
-                        </li>
-                        <li class="nav-item my-2 mb-md-2 mb-sm-4 mb-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
-                            <button type="button" class="white-btn" data-bs-toggle="modal"
-                                    data-bs-target="#exit">Выйти
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Переключатель навигации">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-lg-5 ms-md-3 ms-sm-0 ms-0 d-flex align-items-center">
+                    <li class="nav-item my-2 mt-md-2 mt-sm-0 mt-2 ms-lg-0 ms-md-0 ms-sm-0 ms-0">
+                        <a class="menu-link" href="{% url 'profile' menu_user_id %}">Профиль</a>
+                    </li>
+                    <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
+                        <a class="menu-link" href="{% url 'projects' %}">Проекты</a>
+                    </li>
+                    <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
+                        <a class="menu-link" href="{% url 'tasks' %}">Задачи</a>
+                    </li>
+                    <li class="nav-item my-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
+                        <a class="menu-link" href="{% url 'teams' %}">Команды</a>
+                    </li>
+                    <li class="nav-item my-2 mb-md-2 mb-sm-4 mb-2 ms-lg-5 ms-md-4 ms-sm-0 ms-0 d-flex align-items-center">
+                        <button type="button" class="white-btn" data-bs-toggle="modal"
+                                data-bs-target="#exit">Выйти
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal fade modal-exit" id="exit" tabindex="-1" aria-labelledby="exit" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header position-relative">
+                            <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
+                                    aria-label="Закрыть">
+                                <svg style="width: 28px; height: 28px;">
+                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
+                                </svg>
                             </button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal fade modal-exit" id="exit" tabindex="-1" aria-labelledby="exit" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header position-relative">
-                                <button type="button" class="close-modal-btn" data-bs-dismiss="modal"
-                                        aria-label="Закрыть">
-                                    <svg style="width: 28px; height: 28px;">
-                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#close"></use>
-                                    </svg>
-                                </button>
-                            </div>
-                            <p class="modal-title text-center">Предупреждение</p>
-                            <div class="modal-devider"></div>
-                            <div class="mt-2">
-                                <p class="text-start fs-5">Вы действительно хотите выйти из приложения?</p>
-                                <div class="d-flex justify-content-end mt-4">
-                                    <a href="{% url 'main' %}">
-                                        <button class="orange-btn modal-btn">Да, выйти</button>
-                                    </a>
-                                </div>
+                        </div>
+                        <p class="modal-title text-center">Предупреждение</p>
+                        <div class="modal-devider"></div>
+                        <div class="mt-2">
+                            <p class="text-start fs-5">Вы действительно хотите выйти из приложения?</p>
+                            <div class="d-flex justify-content-end mt-4">
+                                <a href="{% url 'main' %}">
+                                    <button class="orange-btn modal-btn">Да, выйти</button>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
     {% endblock menu %}
 
     <main>

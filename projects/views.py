@@ -7,7 +7,7 @@ from YUTA.settings import MEDIA_ROOT
 from projects.models import Project
 from teams.models import Team
 from users.models import User
-from YUTA.utils import get_project_info
+from YUTA.utils import get_project_info, search_user
 
 
 class ProjectsView(View):
@@ -37,6 +37,10 @@ class ProjectsView(View):
             return redirect('main')
         session_user_id = request.session['user_id']
         action = request.POST['action']
+
+        if action == 'navbar_search_user':
+            user_name = request.POST['navbar_user_name']
+            return JsonResponse(data=search_user(user_name))
 
         if action == 'delete_project':
             project_id = request.POST['project_id']

@@ -120,20 +120,27 @@ def update_user_data(user: User, password: str) -> bool:
         return True
 
 
-def search_user(user_name: str, leader_id: int, members_id: list[int]) -> dict:
+def search_user(user_name: str, leader_id: int | None = None, members_id: list[int] | None = None) -> dict:
     """
-    Принимает имя пользователя для поиска, id руководителя команды и список id текущих участников команды.
+    Осуществляет поиск пользователей по полному или неполному имени.
 
-    В результаты поиска по переданному имени не попадут руководитель команды и текущие участники команды.
-    Если переданный поисковый запрос является пустой строкой или слов в переданном имени больше 3, поиск невозможен:
+    Поиск в навбаре:
+    - принимает только один параметр - поисковый запрос;
+    - возвращает словарь со всеми совпадениями по пользователям.
+
+    Поиск при создании команды:
+    - принимает поисковый запрос, id руководителя команды и список id текущих участников команды;
+    - возвращает словарь найденных пользователей, исключая руководителя команды и текущих участников команды.
+
+    Если переданный поисковый запрос является пустой строкой или слов в переданном запросе больше 3, поиск невозможен:
     функция завершит работу с пустым результатом.
 
-    :param user_name: поисковый запрос, имя искомого пользователя (полное или неполное)
+    :param user_name: поисковый запрос, имя (полное или неполное)
     :type user_name: str
-    :param leader_id: идентификатор руководителя команды в БД
-    :type leader_id: int
-    :param members_id: список целых чисел - идентификаторов текущих участников команды в БД
-    :type members_id: list[int]
+    :param leader_id: идентификатор руководителя команды в БД (необязательный)
+    :type leader_id: int | None
+    :param members_id: список целых чисел - идентификаторов текущих участников команды в БД (необязательный)
+    :type members_id: list[int] | None
     :return: словарь с информацией о найденных пользователях или словарь с пустым списком по ключу 'users', если
     пользователи не найдены
     :rtype: dict
@@ -162,8 +169,9 @@ def search_user(user_name: str, leader_id: int, members_id: list[int]) -> dict:
             User.objects.filter(first_name__startswith=user_name_parts[0]) | \
             User.objects.filter(patronymic__startswith=user_name_parts[0])
 
-    prohibited_id = [leader_id] + members_id
-    users = users.exclude(id__in=prohibited_id)
+    if leader_id and members_id:
+        prohibited_id = [leader_id] + members_id
+        users = users.exclude(id__in=prohibited_id)
 
     return {
         'users': [
