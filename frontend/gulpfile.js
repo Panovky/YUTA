@@ -103,6 +103,7 @@ export const js = () => {
 			entry: {
 				main: './src/js/main.js',
 				projects: './src/js/projects.js',
+				tasks: './src/js/tasks.js',
 				teams: './src/js/teams.js',
 				users: './src/js/users.js',
 			},
