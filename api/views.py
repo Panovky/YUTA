@@ -69,6 +69,39 @@ class ProfileView(APIView):
             return JsonResponse(data={'success': update_user_data(user, password)})
 
 
+class ProjectsView(APIView):
+    def get(self, request):
+        if request.query_params.get('user_id'):
+            user_id = request.query_params['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'Failed',
+                    'managed_projects': None,
+                    'others_projects': None,
+                })
+
+            user = User.objects.get(id=user_id)
+            managed_projects = user.manager_projects.all()
+            others_projects = [project for team in user.teams.all() for project in team.team_projects.all()]
+
+            return JsonResponse({
+                'status': 'OK',
+                'managed_projects': [project.serialize_for_projects_view() for project in managed_projects],
+                'others_projects': [project.serialize_for_projects_view() for project in others_projects],
+            })
+
+    def post(self, request):
+        pass
+
+
+class TasksView(APIView):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
+
+
 class TeamsView(APIView):
     def get(self, request):
         if request.query_params.get('user_id'):
