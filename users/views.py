@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from YUTA.scripts import crop_photo
 from YUTA.settings import MEDIA_ROOT
-from YUTA.utils import edit_user_data, update_user_data, search_user
+from YUTA.utils import edit_user_data, update_user_data, search_users
 from users.models import User
 
 
@@ -37,7 +37,7 @@ class ProfileView(View):
 
         if action == 'navbar_search_user':
             user_name = request.POST['navbar_user_name']
-            return JsonResponse(data=search_user(user_name))
+            return JsonResponse(data=search_users(user_name))
 
         if action == 'update_photo':
             photo = request.FILES['photo']

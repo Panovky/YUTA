@@ -120,7 +120,7 @@ def update_user_data(user: User, password: str) -> bool:
         return True
 
 
-def search_user(user_name: str, leader_id: int | None = None, members_id: list[int] | None = None) -> dict:
+def search_users(user_name: str, leader_id: int | None = None, members_id: list[int] | None = None) -> dict:
     """
     Осуществляет поиск пользователей по полному или неполному имени.
 
@@ -241,3 +241,24 @@ def get_project_info(project_id: int) -> dict:
             'name': project.team.name
         } if project.team else None
     }
+
+
+def is_team_name_unique(team_name: str, team_id: int | None = None) -> bool:
+    """
+    Принимает потенциальное название для команды и возвращает результат его проверки на уникальность.
+
+    При создании команды передается только название, при редактировании команды - название и идентификатор команды.
+
+    :param team_name: потенциальное имя команды для проверки на уникальность
+    :type team_name: str
+    :param team_id: идентификатор команды (необязательный параметр, нужен только при редактировании команды)
+    :type team_id: int | None
+    :return: True, если название команды уникально, иначе - False
+    :rtype: bool
+    """
+
+    if team_id:
+        if team_name == Team.objects.get(id=team_id).name:
+            return True
+
+    return not Team.objects.filter(name=team_name).exists()

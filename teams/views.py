@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from YUTA.utils import search_user, get_team_info
+from YUTA.utils import search_users, get_team_info
 from teams.models import Team
 from users.models import User
 
@@ -33,7 +33,7 @@ class TeamsView(View):
 
         if action == 'navbar_search_user':
             user_name = request.POST['navbar_user_name']
-            return JsonResponse(data=search_user(user_name))
+            return JsonResponse(data=search_users(user_name))
 
         if action == 'delete_team':
             team_id = request.POST['team_id']
@@ -59,7 +59,7 @@ class TeamsView(View):
             user_name = request.POST['user_name']
             leader_id = request.session['user_id']
             members_id = json.loads(request.POST['members_id'])
-            return JsonResponse(data=search_user(user_name, leader_id, members_id))
+            return JsonResponse(data=search_users(user_name, leader_id, members_id))
 
         if action == 'create_team':
             team_name = request.POST['team_name'].strip()
