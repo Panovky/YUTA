@@ -1,6 +1,8 @@
+import json
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_user, get_team_info
+from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_users, get_team_info, \
+    is_team_name_unique
 from teams.models import Team
 from users.models import User
 
@@ -69,56 +71,109 @@ class ProfileView(APIView):
 
 class TeamsView(APIView):
     def get(self, request):
-        user_id = request.query_params['user_id']
-        managed_teams = User.objects.get(id=user_id).leader_teams.all()
-        others_teams = User.objects.get(id=user_id).teams.all()
+        if request.query_params.get('user_id'):
+            user_id = request.query_params['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'Failed',
+                    'managed_teams': None,
+                    'others_teams': None,
+                })
 
-        response_data = {
-            'managed_teams': [team.serialize_for_teams_view() for team in managed_teams],
-            'others_teams': [team.serialize_for_teams_view() for team in others_teams],
-        }
+            managed_teams = User.objects.get(id=user_id).leader_teams.all()
+            others_teams = User.objects.get(id=user_id).teams.all()
 
-        return JsonResponse(data=response_data)
+            return JsonResponse({
+                'status': 'OK',
+                'managed_teams': [team.serialize_for_teams_view() for team in managed_teams],
+                'others_teams': [team.serialize_for_teams_view() for team in others_teams],
+            })
+
+        if request.query_params.get('team_name'):
+            team_name = request.query_params['team_name'].strip()
+
+            if request.query_params.get('team_id'):
+                team_id = request.query_params['team_id']
+                if not Team.objects.filter(id=team_id).exists():
+                    return JsonResponse({
+                        'status': 'Failed',
+                        'unique': None
+                    })
+
+                return JsonResponse({
+                    'status': 'OK',
+                    'unique': is_team_name_unique(team_name, team_id)
+                })
+
+            return JsonResponse({
+                'status': 'OK',
+                'unique': is_team_name_unique(team_name)
+            })
+
+        if request.query_params.get('team_id'):
+            team_id = request.query_params['team_id']
+            if not Team.objects.filter(id=team_id).exists():
+                return JsonResponse({
+                    'status': 'Failed',
+                    'team': None
+                })
+            return JsonResponse({
+                'status': 'OK',
+                'team': get_team_info(team_id)
+            })
+
+        if request.query_params.get('user_name') and request.query_params.get('leader_id') and \
+                request.query_params.get('members_id'):
+
+            leader_id = request.query_params['leader_id']
+            if not User.objects.filter(id=leader_id).exists():
+                return JsonResponse({
+                    'status': 'Failed',
+                    'users': None
+                })
+
+            members_id = json.loads(request.query_params['members_id'])
+            for member_id in members_id:
+                if not User.objects.filter(id=member_id).exists():
+                    return JsonResponse({
+                        'status': 'Failed',
+                        'users': None
+                    })
+
+            user_name = request.query_params['user_name']
+            return JsonResponse({'status': 'OK'} | search_users(user_name, leader_id, members_id))
 
     def post(self, request):
         action = request.data['action']
 
         if action == 'delete_team':
             team_id = request.data['team_id']
+
+            if not Team.objects.filter(id=team_id).exists():
+                return JsonResponse({'success': False})
+
             Team.objects.get(id=team_id).delete()
             return JsonResponse({'success': True})
 
-        if action == 'check_team_name':
-            new_team_name = request.data['team_name'].strip()
-
-            if request.data.get('team_id'):
-                team_id = request.data['team_id']
-                old_team_name = Team.objects.get(id=team_id).name
-                if new_team_name == old_team_name:
-                    return JsonResponse({
-                        'unique': True}
-                    )
-
-            return JsonResponse({
-                'unique': not Team.objects.filter(name=new_team_name).exists()
-            })
-
-        if action == 'search_user':
-            user_name = request.data['user_name']
-            leader_id = request.data['leader_id']
-            members_id = request.data['members_id']
-            return JsonResponse(data=search_user(user_name, leader_id, members_id))
-
         if action == 'create_team':
+            leader_id = request.data['leader_id']
+            if not User.objects.filter(id=leader_id).exists():
+                return JsonResponse({'success': False})
+
             team_name = request.data['team_name'].strip()
-            leader = User.objects.get(id=request.data['leader_id'])
+            if not is_team_name_unique(team_name):
+                return JsonResponse({'success': False})
+
+            members_id = request.data['members_id']
+            for member_id in members_id:
+                if not User.objects.filter(id=member_id).exists():
+                    return JsonResponse({'success': False})
 
             team = Team.objects.create(
                 name=team_name,
-                leader=leader
+                leader=User.objects.get(id=leader_id)
             )
 
-            members_id = request.data['members_id']
             for member_id in members_id:
                 member = User.objects.get(id=member_id)
                 team.members.add(member)
@@ -128,12 +183,22 @@ class TeamsView(APIView):
 
         if action == 'edit_team':
             team_id = request.data['team_id']
+            if not Team.objects.filter(id=team_id).exists():
+                return JsonResponse({'success': False})
+
             team_name = request.data['team_name'].strip()
+            if not is_team_name_unique(team_name, team_id):
+                return JsonResponse({'success': False})
+
+            members_id = request.data['members_id']
+            for member_id in members_id:
+                if not User.objects.filter(id=member_id).exists():
+                    return JsonResponse({'success': False})
+
             team = Team.objects.get(id=team_id)
             team.name = team_name
-
             team.members.clear()
-            members_id = request.data['members_id']
+
             for member_id in members_id:
                 member = User.objects.get(id=member_id)
                 team.members.add(member)
@@ -142,6 +207,4 @@ class TeamsView(APIView):
             team.save()
             return JsonResponse({'success': True})
 
-        if action == 'get_team_info':
-            team_id = request.data['team_id']
-            return JsonResponse(data=get_team_info(team_id))
+
