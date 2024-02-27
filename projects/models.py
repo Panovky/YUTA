@@ -49,5 +49,22 @@ class Project(models.Model):
         else:
             return f'Дней до сдачи проекта: {days}'
 
+    def serialize_for_projects_view(self):
+        return {
+            'id': self.id,
+            'photo_url': self.photo.url,
+            'name': self.name,
+            'technical_task_url': self.technical_task.url if self.technical_task else None,
+            'status': self.status,
+            'string_deadline': self.deadline_str,
+            'description': self.description,
+            'manager': {
+                'id': self.manager.id,
+                'cropped_photo_url': self.manager.cropped_photo.url,
+                'last_name': self.manager.last_name,
+                'first_name': self.manager.first_name,
+            },
+            'team': self.team.serialize_for_teams_view() if self.team else None
+        }
 
 
