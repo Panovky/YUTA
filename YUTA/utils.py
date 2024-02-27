@@ -224,15 +224,11 @@ def get_project_info(project_id: int) -> dict:
     """
     project = Project.objects.get(id=project_id)
 
-    if project.technical_task:
-        technical_task_path = project.technical_task.url
-        technical_task_name = technical_task_path.replace('/media/projects_technical_tasks/', '')
-    else:
-        technical_task_name = None
-
     return {
         'name': project.name,
-        'technical_task_name': technical_task_name,
+        'technical_task_url': project.technical_task.url if project.technical_task else None,
+        'technical_task_name': project.technical_task.url.replace('media/projects_technical_tasks/',
+                                                                  '') if project.technical_task else None,
         'deadline': project.deadline,
         'status': project.status,
         'description': project.description,

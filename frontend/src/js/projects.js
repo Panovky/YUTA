@@ -364,14 +364,21 @@ editProjectBtns.forEach(btn => {
                 editProjectForm.querySelector('[name=project_status]').value = data.status;
                 editProjectForm.querySelector('[name=project_description]').value = data.description
 
-                if (data.technical_task_name) {
-                    let dt  = new DataTransfer();
-                    dt.items.add(new File([], data.technical_task_name));
-                    editProjectForm.querySelector('[name=project_technical_task]').files = dt.files;
-                    editProjectForm.querySelector('.input-file-text').innerHTML = editProjectForm.querySelector('.tzInput').files[0].name
-                } else {
-                    let dt  = new DataTransfer();
-                    editProjectForm.querySelector('[name=project_technical_task]').files = dt.files;
+                if (data.technical_task_url) {
+                    async function addTechnicalTaskFile(url, name){
+                        let response = await fetch(url);
+                        let data = await response.blob();
+                        let metadata = {
+                            type: 'file/pdf'
+                        };
+                        let file = new File([data], name, metadata);
+                        let dt  = new DataTransfer();
+                        dt.items.add(file);
+                        editProjectForm.querySelector('[name=project_technical_task]').files = dt.files;
+                        editProjectForm.querySelector('.input-file-text').innerHTML = name;
+                    }
+
+                    addTechnicalTaskFile(data.technical_task_url, data.technical_task_name);
                 }
 
                 if (data.team) {

@@ -103,10 +103,12 @@ class ProjectsView(View):
             if request.FILES.get('project_technical_task'):
                 file = request.FILES['project_technical_task']
                 file_name = f'tech_task_{project.id}.pdf'
-                if file.name != file_name:
-                    fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+
+                if fs.exists(file_name):
                     fs.delete(file_name)
-                    fs.save(file_name, file)
+
+                fs.save(file_name, file)
                 technical_task = f'projects_technical_tasks/{file_name}'
             else:
                 technical_task = None
