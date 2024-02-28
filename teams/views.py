@@ -1,3 +1,4 @@
+import datetime
 import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -15,6 +16,7 @@ class TeamsView(View):
         user = User.objects.get(id=session_user_id)
         managed_teams = user.leader_teams.all()
         others_teams = user.teams.all()
+        timestamp = int(datetime.datetime.now().timestamp())
 
         return render(
             request,
@@ -22,6 +24,7 @@ class TeamsView(View):
             context={
                 'managed_teams': managed_teams,
                 'others_teams': others_teams,
+                'timestamp': timestamp,
                 'menu_user_id': session_user_id
             }
         )

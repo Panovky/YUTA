@@ -169,9 +169,11 @@ def search_users(user_name: str, leader_id: int | None = None, members_id: list[
             User.objects.filter(first_name__startswith=user_name_parts[0]) | \
             User.objects.filter(patronymic__startswith=user_name_parts[0])
 
-    if leader_id and members_id:
-        prohibited_id = [leader_id] + members_id
-        users = users.exclude(id__in=prohibited_id)
+    if leader_id:
+        users = users.exclude(id=leader_id)
+
+    if members_id:
+        users = users.exclude(id__in=members_id)
 
     return {
         'users': [

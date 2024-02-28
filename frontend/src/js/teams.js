@@ -161,7 +161,7 @@ function searchUser(e) {
             let innerBlockSearched = document.createElement('div');
             innerBlockSearched.classList.add('searched-user__inner');
             let img = document.createElement('img');
-            img.src = user.cropped_photo_url;
+            img.src = user.cropped_photo_url + '?timestamp=' + Date.now();
             let name = document.createElement('p');
             name.innerHTML = `${user.last_name} ${user.first_name} ${user.patronymic ? user.patronymic : ''}`;
 
@@ -358,7 +358,8 @@ editTeamBtns.forEach(btn => {
                     innerBlockMember.classList.add('member-user__inner');
 
                     let img = document.createElement('img');
-                    img.src = m.cropped_photo_url;
+                    console.log(m.cropped_photo_url + '?timestamp=' + Date.now());
+                    img.src = m.cropped_photo_url + '?timestamp=' + Date.now();
 
                     let name = document.createElement('p');
                     name.innerHTML = `${m.last_name} ${m.first_name} ${m.patronymic ? m.patronymic : ''}`;
