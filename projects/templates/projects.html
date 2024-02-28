@@ -138,7 +138,7 @@
                         <div class="header">
                             <div class="d-flex justify-content-start align-items-center gap-3">
                                 <div class="img-wrapper">
-                                    <img src="{{ project.photo.url }}" alt="Обложка проекта">
+                                    <img src="{{ project.photo.url }}?timestamp={{ timestamp }}" alt="Обложка проекта">
                                 </div>
                                 <div class="header-content d-flex flex-column justify-content-center">
                                     <p class="title">{{ project.name }}</p>
@@ -222,7 +222,7 @@
                                 <p class="text-center fw-semibold mb-3">Команда</p>
                                 <div class="d-flex justify-content-center align-items-start content__team">
                                     <a class="team-item" href="{% url 'profile' project.manager.id %}" target="_blank">
-                                        <img src="{{ project.manager.cropped_photo.url }}">
+                                        <img src="{{ project.manager.cropped_photo.url }}?timestamp={{ timestamp }}">
                                         <div class="crown-boss">
                                             <svg style="width: 21px; height: 21px;">
                                                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
@@ -233,7 +233,7 @@
                                     {% if project.team %}
                                     {% for member in project.team.members.all %}
                                     <a class="team-item" href="{% url 'profile' member.id %}" target="_blank">
-                                        <img src="{{ member.cropped_photo.url }}">
+                                        <img src="{{ member.cropped_photo.url }}?timestamp={{ timestamp }}">
                                         <p>{{ member.last_name }} {{ member.first_name }}</p>
                                     </a>
                                     {% endfor %}
@@ -255,7 +255,7 @@
                                     </button>
                                     <div class="d-flex justify-content-start align-items-start all-person-list">
                                         <a href="{% url 'profile' project.manager.id %}" target="_blank">
-                                            <img src="{{ project.manager.cropped_photo.url }}">
+                                            <img src="{{ project.manager.cropped_photo.url }}?timestamp={{ timestamp }}">
                                             <div class="crown-boss">
                                                 <svg style="width: 21px; height: 21px;">
                                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
@@ -266,7 +266,7 @@
                                         {% if project.team %}
                                         {% for member in project.team.members.all %}
                                         <a href="{% url 'profile' member.id %}" target="_blank">
-                                            <img src="{{ member.cropped_photo.url }}">
+                                            <img src="{{ member.cropped_photo.url }}?timestamp={{ timestamp }}">
                                             <p>{{ member.last_name }} {{ member.first_name }}</p>
                                         </a>
                                         {% endfor %}
@@ -295,7 +295,7 @@
                         <div class="header">
                             <div class="d-flex justify-content-start align-items-center gap-3">
                                 <div class="img-wrapper">
-                                    <img src="{{ project.photo.url }}" alt="Обложка проекта">
+                                    <img src="{{ project.photo.url }}?timestamp={{ timestamp }}" alt="Обложка проекта">
                                 </div>
                                 <div class="header-content d-flex flex-column justify-content-center">
                                     <p class="title">{{ project.name }}</p>
@@ -357,7 +357,7 @@
                                 <p class="text-center fw-semibold mb-3">Команда</p>
                                 <div class="d-flex justify-content-center align-items-start content__team">
                                     <a class="team-item" href="{% url 'profile' project.manager.id %}" target="_blank">
-                                        <img src="{{ project.manager.cropped_photo.url }}">
+                                        <img src="{{ project.manager.cropped_photo.url }}?timestamp={{ timestamp }}">
                                         <div class="crown-boss">
                                             <svg style="width: 21px; height: 21px;">
                                                 <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
@@ -368,7 +368,7 @@
                                     {% if project.team %}
                                     {% for member in project.team.members.all %}
                                     <a class="team-item" href="{% url 'profile' member.id %}" target="_blank">
-                                        <img src="{{ member.cropped_photo.url }}">
+                                        <img src="{{ member.cropped_photo.url }}?timestamp={{ timestamp }}">
                                         <p>{{ member.last_name }} {{ member.first_name }}</p>
                                     </a>
                                     {% endfor %}
@@ -390,7 +390,7 @@
                                     </button>
                                     <div class="d-flex justify-content-start align-items-start all-person-list">
                                         <a href="{% url 'profile' project.manager.id %}" target="_blank">
-                                            <img src="{{ project.manager.cropped_photo.url }}">
+                                            <img src="{{ project.manager.cropped_photo.url }}?timestamp={{ timestamp }}">
                                             <div class="crown-boss">
                                                 <svg style="width: 21px; height: 21px;">
                                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#crown-boss"></use>
@@ -401,7 +401,7 @@
                                         {% if project.team %}
                                         {% for member in project.team.members.all %}
                                         <a href="{% url 'profile' member.id %}" target="_blank">
-                                            <img src="{{ member.cropped_photo.url }}">
+                                            <img src="{{ member.cropped_photo.url }}?timestamp={{ timestamp }}">
                                             <p>{{ member.last_name }} {{ member.first_name }}</p>
                                         </a>
                                         {% endfor %}

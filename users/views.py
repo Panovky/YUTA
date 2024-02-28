@@ -1,3 +1,4 @@
+import datetime
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -16,6 +17,7 @@ class ProfileView(View):
         user = User.objects.get(id=url_user_id)
         is_owner = url_user_id == session_user_id
         is_default_photo = 'default_user_photo' in user.photo.url
+        timestamp = int(datetime.datetime.now().timestamp())
 
         return render(
             request,
@@ -24,6 +26,7 @@ class ProfileView(View):
                 'user': user,
                 'is_owner': is_owner,
                 'is_default_photo': is_default_photo,
+                'timestamp': timestamp,
                 'menu_user_id': session_user_id
             }
         )
@@ -96,6 +99,7 @@ class ProfileView(View):
                 session_user_id = request.session['user_id']
                 is_owner = url_user_id == session_user_id
                 is_default_photo = 'default_user_photo' in user.photo.url
+                timestamp = int(datetime.datetime.now().timestamp())
 
                 return render(
                     request,
@@ -105,6 +109,7 @@ class ProfileView(View):
                         'is_owner': is_owner,
                         'is_default_photo': is_default_photo,
                         'message': 'Неправильный пароль.',
+                        'timestamp': timestamp,
                         'menu_user_id': session_user_id
                     }
                 )

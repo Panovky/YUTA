@@ -72,7 +72,7 @@
             {% if is_owner %}
             <div class="avatar-wrapper">
                 <div class="avatar-img-wrapper">
-                    <img src="{{ user.cropped_photo.url }}" alt="аватарка">
+                    <img src="{{ user.cropped_photo.url }}?timestamp{{ timestamp }}" alt="аватарка">
                 </div>
                 <button type="button" id="choiceAvatartBtn" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg style="width: 40px; height: 40px;">
@@ -182,7 +182,7 @@
 
                                 <div class="wrapperCrop d-flex justify-content-center align-items-sm-start">
                                     <div>
-                                        <img src="{{ user.photo.url }}" id="imageCrop">
+                                        <img src="{{ user.photo.url }}?timestamp={{ timestamp }}" id="imageCrop">
                                     </div>
                                     <div class="ms-lg-4 ms-md-0 ms-sm-0 ms-0 mt-lg-0 mt-md-3 mt-sm-3 mt-3">
                                         <div class="preview"></div>
