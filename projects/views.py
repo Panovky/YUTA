@@ -17,6 +17,7 @@ class ProjectsView(View):
         session_user_id = request.session['user_id']
         user = User.objects.get(id=session_user_id)
         today = datetime.date.today().isoformat()
+        timestamp = int(datetime.datetime.now().timestamp())
         managed_projects = user.manager_projects.all()
         others_projects = [project for team in user.teams.all() for project in team.team_projects.all()]
 
@@ -26,6 +27,7 @@ class ProjectsView(View):
             context={
                 'user': user,
                 'today': today,
+                'timestamp': timestamp,
                 'managed_projects': managed_projects,
                 'others_projects': others_projects,
                 'menu_user_id': session_user_id
@@ -50,7 +52,7 @@ class ProjectsView(View):
         if action == 'search_team':
             team_name = request.POST['team_name'].strip()
             leader = User.objects.get(id=session_user_id)
-            teams = Team.objects.filter(name__istartswith=team_name) & Team.objects.filter(leader=leader)
+            teams = Team.objects.filter(name__icontains=team_name) & Team.objects.filter(leader=leader)
 
             if request.POST.get('project_team_id'):
                 teams = teams.exclude(id=request.POST['project_team_id'])
@@ -82,7 +84,7 @@ class ProjectsView(View):
             if request.FILES.get('project_technical_task'):
                 file = request.FILES['project_technical_task']
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-                file_name = f'tech_task_{project.id}.pdf'
+                file_name = f'technical_task_{project.id}.pdf'
                 fs.save(file_name, file)
                 project.technical_task = f'projects_technical_tasks/{file_name}'
                 project.save()
@@ -102,7 +104,7 @@ class ProjectsView(View):
 
             if request.FILES.get('project_technical_task'):
                 file = request.FILES['project_technical_task']
-                file_name = f'tech_task_{project.id}.pdf'
+                file_name = f'technical_task_{project.id}.pdf'
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
 
                 if fs.exists(file_name):
