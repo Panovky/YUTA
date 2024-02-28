@@ -227,7 +227,7 @@ def get_project_info(project_id: int) -> dict:
     return {
         'name': project.name,
         'technical_task_url': project.technical_task.url if project.technical_task else None,
-        'technical_task_name': project.technical_task.url.replace('media/projects_technical_tasks/',
+        'technical_task_name': project.technical_task.url.replace('/media/projects_technical_tasks/',
                                                                   '') if project.technical_task else None,
         'deadline': project.deadline,
         'status': project.status,

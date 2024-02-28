@@ -168,7 +168,7 @@
                         </div>
                         <div class="content">
                             {% if project.technical_task %}
-                            <a href="{{ project.technical_task.url }}" target="_blank"
+                            <a href="{{ project.technical_task.url }}?timestamp={{ timestamp }}" target="_blank"
                                class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center">
                                 <svg style="width: 14px; height: 14px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
@@ -304,7 +304,7 @@
                         </div>
                         <div class="content">
                             {% if project.technical_task %}
-                            <a type="btn" href="{{ project.technical_task.url }}" target="_blank"
+                            <a type="btn" href="{{ project.technical_task.url }}?timestamp={{ timestamp }}" target="_blank"
                                class="orange-btn blue-btn mb-3 btn-tz d-flex gap-2 align-items-center">
                                 <svg style="width: 14px; height: 14px;">
                                     <use xlink:href="{% static 'images/svg/sprite.svg' %}#open-file"></use>
