@@ -1,3 +1,4 @@
+import datetime
 import json
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
@@ -11,15 +12,28 @@ from users.models import User
 
 
 class AuthorizationView(APIView):
+    def get(self, request):
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
+
     def post(self, request):
-        login = request.data['login']
-        password = request.data['password']
-        user = authorize_user(login, password)
-        response_data = {
-            'status': 'OK' if user else 'Failed',
-            'user_id': user.id if user else None
-        }
-        return JsonResponse(data=response_data)
+        if 'login' in request.data and 'password' in request.data and len(request.data) == 2:
+            login = request.data['login']
+            password = request.data['password']
+            user = authorize_user(login, password)
+
+            return JsonResponse({
+                'status': 'OK' if user else 'failed',
+                'error': None if user else 'invalid credentials',
+                'user_id': user.id if user else None
+            })
+
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
 
 class ProfileView(APIView):
@@ -74,11 +88,12 @@ class ProfileView(APIView):
 
 class ProjectsView(APIView):
     def get(self, request):
-        if request.query_params.get('user_id'):
+        if 'user_id' in request.query_params and len(request.query_params) == 1:
             user_id = request.query_params['user_id']
             if not User.objects.filter(id=user_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid user id',
                     'managed_projects': None,
                     'others_projects': None,
                 })
@@ -89,27 +104,32 @@ class ProjectsView(APIView):
 
             return JsonResponse({
                 'status': 'OK',
+                'error': None,
                 'managed_projects': [project.serialize_for_projects_view() for project in managed_projects],
                 'others_projects': [project.serialize_for_projects_view() for project in others_projects],
             })
 
-        if request.query_params.get('project_id'):
+        if 'project_id' in request.query_params and len(request.query_params) == 1:
             project_id = request.query_params['project_id']
             if not Project.objects.filter(id=project_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid project id',
                     'project': None
                 })
+
             return JsonResponse({
                 'status': 'OK',
+                'error': None,
                 'project': get_project_info(project_id)
             })
 
-        if request.query_params.get('team_name') and request.query_params.get('leader_id'):
+        if 'team_name' in request.query_params and 'leader_id' in request.query_params:
             leader_id = request.query_params['leader_id']
             if not User.objects.filter(id=leader_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid leader id',
                     'teams': None
                 })
 
@@ -117,17 +137,19 @@ class ProjectsView(APIView):
             leader = User.objects.get(id=leader_id)
             teams = Team.objects.filter(name__icontains=team_name) & Team.objects.filter(leader=leader)
 
-            if request.query_params.get('project_team_id'):
+            if 'project_team_id' in request.query_params:
                 project_team_id = request.query_params['project_team_id']
                 if not Team.objects.filter(id=project_team_id):
                     return JsonResponse({
-                        'status': 'Failed',
+                        'status': 'failed',
+                        'error': 'invalid project team id',
                         'teams': None
                     })
                 teams = teams.exclude(id=project_team_id)
 
             return JsonResponse({
                 'status': 'OK',
+                'error': None,
                 'teams': [
                     {
                         'id': team.id,
@@ -137,27 +159,35 @@ class ProjectsView(APIView):
                 ]
             })
 
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
+
     def post(self, request):
-        action = request.data['action']
-
-        if action == 'delete_project':
-            project_id = request.data['project_id']
-
-            if not Project.objects.filter(id=project_id).exists():
-                return JsonResponse({'success': False})
-
-            Project.objects.get(id=project_id).delete()
-            return JsonResponse({'success': True})
-
-        if action == 'create_project':
+        if 'manager_id' in request.data and 'project_name' in request.data and 'project_description' in request.data \
+                and 'project_deadline' in request.data:
             manager_id = request.data['manager_id']
             if not User.objects.filter(id=manager_id).exists():
-                return JsonResponse({'success': False})
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid manager id'
+                })
 
-            if request.data.get('project_team_id') is not None:
+            deadline = request.data['project_deadline']
+            if datetime.datetime.strptime(deadline, '%Y-%m-%d').date() < datetime.date.today():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid deadline'
+                })
+
+            if 'project_team_id' in request.data:
                 project_team_id = request.data['project_team_id']
                 if not Team.objects.filter(id=project_team_id).exists():
-                    return JsonResponse({'success': False})
+                    return JsonResponse({
+                        'status': 'failed',
+                        'error': 'invalid project team id'
+                    })
                 team = Team.objects.get(id=project_team_id)
             else:
                 team = None
@@ -165,7 +195,6 @@ class ProjectsView(APIView):
             manager = User.objects.get(id=manager_id)
             name = request.data['project_name'].strip()
             description = request.data['project_description'].strip()
-            deadline = request.data['project_deadline']
 
             project = Project.objects.create(
                 name=name,
@@ -183,29 +212,48 @@ class ProjectsView(APIView):
                 project.technical_task = f'projects_technical_tasks/{file_name}'
                 project.save()
 
-            return JsonResponse({'success': True})
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
 
-        if action == 'edit_project':
+        if 'project_id' in request.data and 'project_name' in request.data and 'project_description' in request.data \
+                and 'project_deadline' in request.data and 'project_status' in request.data:
             project_id = request.data['project_id']
             if not Project.objects.filter(id=project_id).exists():
-                return JsonResponse({'success': False})
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid project id'
+                })
 
-            if request.data.get('project_team_id') is not None:
+            deadline = request.data['project_deadline']
+            if datetime.datetime.strptime(deadline, '%Y-%m-%d').date() < datetime.date.today():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid deadline'
+                })
+
+            status = request.data['project_status']
+            if status not in ('в работе', 'приостановлен', 'завершен'):
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid status'
+                })
+
+            if 'project_team_id' in request.data:
                 project_team_id = request.data['project_team_id']
                 if not Team.objects.filter(id=project_team_id).exists():
-                    return JsonResponse({'success': False})
+                    return JsonResponse({
+                        'status': 'failed',
+                        'error': 'invalid project team id'
+                    })
                 team = Team.objects.get(id=project_team_id)
             else:
                 team = None
 
-            status = request.data['project_status']
-            if status not in ('в работе', 'приостановлен', 'завершен'):
-                return JsonResponse({'success': False})
-
             project = Project.objects.get(id=project_id)
             name = request.data['project_name'].strip()
             description = request.data['project_description'].strip()
-            deadline = request.data['project_deadline']
 
             if request.FILES.get('project_technical_task'):
                 file = request.FILES['project_technical_task']
@@ -228,24 +276,53 @@ class ProjectsView(APIView):
             project.team = team
             project.save()
 
-            return JsonResponse({'success': True})
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
+
+        if 'project_id' in request.data and len(request.data) == 1:
+            project_id = request.data['project_id']
+            if not Project.objects.filter(id=project_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid project id'
+                })
+
+            Project.objects.get(id=project_id).delete()
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
+
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
 
 class TasksView(APIView):
     def get(self, request):
-        pass
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
     def post(self, request):
-        pass
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
 
 class TeamsView(APIView):
     def get(self, request):
-        if request.query_params.get('user_id'):
+        if 'user_id' in request.query_params and len(request.query_params) == 1:
             user_id = request.query_params['user_id']
             if not User.objects.filter(id=user_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid user id',
                     'managed_teams': None,
                     'others_teams': None,
                 })
@@ -255,50 +332,59 @@ class TeamsView(APIView):
 
             return JsonResponse({
                 'status': 'OK',
+                'error': None,
                 'managed_teams': [team.serialize_for_teams_view() for team in managed_teams],
                 'others_teams': [team.serialize_for_teams_view() for team in others_teams],
             })
 
-        if request.query_params.get('team_name'):
-            team_name = request.query_params['team_name'].strip()
-
-            if request.query_params.get('team_id'):
-                team_id = request.query_params['team_id']
-                if not Team.objects.filter(id=team_id).exists():
-                    return JsonResponse({
-                        'status': 'Failed',
-                        'unique': None
-                    })
-
-                return JsonResponse({
-                    'status': 'OK',
-                    'unique': is_team_name_unique(team_name, team_id)
-                })
-
-            return JsonResponse({
-                'status': 'OK',
-                'unique': is_team_name_unique(team_name)
-            })
-
-        if request.query_params.get('team_id'):
+        if 'team_id' in request.query_params and len(request.query_params) == 1:
             team_id = request.query_params['team_id']
             if not Team.objects.filter(id=team_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid team id',
                     'team': None
                 })
+
             return JsonResponse({
                 'status': 'OK',
+                'error': None,
                 'team': get_team_info(team_id)
             })
 
-        if request.query_params.get('user_name') and request.query_params.get('leader_id') and \
-                request.query_params.get('members_id'):
+        if 'team_name' in request.query_params and len(request.query_params) == 1:
+            team_name = request.query_params['team_name'].strip()
+            return JsonResponse({
+                'status': 'OK',
+                'error': None,
+                'unique': is_team_name_unique(team_name)
+            })
+
+        if 'team_name' in request.query_params and 'team_id' in request.query_params and len(request.query_params) == 2:
+            team_id = request.query_params['team_id']
+            if not Team.objects.filter(id=team_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid team id',
+                    'unique': None
+                })
+
+            team_name = request.query_params['team_name'].strip()
+
+            return JsonResponse({
+                'status': 'OK',
+                'error': None,
+                'unique': is_team_name_unique(team_name, team_id)
+            })
+
+        if 'user_name' in request.query_params and 'leader_id' in request.query_params and \
+                'members_id' in request.query_params and len(request.query_params) == 3:
 
             leader_id = request.query_params['leader_id']
             if not User.objects.filter(id=leader_id).exists():
                 return JsonResponse({
-                    'status': 'Failed',
+                    'status': 'failed',
+                    'error': 'invalid user id',
                     'users': None
                 })
 
@@ -306,75 +392,115 @@ class TeamsView(APIView):
             for member_id in members_id:
                 if not User.objects.filter(id=member_id).exists():
                     return JsonResponse({
-                        'status': 'Failed',
+                        'status': 'failed',
+                        'error': 'invalid member id',
                         'users': None
                     })
 
             user_name = request.query_params['user_name']
-            return JsonResponse({'status': 'OK'} | search_users(user_name, leader_id, members_id))
+            return JsonResponse({'status': 'OK', 'error': None} | search_users(user_name, leader_id, members_id))
 
-    def post(self, request):
-        action = request.data['action']
-
-        if action == 'delete_team':
-            team_id = request.data['team_id']
-
-            if not Team.objects.filter(id=team_id).exists():
-                return JsonResponse({'success': False})
-
-            Team.objects.get(id=team_id).delete()
-            return JsonResponse({'success': True})
-
-        if action == 'create_team':
-            leader_id = request.data['leader_id']
-            if not User.objects.filter(id=leader_id).exists():
-                return JsonResponse({'success': False})
-
-            team_name = request.data['team_name'].strip()
-            if not is_team_name_unique(team_name):
-                return JsonResponse({'success': False})
-
-            members_id = request.data['members_id']
-            for member_id in members_id:
-                if not User.objects.filter(id=member_id).exists():
-                    return JsonResponse({'success': False})
-
-            team = Team.objects.create(
-                name=team_name,
-                leader=User.objects.get(id=leader_id)
-            )
-
-            for member_id in members_id:
-                member = User.objects.get(id=member_id)
-                team.members.add(member)
-                member.teams.add(team)
-
-            return JsonResponse({'success': True})
-
-        if action == 'edit_team':
-            team_id = request.data['team_id']
-            if not Team.objects.filter(id=team_id).exists():
-                return JsonResponse({'success': False})
-
-            team_name = request.data['team_name'].strip()
-            if not is_team_name_unique(team_name, team_id):
-                return JsonResponse({'success': False})
-
-            members_id = request.data['members_id']
-            for member_id in members_id:
-                if not User.objects.filter(id=member_id).exists():
-                    return JsonResponse({'success': False})
-
-            team = Team.objects.get(id=team_id)
-            team.name = team_name
-            team.members.clear()
-
-            for member_id in members_id:
-                member = User.objects.get(id=member_id)
-                team.members.add(member)
-                member.teams.add(team)
-
-            team.save()
-            return JsonResponse({'success': True})
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
 
+def post(self, request):
+    if 'leader_id' in request.data and 'team_name' in request.data and 'members_id' in request.data and \
+            len(request.data) == 3:
+        leader_id = request.data['leader_id']
+        if not User.objects.filter(id=leader_id).exists():
+            return JsonResponse({
+                'status': 'failed',
+                'error': 'invalid leader id'
+            })
+
+        team_name = request.data['team_name'].strip()
+        if not is_team_name_unique(team_name):
+            return JsonResponse({
+                'status': 'failed',
+                'error': 'non-unique team name'
+            })
+
+        members_id = request.data['members_id']
+        for member_id in members_id:
+            if not User.objects.filter(id=member_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid member id'
+                })
+
+        team = Team.objects.create(
+            name=team_name,
+            leader=User.objects.get(id=leader_id)
+        )
+
+        for member_id in members_id:
+            member = User.objects.get(id=member_id)
+            team.members.add(member)
+            member.teams.add(team)
+
+        return JsonResponse({
+            'status': 'OK',
+            'error': None
+        })
+
+    if 'team_id' in request.data and 'team_name' in request.data and 'members_id' in request.data and \
+            len(request.data) == 3:
+        team_id = request.data['team_id']
+        if not Team.objects.filter(id=team_id).exists():
+            return JsonResponse({
+                'status': 'failed',
+                'error': 'invalid team id'
+            })
+
+        team_name = request.data['team_name'].strip()
+        if not is_team_name_unique(team_name, team_id):
+            return JsonResponse({
+                'status': 'failed',
+                'error': 'non-unique team name'
+            })
+
+        members_id = request.data['members_id']
+        for member_id in members_id:
+            if not User.objects.filter(id=member_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid member id'
+                })
+
+        team = Team.objects.get(id=team_id)
+        team.name = team_name
+        team.members.clear()
+
+        for member_id in members_id:
+            member = User.objects.get(id=member_id)
+            team.members.add(member)
+            member.teams.add(team)
+        team.save()
+
+        return JsonResponse({
+            'status': 'OK',
+            'error': None
+        })
+
+    if 'team_id' in request.data and len(request.data) == 1:
+        team_id = request.data['team_id']
+
+        if not Team.objects.filter(id=team_id).exists():
+            return JsonResponse({
+                'status': 'failed',
+                'error': 'invalid team id'
+            })
+
+        Team.objects.get(id=team_id).delete()
+        return JsonResponse({
+            'status': 'OK',
+            'error': None
+        })
+
+    return JsonResponse({
+        'status': 'failed',
+        'error': 'invalid request'
+    })
