@@ -1,3 +1,6 @@
+import {getCSRFToken} from "./modules/utils.js";
+import {navbarSearchUsers} from "./modules/navbarSearchUsers.js";
+
 // ЭЛЕМЕНТЫ
 const deleteTeamForm = document.querySelector('#delete-team');
 const createTeamForm = document.querySelector('#create-team-form');
@@ -8,10 +11,7 @@ const editTeamBtns = document.querySelectorAll('.edit-team-btn');
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const userNameInputs = document.querySelectorAll('[name=user_name]');
 
-// получение csrf токена из cookie
-function getCSRFToken() {
-    return document.cookie.split(';').find((pair) => pair.includes('csrftoken')).split('=')[1]
-}
+navbarSearchUsers()
 
 // УДАЛЕНИЕ КОМАНДЫ
 document.addEventListener('DOMContentLoaded', () => {

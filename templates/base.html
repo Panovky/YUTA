@@ -32,7 +32,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
@@ -60,11 +59,10 @@
                 <img src="{% static 'images/logo.png' %}" alt="YUTA">
                 {% endblock logo %}
             </div>
-            <div>
-                <input type="text" name="navbar_user_name" placeholder="ФИО" autocomplete="off">
-
-                <button id="navbar-search-user-btn" type="button" style="background-color: transparent" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30"
+            <div class="nav-search">
+                <input type="text" name="navbar_user_name" placeholder="ФИО" autocomplete="off" maxlength="75">
+                <button id="navbar-search-user-btn" type="button" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="38" height="40"
                          viewBox="0,0,256,256">
                         <g fill="white" fill-rule="nonzero" stroke="none" stroke-width="1"
                            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
@@ -76,6 +74,9 @@
                         </g>
                     </svg>
                 </button>
+                <div class="search-result">
+                    <ul class="search-result-list"></ul>
+                </div>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -162,10 +163,11 @@
                     </div>
                 </div>
             </div>
-            <p class="text-center opacity-75">© 2023 Все права защищены</p>
+            <p class="text-center opacity-75">© <span id="current-year"></span> Все права защищены</p>
         </div>
     </footer>
 </div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
@@ -175,6 +177,7 @@
 <script src="https://unpkg.com/imask"></script>
 <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
+<script src="{% static 'js/base.js' %}"></script>
 
 </body>
 </html>

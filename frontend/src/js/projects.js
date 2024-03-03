@@ -1,3 +1,6 @@
+import {getCSRFToken} from "./modules/utils.js";
+import {navbarSearchUsers} from "./modules/navbarSearchUsers.js";
+
 //ЭЛЕМЕНТЫ
 const deleteProjectForm = document.querySelector('#delete-project');
 const createProjectForm = document.querySelector('#create-project-form');
@@ -13,10 +16,7 @@ const projectDescrInputs = document.querySelectorAll('[name=project_description]
 const teamNameInputs = document.querySelectorAll('[name=team_name]');
 const radios = document.querySelectorAll('[name=team_radio]');
 
-// ПОЛУЧЕНИЕ CSRF ТОКЕНА ИЗ COOKIE
-function getCSRFToken() {
-    return document.cookie.split(';').find((pair) => pair.includes('csrftoken')).split('=')[1]
-}
+navbarSearchUsers()
 
 // УДАЛЕНИЕ ПРОЕКТА
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     })
 });
+
 
 // ДЕЙСТВИЯ ПО ВЫБОРУ RADIO
 function changeRadio(action) {
@@ -470,6 +471,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createProjectBtn.addEventListener('click', (e) => {
         modalCreate.show();
+
+        document.querySelector('#radio1').checked = true;
+        changeRadio('create-project');
 
         document.querySelectorAll('.empty-results-text').forEach(item => {
             item.style.display = 'none';

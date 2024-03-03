@@ -63,7 +63,7 @@ const server = () => {
 
 export const css = () => {
 	return gulp.src(path.src.css, { base: srcPath + "scss/", sourcemaps: true })
-		.pipe(concat('style.css'))
+		.pipe(concat('style.scss'))
 		.pipe(groupCssMediaQueries())
 		.pipe(autoprefixer({
 			grid: true,
@@ -101,6 +101,7 @@ export const js = () => {
 		.pipe(webpack({
 			mode: 'development',
 			entry: {
+				base: './src/js/base.js',
 				main: './src/js/main.js',
 				projects: './src/js/projects.js',
 				tasks: './src/js/tasks.js',
@@ -174,6 +175,6 @@ export const watchFiles = () => {
 	gulp.watch([path.watch.fonts], fonts);
 }
 
-export const build = gulp.series(clean, gulp.parallel(css, js, images, svg));
+export const build = gulp.series(clean, gulp.parallel(scss, js, images, svg));
 export const develop = gulp.parallel(build, watchFiles);
 export default develop;
