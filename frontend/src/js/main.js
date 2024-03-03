@@ -16,8 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     authorizationForm.addEventListener('input', () => {
-        let isAnyFieldEmpty = [inputLogin, inputPassword].some(input => !input.value.trim());
-        authBtn.disabled = isAnyFieldEmpty;
+        authBtn.disabled = [inputLogin, inputPassword].some(input => !input.value.trim());
     })
 });
 

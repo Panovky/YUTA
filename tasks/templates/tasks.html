@@ -4,6 +4,7 @@
 
 {% block content %}
 <p class="fs-3 text-center mt-4">Доска задач пользователя "{{ user.last_name }} {{ user.first_name }}"</p>
+
 {% load static %}
 <script src="{% static 'js/tasks.js' %}"></script>
 {% endblock %}
