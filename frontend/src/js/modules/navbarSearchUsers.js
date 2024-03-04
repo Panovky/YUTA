@@ -2,15 +2,10 @@ import {getCSRFToken} from "./utils.js";
 
 export function navbarSearchUsers() {
     const navbarUserNameInput = document.querySelector('[name=navbar_user_name]');
-    const navbarSearchUserBtn = document.querySelector('#navbar-search-user-btn');
     const token = getCSRFToken();
 
-    if (navbarUserNameInput && navbarSearchUserBtn) {
+    if (navbarUserNameInput) {
         navbarUserNameInput.addEventListener('input', () => {
-            navbarSearchUserBtn.disabled = !Boolean(navbarUserNameInput.value.trim());
-        });
-
-        navbarSearchUserBtn.addEventListener('click', () => {
             let navbarUserName = navbarUserNameInput.value.trim();
             let formData = new FormData();
             formData.append('action', 'navbar_search_user');
@@ -41,6 +36,8 @@ function renderResultSearchList(data) {
         data.users.forEach(item => {
             document.querySelector('.search-result-list').insertAdjacentHTML('beforeend', template(item.cropped_photo_url, item.last_name, item.first_name))
         })
+    } else {
+        resultBlock.style.display = 'none';
     }
 }
 
