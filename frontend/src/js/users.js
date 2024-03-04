@@ -1,3 +1,7 @@
+import {navbarSearchUsers} from "./modules/navbarSearchUsers.js";
+
+navbarSearchUsers()
+
 // ОБРАБОТКА ОШИБКИ МОДАЛКИ ОБНОВЛЕНИЯ ДАННЫХ
 document.addEventListener("DOMContentLoaded", () => {
     const openModalReloadBtn = document.querySelector('#openModalReloadBtn');
