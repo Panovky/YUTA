@@ -34,19 +34,21 @@ function renderResultSearchList(data) {
     if (data.users && data.users.length !== 0) {
         resultBlock.style.display = 'block';
         data.users.forEach(item => {
-            document.querySelector('.search-result-list').insertAdjacentHTML('beforeend', template(item.cropped_photo_url, item.last_name, item.first_name))
+            document.querySelector('.search-result-list').insertAdjacentHTML('beforeend', template(item.profile_url, item.cropped_photo_url, item.last_name, item.first_name, item.patronymic))
         })
     } else {
         resultBlock.style.display = 'none';
     }
 }
 
-function template(cropped_photo_url, last_name, first_name) {
+function template(profile_url, cropped_photo_url, last_name, first_name, patronymic) {
     return `
-        <li>
-            <img src="${cropped_photo_url}">
-            <p>${last_name} ${first_name}</p>
-        </li>
+        <a href="${profile_url}">
+            <li>
+                <img src="${cropped_photo_url}?timestamp=${Date.now()}">
+                <p>${last_name} ${first_name} ${patronymic ? patronymic : ''}</p>
+            </li>
+        </a>
     `
 }
 

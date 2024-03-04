@@ -1,3 +1,7 @@
+import {navbarSearchUsers} from "./modules/navbarSearchUsers.js";
+
+navbarSearchUsers()
+
 // ОБРАБОТКА ОШИБКИ МОДАЛКИ ОБНОВЛЕНИЯ ДАННЫХ
 document.addEventListener("DOMContentLoaded", () => {
     const openModalReloadBtn = document.querySelector('#openModalReloadBtn');
@@ -41,6 +45,7 @@ btnOpenModalChoice.addEventListener('click', () => {
 });
 
 deleteFotoBtn.addEventListener('click', () => {
+    document.querySelector('#btn-choice-miniature').disabled = true;
     document.querySelector('#inputImg').value = '';
     document.querySelector('.input-file-list').style.display = 'none';
 });

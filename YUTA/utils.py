@@ -1,4 +1,5 @@
 import requests
+from django.urls import reverse
 from YUTA.scripts import parse_lk
 from projects.models import Project
 from teams.models import Team
@@ -179,6 +180,7 @@ def search_users(user_name: str, leader_id: int | None = None, members_id: list[
         'users': [
             {
                 'id': user.id,
+                'profile_url': reverse('profile', kwargs={'url_user_id': user.id}),
                 'cropped_photo_url': user.cropped_photo.url,
                 'last_name': user.last_name,
                 'first_name': user.first_name,
