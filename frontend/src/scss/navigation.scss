@@ -93,10 +93,11 @@
 .search-result {
     display: none;
     position: absolute;
+    z-index: 10;
     background-color: var(--white-color);
     border-radius: 10px;
     color: var(--dark-gray-color);
-    width: 350px;
+    width: 400px;
     margin-top: 7px;
     box-shadow: 4px 4px 6px 2px rgba(77, 75, 75, 0.25);
 }
@@ -109,6 +110,15 @@
     gap: 10px;
     max-height: 310px;
     overflow-y: auto;
+}
+
+.search-result-list a {
+    color: var(--dark-gray-color);
+    text-decoration: none;
+}
+
+.search-result-list a:hover {
+    color: var(--dark-gray-color);
 }
 
 .search-result-list li {

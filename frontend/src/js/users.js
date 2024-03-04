@@ -45,6 +45,7 @@ btnOpenModalChoice.addEventListener('click', () => {
 });
 
 deleteFotoBtn.addEventListener('click', () => {
+    document.querySelector('#btn-choice-miniature').disabled = true;
     document.querySelector('#inputImg').value = '';
     document.querySelector('.input-file-list').style.display = 'none';
 });

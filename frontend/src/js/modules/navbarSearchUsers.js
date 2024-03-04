@@ -43,12 +43,12 @@ function renderResultSearchList(data) {
 
 function template(profile_url, cropped_photo_url, last_name, first_name, patronymic) {
     return `
-        <li>
-            <a href="${profile_url}">
-                <img src="${cropped_photo_url}">
+        <a href="${profile_url}">
+            <li>
+                <img src="${cropped_photo_url}?timestamp=${Date.now()}">
                 <p>${last_name} ${first_name} ${patronymic ? patronymic : ''}</p>
-            </a>
-        </li>
+            </li>
+        </a>
     `
 }
 
