@@ -52,7 +52,6 @@
 </div>
 <div class="header">
     <div class="d-flex justify-content-between align-items-center header-main">
-        <img class="lines" src="{% static 'images/lines.png' %}" alt="image">
         <div class="header-text animate__animated animate__fadeInLeft">
             <p class="header-text__title">
                 <span>Единое приложение</span> ЯГТУ для планирования задач
@@ -72,8 +71,8 @@
 {% block content %}
 <div class="my-5">
     <div class="container-xxl">
-        <div class="orange-block">
-            <p class="orange-block-title text-center py-3">Выбирай наше приложение!</p>
+        <div>
+            <p class="orange-block-title py-4">Почему мы?</p>
             <div class="advantages d-flex justify-content-center align-items-start">
                 <div class="advantages-item text-center wow animate__animated animate__fadeInUp animate__faster" data-wow-offset="250">
                     <div class="icon">
@@ -121,20 +120,20 @@
 
 <div class="my-5">
     <div class="container-xxl">
-        <div class="orange-block">
+        <div>
             <p class="orange-block-title text-center py-3">Мобильная версия</p>
-            <div class="d-flex justify-content-around align-items-center px-5 py-4">
+            <div class="d-flex justify-content-around align-items-center">
                 <div class="mobile-text">
                     <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250">
-                        <div class="counter">1</div>
+                        <div class="counter">01</div>
                         <p class="align-self-center">Работайте там, где Вам удобно! Из любого места и с любого устройства!</p>
                     </div>
                     <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250" data-wow-delay="0.2s">
-                        <div class="counter">2</div>
+                        <div class="counter">02</div>
                         <p class="align-self-center">Вы сами выбираете удобный формат: мобильное приложение или веб-версия.</p>
                     </div>
                     <div class="d-flex mobile-item wow animate__animated animate__fadeInLeft" data-wow-offset="250" data-wow-delay="0.4s">
-                        <div class="counter">3</div>
+                        <div class="counter">03</div>
                         <p class="align-self-center">Один раз установив приложение, Вы сможете возвращаться в него по одному нажатию на экран телефона.</p>
                     </div>
                 </div>
@@ -146,45 +145,46 @@
     </div>
 </div>
 
-<div class="my-5">
+<div class="mb-5">
     <div class="container-xxl">
-        <div class="orange-block">
-            <p class="orange-block-title text-center py-3">О нас</p>
-            <div class="d-flex justify-content-between px-lg-5 px-md-2 px-sm-2 py-4">
+        <div class="pb-5">
+            <p class="orange-block-title text-center py-3">Наша команда</p>
+            <div class="d-flex justify-content-between py-4">
                 <div class="about-item">
-                    <div class="hover-image-scale">
-                        <img src="{% static 'images/3.jpg' %}" alt="аватарка">
-                    </div>
-                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Панова Ксения</p>
-                    <p class="role mt-1">Fullstack-разработчик</p>
-                </div>
-                <div class="about-item">
-                    <div class="hover-image-scale">
-                        <img src="{% static 'images/5.jpg' %}" alt="аватарка">
-                    </div>
-                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Аристов Даниил</p>
-                    <p class="role mt-1">Frontend-разработчик</p>
-                </div>
-                <div class="about-item">
-                    <div class="hover-image-scale">
+                    <div class="about-item-image-wrapper">
                         <img src="{% static 'images/1.jpg' %}" alt="аватарка">
                     </div>
-                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Матюшанова Дарина</p>
-                    <p class="role mt-1">Дизайнер</p>
+                    <div class="about-item-info">
+                        <p class="name">Федотов Евгений</p>
+                        <p class="role mt-2">Дизайнер</p>
+                    </div>
                 </div>
                 <div class="about-item">
-                    <div class="hover-image-scale">
+                    <div class="about-item-image-wrapper">
                         <img src="{% static 'images/2.jpg' %}" alt="аватарка">
                     </div>
-                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Сальникова Екатерина</p>
-                    <p class="role mt-1">Дизайнер</p>
+                    <div class="about-item-info">
+                        <p class="name">Панова Ксения</p>
+                        <p class="role mt-2">Fullstack-разработчик</p>
+                    </div>
                 </div>
                 <div class="about-item">
-                    <div class="hover-image-scale">
+                    <div class="about-item-image-wrapper">
+                        <img src="{% static 'images/3.jpg' %}" alt="аватарка">
+                    </div>
+                    <div class="about-item-info">
+                        <p class="name">Пухов Илья</p>
+                        <p class="role mt-2">Android-разработчик</p>
+                    </div>
+                </div>
+                <div class="about-item">
+                    <div class="about-item-image-wrapper">
                         <img src="{% static 'images/4.jpg' %}" alt="аватарка">
                     </div>
-                    <p class="name mt-lg-3 mt-md-2 mt-sm-2">Пухов Илья</p>
-                    <p class="role mt-1">Android-разработчик</p>
+                    <div class="about-item-info">
+                        <p class="name">Аристов Даниил</p>
+                        <p class="role mt-2">Frontend-разработчик</p>
+                    </div>
                 </div>
             </div>
         </div>

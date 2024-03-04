@@ -1,14 +1,17 @@
 .header {
     height: 100vh;
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 .header-top {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
     padding: 15px 0;
-    background: var(--blue-color);
-    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
 }
 
 .logo img {
@@ -38,16 +41,18 @@
     line-height: 1.1;
     font-size: 2.8rem;
     font-weight: 600;
+    color: var(--white-color);
 }
 
 .header-text__title span {
-    color: var(--orange-color);
+    color: var(--white-color);
 }
 
 .header-text__subtitle {
     margin-top: 15px;
     line-height: 1.2;
     font-size: 1.4rem;
+    color: var(--white-color);
 }
 
 .lines {
@@ -57,16 +62,15 @@
 }
 
 .header-foto {
-    max-width: 780px;
     display: flex;
+    margin-top: 35px;
     align-items: center;
     justify-content: center;
 }
 
 .header-foto img {
+    max-width: 430px;
     width: 100%;
-    height: auto;
-    display: block;
 }
 
 .autorization-checkbox {
@@ -110,18 +114,15 @@
     align-items: flex-end;
 }
 
-.orange-block {
-    border: 3px solid var(--orange-color);
-    border-radius: 23px;
-}
-
 .orange-block-title {
-    background-color: var(--orange-color);
-    border-radius: 18px 18px 0 0;
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     overflow: hidden;
-    color: var(--white-color);
-    font-size: 1.5rem;
-    font-weight: 600;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 3.5rem;
+    font-weight: bold;
 }
 
 .advantages {
@@ -133,10 +134,14 @@
     padding: 0 30px;
 }
 
-.advantages svg {
-    width: 60px;
-    height: 60px;
+.advantages-item svg {
+    width: 80px;
+    height: 80px;
+    fill: var(--white-color);
     opacity: 0.9;
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
+    padding: 15px;
+    border-radius: 15px;
 }
 
 .advantages-title {
@@ -144,15 +149,15 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--blue-color);
-    margin-top: 18px;
+    color: var(--dark-gray-color);
+    margin-top: 25px;
 }
 
 .advantages-text {
     font-size: 1.1rem;
     font-weight: 500;
     line-height: 1.2;
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 .mobile-text {
@@ -172,13 +177,14 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 50px;
-    height: 50px;
-    border: 3px solid var(--orange-color);
-    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: var(--blue-color);
-    font-weight: 600;
-    font-size: 1.5rem;
+    font-weight: 700;
+    font-size: 3.5rem;
 }
 
 .mobile-text p {
@@ -201,38 +207,42 @@
 
 .about-item {
     text-align: center;
-    width: 20%;
+    width: 25%;
+    position: relative;
+}
+
+.about-item-image-wrapper {
+    max-width: 100%;
+    height: auto;
+}
+
+.about-item-image-wrapper img {
+    border-radius: 30px;
+}
+
+.about-item-info {
+    background-color: var(--blue-color);
+    background: linear-gradient(135deg, rgb(13, 36, 104) 0%, rgba(217, 106, 16, 1) 100%);
+    padding: 20px 40px;
+    width: 275px;
+    border: 3px solid var(--white-color);
+    border-radius: 20px;
+    position: absolute;
+    bottom: -40px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
 }
 
 .about-item .name {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    color: var(--blue-color);
+    color: var(--white-color);
 }
 
 .about-item .role {
     font-size: 1rem;
-    font-weight: 600;
-    color: var(--gray-color);
-}
-
-.about-item .hover-image-scale {
-    display: inline-block;
-    overflow: hidden;
-    border-radius: 50%;
-    border: 2px solid var(--blue-color);
-}
-
-.about-item .hover-image-scale img {
-    display: block;
-    border-radius: 50%;
-    overflow: hidden;
-    width: 140px;
-    height: 140px;
-    transition: all 0.5s;
-}
-
-.about-item .hover-image-scale img:hover {
-    transform: scale(1.1);
-    transition: all 0.6s;
+    font-weight: 500;
+    color: var(--white-color);
 }
