@@ -1,8 +1,10 @@
 import datetime
 import json
+import re
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from rest_framework.views import APIView
+from YUTA.scripts import crop_photo
 from YUTA.settings import MEDIA_ROOT
 from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_users, get_team_info, \
     is_team_name_unique, get_project_info
@@ -38,52 +40,196 @@ class AuthorizationView(APIView):
 
 class ProfileView(APIView):
     def get(self, request):
-        user_id = request.query_params['user_id']
-        user = User.objects.get(id=user_id)
+        if 'user_id' in request.query_params and len(request.query_params) == 1:
+            user_id = request.query_params['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id',
+                    'user': None
+                })
 
-        response_data = {
-            'login': user.login,
-            'photo_url': user.photo.url,
-            'cropped_photo_url': user.cropped_photo.url,
-            'last_name': user.last_name,
-            'first_name': user.first_name,
-            'patronymic': user.patronymic,
-            'age': user.age,
-            'biography': user.biography,
-            'phone_number': user.phone_number,
-            'e_mail': user.e_mail,
-            'vk': user.vk,
-            'faculty': user.faculty.name,
-            'direction': f'{user.direction.code}-{user.direction.name}',
-            'group': user.group.name,
-            'all_projects_count': user.all_projects_count,
-            'done_projects_count': user.done_projects_count,
-            'all_tasks_count': user.done_tasks_count,
-            'done_tasks_count': user.done_tasks_count,
-            'teams_count': user.teams_count,
-        }
+            user = User.objects.get(id=user_id)
 
-        return JsonResponse(data=response_data)
+            return JsonResponse({
+                'status': 'OK',
+                'error': None,
+                'user':
+                    {
+                        'login': user.login,
+                        'photo_url': user.photo.url,
+                        'cropped_photo_url': user.cropped_photo.url,
+                        'last_name': user.last_name,
+                        'first_name': user.first_name,
+                        'patronymic': user.patronymic,
+                        'age': user.age,
+                        'biography': user.biography,
+                        'phone_number': user.phone_number,
+                        'e_mail': user.e_mail,
+                        'vk': user.vk,
+                        'faculty': user.faculty.name,
+                        'direction': f'{user.direction.code}-{user.direction.name}',
+                        'group': user.group.name,
+                        'all_projects_count': user.all_projects_count,
+                        'done_projects_count': user.done_projects_count,
+                        'all_tasks_count': user.done_tasks_count,
+                        'done_tasks_count': user.done_tasks_count,
+                        'teams_count': user.teams_count,
+                    }
+            })
+
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
     def post(self, request):
-        user_id = request.data['user_id']
-        action = request.data['action']
-        user = User.objects.get(id=user_id)
+        if 'user_id' in request.data and len(request.data) == 1:
+            user_id = request.data['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id'
+                })
 
-        if action == 'edit_data':
+            user = User.objects.get(id=user_id)
+            user.photo = 'images/default_user_photo.png'
+            user.cropped_photo = 'images/cropped-default_user_photo.png'
+            user.save()
+
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
+
+        if 'user_id' in request.data and 'photo' in request.data and len(request.data) == 2:
+            user_id = request.data['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id'
+                })
+
+            photo = request.data['photo']
+            extension = photo.name.split('.')[-1]
+            if extension not in ('jpg', 'jpeg', 'png'):
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid photo extension'
+                })
+
+            user = User.objects.get(id=user_id)
+            photo_name = f'{user.login}.{extension}'
+            fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\images\\users_photos')
+
+            if fs.exists(name := f'{user.login}.jpg') or fs.exists(name := f'{user.login}.jpeg') or \
+                    fs.exists(name := f'{user.login}.png'):
+                fs.delete(name)
+
+            if fs.exists(name := f'cropped-{user.login}.jpg') or fs.exists(name := f'cropped-{user.login}.jpeg') or \
+                    fs.exists(name := f'cropped-{user.login}.png'):
+                fs.delete(name)
+
+            fs.save(photo_name, photo)
+            fs.save('cropped-' + photo_name, photo)
+            user.photo = f'images/users_photos/{photo_name}'
+            user.cropped_photo = f'images/users_photos/cropped-{photo_name}'
+            user.save()
+
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
+
+        if 'user_id' in request.data and 'container_width' in request.data and 'container_height' in request.data \
+                and 'width' in request.data and 'height' in request.data and 'delta_x' in request.data \
+                and 'delta_y' in request.data and len(request.data) == 7:
+            user_id = request.data['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id'
+                })
+
+            user = User.objects.get(id=user_id)
+            photo_url = user.photo.url
+            photo_name = photo_url.replace('/media/images/users_photos/', '')
+
+            crop_photo(
+                f'{MEDIA_ROOT}\\images\\users_photos\\{photo_name}',
+                f'{MEDIA_ROOT}\\images\\users_photos\\cropped-{photo_name}',
+                (int(request.data['container_width']), int(request.data['container_height'])),
+                int(request.data['width']),
+                int(request.data['height']),
+                int(request.data['delta_x']),
+                int(request.data['delta_y'])
+            )
+
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
+
+        if 'user_id' in request.data and 'biography' in request.data and 'phone_number' in request.data and \
+                'e_mail' in request.data and 'vk' in request.data and len(request.data) == 5:
+            user_id = request.data['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id'
+                })
+
+            phone_number = request.data['phone_number']
+            if phone_number.strip():
+                pattern = r'\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}'
+                if re.fullmatch(pattern, phone_number) is None:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'error': 'invalid phone number format'
+                    })
+
+            vk = request.data['vk']
+            if vk.strip():
+                pattern = r'https://vk\.com/'
+                if re.match(pattern, vk) is None:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'error': 'invalid vk url format'
+                    })
+
             data = {
                 'biography': request.data['biography'],
-                'phone_number': request.data['phone_number'],
+                'phone_number': phone_number,
                 'e_mail': request.data['e_mail'],
-                'vk': request.data['vk']
+                'vk': vk
             }
 
-            edit_user_data(user, data)
-            return JsonResponse(data={'modified': True})
+            edit_user_data(User.objects.get(id=user_id), data)
+            return JsonResponse({
+                'status': 'OK',
+                'error': None
+            })
 
-        if action == 'update_data':
+        if 'user_id' in request.data and 'password' in request.data and len(request.data) == 2:
+            user_id = request.data['user_id']
+            if not User.objects.filter(id=user_id).exists():
+                return JsonResponse({
+                    'status': 'failed',
+                    'error': 'invalid user id'
+                })
+
             password = request.data['password']
-            return JsonResponse(data={'success': update_user_data(user, password)})
+            user = User.objects.get(id=user_id)
+            success = update_user_data(user, password)
+            return JsonResponse({
+                'status': 'OK' if success else 'failed',
+                'error': None if success else 'invalid credentials'
+            })
+
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
 
 
 class ProjectsView(APIView):
@@ -204,8 +350,8 @@ class ProjectsView(APIView):
                 team=team
             )
 
-            if request.FILES.get('project_technical_task'):
-                file = request.FILES['project_technical_task']
+            if request.data.get('project_technical_task'):
+                file = request.data['project_technical_task']
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
                 file_name = f'technical_task_{project.id}.pdf'
                 fs.save(file_name, file)
@@ -255,8 +401,8 @@ class ProjectsView(APIView):
             name = request.data['project_name'].strip()
             description = request.data['project_description'].strip()
 
-            if request.FILES.get('project_technical_task'):
-                file = request.FILES['project_technical_task']
+            if request.data.get('project_technical_task'):
+                file = request.data['project_technical_task']
                 file_name = f'technical_task_{project.id}.pdf'
                 fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
 
