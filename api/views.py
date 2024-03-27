@@ -4,7 +4,7 @@ import re
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.scripts import crop_photo
+from YUTA.photo_cropper import crop_photo
 from YUTA.settings import MEDIA_ROOT
 from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_users, get_team_info, \
     is_team_name_unique, get_project_info
@@ -334,29 +334,17 @@ class ProjectsView(APIView):
                         'status': 'failed',
                         'error': 'invalid project team id'
                     })
-                team = Team.objects.get(id=project_team_id)
             else:
-                team = None
+                project_team_id = None
 
-            manager = User.objects.get(id=manager_id)
-            name = request.data['project_name'].strip()
-            description = request.data['project_description'].strip()
-
-            project = Project.objects.create(
-                name=name,
-                description=description,
+            Project.objects.create_project(
+                name=request.data['project_name'].strip(),
+                description=request.data['project_description'].strip(),
+                technical_task=request.data.get('project_technical_task'),
                 deadline=deadline,
-                manager=manager,
-                team=team
+                manager_id=manager_id,
+                team_id=project_team_id
             )
-
-            if request.data.get('project_technical_task'):
-                file = request.data['project_technical_task']
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-                file_name = f'technical_task_{project.id}.pdf'
-                fs.save(file_name, file)
-                project.technical_task = f'projects_technical_tasks/{file_name}'
-                project.save()
 
             return JsonResponse({
                 'status': 'OK',

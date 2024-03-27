@@ -1,7 +1,9 @@
+import datetime
 from django.db import models
 from users.models import User
 from teams.models import Team
-import datetime
+from django.core.files.storage import FileSystemStorage
+from YUTA.settings import MEDIA_ROOT
 
 
 STATUS_CHOICES = (
@@ -9,6 +11,25 @@ STATUS_CHOICES = (
     ('приостановлен', 'приостановлен'),
     ('завершен', 'завершен')
 )
+
+
+class ProjectManager(models.Manager):
+    def create_project(self, name, description, technical_task, deadline, manager_id, team_id):
+
+        project = self.create(
+            name=name,
+            description=description,
+            deadline=deadline,
+            manager_id=manager_id,
+            team_id=team_id
+        )
+
+        if technical_task is not None:
+            fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+            file_name = f'technical_task_{project.id}.pdf'
+            fs.save(file_name, technical_task)
+            project.technical_task = f'projects_technical_tasks/{file_name}'
+            project.save()
 
 
 class Project(models.Model):
@@ -22,6 +43,8 @@ class Project(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='в работе')
     manager = models.ForeignKey(User, related_name='manager_projects', null=True, on_delete=models.SET_NULL)
     team = models.ForeignKey(Team, related_name='team_projects', blank=True, null=True, on_delete=models.SET_NULL)
+
+    objects = ProjectManager()
 
     class Meta:
         verbose_name = 'Проект'

@@ -45,8 +45,7 @@ class ProjectsView(View):
             return JsonResponse(data=search_users(user_name))
 
         if action == 'delete_project':
-            project_id = request.POST['project_id']
-            Project.objects.get(id=project_id).delete()
+            Project.objects.get(id=request.POST['project_id']).delete()
             return redirect('projects')
 
         if action == 'search_team':
@@ -69,30 +68,14 @@ class ProjectsView(View):
             return JsonResponse(data=response_data)
 
         if action == 'create_project':
-            name = request.POST['project_name'].strip()
-            description = request.POST['project_description'].strip()
-            deadline = request.POST['project_deadline']
-            manager = User.objects.get(id=session_user_id)
-
-            project = Project.objects.create(
-                name=name,
-                description=description,
-                deadline=deadline,
-                manager=manager
+            Project.objects.create_project(
+                name=request.POST['project_name'].strip(),
+                description=request.POST['project_description'].strip(),
+                technical_task=request.FILES.get('project_technical_task'),
+                deadline=request.POST['project_deadline'],
+                manager_id=session_user_id,
+                team_id=request.POST.get('project_team_id')
             )
-
-            if request.FILES.get('project_technical_task'):
-                file = request.FILES['project_technical_task']
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-                file_name = f'technical_task_{project.id}.pdf'
-                fs.save(file_name, file)
-                project.technical_task = f'projects_technical_tasks/{file_name}'
-                project.save()
-
-            if request.POST.get('project_team_id'):
-                project.team = Team.objects.get(id=request.POST['project_team_id'])
-                project.save()
-
             return redirect('projects')
 
         if action == 'edit_project':
