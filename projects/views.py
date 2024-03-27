@@ -79,37 +79,14 @@ class ProjectsView(View):
             return redirect('projects')
 
         if action == 'edit_project':
-            project = Project.objects.get(id=request.POST['project_id'])
-            name = request.POST['project_name'].strip()
-            description = request.POST['project_description'].strip()
-            deadline = request.POST['project_deadline']
-            status = request.POST['project_status']
-
-            if request.FILES.get('project_technical_task'):
-                file = request.FILES['project_technical_task']
-                file_name = f'technical_task_{project.id}.pdf'
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-
-                if fs.exists(file_name):
-                    fs.delete(file_name)
-
-                fs.save(file_name, file)
-                technical_task = f'projects_technical_tasks/{file_name}'
-            else:
-                technical_task = None
-
-            if request.POST.get('project_team_id'):
-                team = Team.objects.get(id=request.POST['project_team_id'])
-            else:
-                team = None
-
-            project.name = name
-            project.description = description
-            project.technical_task = technical_task
-            project.deadline = deadline
-            project.status = status
-            project.team = team
-            project.save()
+            Project.objects.get(id=request.POST['project_id']).update_project(
+                name=request.POST['project_name'].strip(),
+                description=request.POST['project_description'].strip(),
+                technical_task=request.FILES.get('project_technical_task'),
+                deadline=request.POST['project_deadline'],
+                status=request.POST['project_status'],
+                team_id=request.POST.get('project_team_id')
+            )
             return redirect('projects')
 
         if action == 'get_project_info':

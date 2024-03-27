@@ -15,7 +15,6 @@ STATUS_CHOICES = (
 
 class ProjectManager(models.Manager):
     def create_project(self, name, description, technical_task, deadline, manager_id, team_id):
-
         project = self.create(
             name=name,
             description=description,
@@ -23,7 +22,6 @@ class ProjectManager(models.Manager):
             manager_id=manager_id,
             team_id=team_id
         )
-
         if technical_task is not None:
             fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
             file_name = f'technical_task_{project.id}.pdf'
@@ -89,5 +87,21 @@ class Project(models.Model):
             },
             'team': self.team.serialize_for_teams_view() if self.team else None
         }
+
+    def update_project(self, name, description, technical_task, deadline, status, team_id):
+        if technical_task is not None:
+            file_name = f'technical_task_{self.id}.pdf'
+            fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
+            if fs.exists(file_name):
+                fs.delete(file_name)
+            fs.save(file_name, technical_task)
+            technical_task = f'projects_technical_tasks/{file_name}'
+        self.name = name
+        self.description = description
+        self.technical_task = technical_task
+        self.deadline = deadline
+        self.status = status
+        self.team_id = team_id
+        self.save()
 
 

@@ -327,15 +327,13 @@ class ProjectsView(APIView):
                     'error': 'invalid deadline'
                 })
 
-            if 'project_team_id' in request.data:
-                project_team_id = request.data['project_team_id']
+            project_team_id = request.data.get('project_team_id')
+            if project_team_id is not None:
                 if not Team.objects.filter(id=project_team_id).exists():
                     return JsonResponse({
                         'status': 'failed',
                         'error': 'invalid project team id'
                     })
-            else:
-                project_team_id = None
 
             Project.objects.create_project(
                 name=request.data['project_name'].strip(),
@@ -374,41 +372,22 @@ class ProjectsView(APIView):
                     'error': 'invalid status'
                 })
 
-            if 'project_team_id' in request.data:
-                project_team_id = request.data['project_team_id']
+            project_team_id = request.data.get('project_team_id')
+            if project_team_id is not None:
                 if not Team.objects.filter(id=project_team_id).exists():
                     return JsonResponse({
                         'status': 'failed',
                         'error': 'invalid project team id'
                     })
-                team = Team.objects.get(id=project_team_id)
-            else:
-                team = None
 
-            project = Project.objects.get(id=project_id)
-            name = request.data['project_name'].strip()
-            description = request.data['project_description'].strip()
-
-            if request.data.get('project_technical_task'):
-                file = request.data['project_technical_task']
-                file_name = f'technical_task_{project.id}.pdf'
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-
-                if fs.exists(file_name):
-                    fs.delete(file_name)
-
-                fs.save(file_name, file)
-                technical_task = f'projects_technical_tasks/{file_name}'
-            else:
-                technical_task = None
-
-            project.name = name
-            project.description = description
-            project.technical_task = technical_task
-            project.deadline = deadline
-            project.status = status
-            project.team = team
-            project.save()
+            Project.objects.get(id=project_id).update_project(
+                name=request.data['project_name'].strip(),
+                description=request.data['project_description'].strip(),
+                technical_task=request.data.get('project_technical_task'),
+                deadline=deadline,
+                status=status,
+                team_id=project_team_id
+            )
 
             return JsonResponse({
                 'status': 'OK',
