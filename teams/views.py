@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from YUTA.utils import search_users, get_team_info
+from services.utils import get_team_info
 from teams.models import Team
 from users.models import User
 

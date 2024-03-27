@@ -1,6 +1,5 @@
 import requests
-from django.urls import reverse
-from YUTA.scripts import parse_lk
+from services.student_parser import parse_lk
 from projects.models import Project
 from teams.models import Team
 from users.models import User
@@ -119,76 +118,6 @@ def update_user_data(user: User, password: str) -> bool:
         user.group = data.get('group')
         user.save()
         return True
-
-
-def search_users(user_name: str, leader_id: int | None = None, members_id: list[int] | None = None) -> dict:
-    """
-    Осуществляет поиск пользователей по полному или неполному имени.
-
-    Поиск в навбаре:
-    - принимает только один параметр - поисковый запрос;
-    - возвращает словарь со всеми совпадениями по пользователям.
-
-    Поиск при создании команды:
-    - принимает поисковый запрос, id руководителя команды и список id текущих участников команды;
-    - возвращает словарь найденных пользователей, исключая руководителя команды и текущих участников команды.
-
-    Если переданный поисковый запрос является пустой строкой или слов в переданном запросе больше 3, поиск невозможен:
-    функция завершит работу с пустым результатом.
-
-    :param user_name: поисковый запрос, имя (полное или неполное)
-    :type user_name: str
-    :param leader_id: идентификатор руководителя команды в БД (необязательный)
-    :type leader_id: int | None
-    :param members_id: список целых чисел - идентификаторов текущих участников команды в БД (необязательный)
-    :type members_id: list[int] | None
-    :return: словарь с информацией о найденных пользователях или словарь с пустым списком по ключу 'users', если
-    пользователи не найдены
-    :rtype: dict
-    """
-    user_name_parts = [word.capitalize() for word in user_name.strip().split()]
-
-    if len(user_name_parts) == 0 or len(user_name_parts) > 3:
-        return {'users': []}
-
-    if len(user_name_parts) == 3:
-        users = \
-            User.objects.filter(last_name__startswith=user_name_parts[0]) & \
-            User.objects.filter(first_name__startswith=user_name_parts[1]) & \
-            User.objects.filter(patronymic__startswith=user_name_parts[2])
-    elif len(user_name_parts) == 2:
-        users = \
-            User.objects.filter(last_name__startswith=user_name_parts[0]) & \
-            User.objects.filter(first_name__startswith=user_name_parts[1]) | \
-            User.objects.filter(first_name__startswith=user_name_parts[0]) & \
-            User.objects.filter(last_name__startswith=user_name_parts[1]) | \
-            User.objects.filter(first_name__startswith=user_name_parts[0]) & \
-            User.objects.filter(patronymic__startswith=user_name_parts[1])
-    else:
-        users = \
-            User.objects.filter(last_name__startswith=user_name_parts[0]) | \
-            User.objects.filter(first_name__startswith=user_name_parts[0]) | \
-            User.objects.filter(patronymic__startswith=user_name_parts[0])
-
-    if leader_id:
-        users = users.exclude(id=leader_id)
-
-    if members_id:
-        users = users.exclude(id__in=members_id)
-
-    return {
-        'users': [
-            {
-                'id': user.id,
-                'profile_url': reverse('profile', kwargs={'url_user_id': user.id}),
-                'cropped_photo_url': user.cropped_photo.url,
-                'last_name': user.last_name,
-                'first_name': user.first_name,
-                'patronymic': user.patronymic,
-            }
-            for user in users
-        ]
-    }
 
 
 def get_team_info(team_id: int) -> dict:

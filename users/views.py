@@ -3,9 +3,9 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.scripts import crop_photo
+from services.photo_cropper import crop_photo
 from YUTA.settings import MEDIA_ROOT
-from YUTA.utils import edit_user_data, update_user_data, search_users
+from services.utils import edit_user_data, update_user_data, search_users
 from users.models import User
 
 

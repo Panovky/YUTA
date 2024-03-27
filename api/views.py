@@ -4,9 +4,9 @@ import re
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.photo_cropper import crop_photo
+from services.photo_cropper import crop_photo
 from YUTA.settings import MEDIA_ROOT
-from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_users, get_team_info, \
+from services.utils import authorize_user, edit_user_data, update_user_data, get_team_info, \
     is_team_name_unique, get_project_info
 from projects.models import Project
 from teams.models import Team

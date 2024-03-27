@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.utils import search_users
 from users.models import User
 
 

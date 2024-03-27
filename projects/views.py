@@ -1,13 +1,11 @@
 import datetime
-from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from YUTA.settings import MEDIA_ROOT
 from projects.models import Project
 from teams.models import Team
 from users.models import User
-from YUTA.utils import get_project_info, search_users
+from services.utils import get_project_info
 
 
 class ProjectsView(View):
