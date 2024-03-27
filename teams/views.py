@@ -36,7 +36,7 @@ class TeamsView(View):
 
         if action == 'navbar_search_user':
             user_name = request.POST['navbar_user_name']
-            return JsonResponse(data=search_users(user_name))
+            return JsonResponse(data=User.objects.search(user_name).as_found())
 
         if action == 'delete_team':
             team_id = request.POST['team_id']
@@ -62,7 +62,7 @@ class TeamsView(View):
             user_name = request.POST['user_name']
             leader_id = request.session['user_id']
             members_id = json.loads(request.POST['members_id'])
-            return JsonResponse(data=search_users(user_name, leader_id, members_id))
+            return JsonResponse(data=User.objects.search(user_name, leader_id, members_id).as_found())
 
         if action == 'create_team':
             team_name = request.POST['team_name'].strip()

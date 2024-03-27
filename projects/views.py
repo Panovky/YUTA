@@ -40,7 +40,7 @@ class ProjectsView(View):
 
         if action == 'navbar_search_user':
             user_name = request.POST['navbar_user_name']
-            return JsonResponse(data=search_users(user_name))
+            return JsonResponse(data=User.objects.search(user_name).as_found())
 
         if action == 'delete_project':
             Project.objects.get(id=request.POST['project_id']).delete()

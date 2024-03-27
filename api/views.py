@@ -511,7 +511,8 @@ class TeamsView(APIView):
                     })
 
             user_name = request.query_params['user_name']
-            return JsonResponse({'status': 'OK', 'error': None} | search_users(user_name, leader_id, members_id))
+            users = User.objects.search(user_name, leader_id, members_id).as_found()
+            return JsonResponse({'status': 'OK', 'error': None} | users)
 
         return JsonResponse({
             'status': 'failed',
