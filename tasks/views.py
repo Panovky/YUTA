@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from YUTA.utils import search_users
 from users.models import User
 
 
@@ -28,4 +27,4 @@ class TasksView(View):
 
         if action == 'navbar_search_user':
             user_name = request.POST['navbar_user_name']
-            return JsonResponse(data=search_users(user_name))
+            return JsonResponse(data=User.objects.search(user_name).as_found())

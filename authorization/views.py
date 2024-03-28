@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from YUTA.utils import authorize_user
+from services.utils import authorize_user
 
 
 class MainView(View):

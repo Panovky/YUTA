@@ -4,9 +4,9 @@ import re
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from YUTA.scripts import crop_photo
+from services.photo_cropper import crop_photo
 from YUTA.settings import MEDIA_ROOT
-from YUTA.utils import authorize_user, edit_user_data, update_user_data, search_users, get_team_info, \
+from services.utils import authorize_user, edit_user_data, update_user_data, get_team_info, \
     is_team_name_unique, get_project_info
 from projects.models import Project
 from teams.models import Team
@@ -327,36 +327,22 @@ class ProjectsView(APIView):
                     'error': 'invalid deadline'
                 })
 
-            if 'project_team_id' in request.data:
-                project_team_id = request.data['project_team_id']
+            project_team_id = request.data.get('project_team_id')
+            if project_team_id is not None:
                 if not Team.objects.filter(id=project_team_id).exists():
                     return JsonResponse({
                         'status': 'failed',
                         'error': 'invalid project team id'
                     })
-                team = Team.objects.get(id=project_team_id)
-            else:
-                team = None
 
-            manager = User.objects.get(id=manager_id)
-            name = request.data['project_name'].strip()
-            description = request.data['project_description'].strip()
-
-            project = Project.objects.create(
-                name=name,
-                description=description,
+            Project.objects.create(
+                name=request.data['project_name'].strip(),
+                description=request.data['project_description'].strip(),
+                technical_task=request.data.get('project_technical_task'),
                 deadline=deadline,
-                manager=manager,
-                team=team
+                manager_id=manager_id,
+                team_id=project_team_id
             )
-
-            if request.data.get('project_technical_task'):
-                file = request.data['project_technical_task']
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-                file_name = f'technical_task_{project.id}.pdf'
-                fs.save(file_name, file)
-                project.technical_task = f'projects_technical_tasks/{file_name}'
-                project.save()
 
             return JsonResponse({
                 'status': 'OK',
@@ -386,40 +372,21 @@ class ProjectsView(APIView):
                     'error': 'invalid status'
                 })
 
-            if 'project_team_id' in request.data:
-                project_team_id = request.data['project_team_id']
+            project_team_id = request.data.get('project_team_id')
+            if project_team_id is not None:
                 if not Team.objects.filter(id=project_team_id).exists():
                     return JsonResponse({
                         'status': 'failed',
                         'error': 'invalid project team id'
                     })
-                team = Team.objects.get(id=project_team_id)
-            else:
-                team = None
 
             project = Project.objects.get(id=project_id)
-            name = request.data['project_name'].strip()
-            description = request.data['project_description'].strip()
-
-            if request.data.get('project_technical_task'):
-                file = request.data['project_technical_task']
-                file_name = f'technical_task_{project.id}.pdf'
-                fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-
-                if fs.exists(file_name):
-                    fs.delete(file_name)
-
-                fs.save(file_name, file)
-                technical_task = f'projects_technical_tasks/{file_name}'
-            else:
-                technical_task = None
-
-            project.name = name
-            project.description = description
-            project.technical_task = technical_task
+            project.name = request.data['project_name'].strip()
+            project.description = request.data['project_description'].strip()
+            project.technical_task = request.data.get('project_technical_task')
             project.deadline = deadline
             project.status = status
-            project.team = team
+            project.team_id = project_team_id
             project.save()
 
             return JsonResponse({
@@ -544,7 +511,8 @@ class TeamsView(APIView):
                     })
 
             user_name = request.query_params['user_name']
-            return JsonResponse({'status': 'OK', 'error': None} | search_users(user_name, leader_id, members_id))
+            users = User.objects.search(user_name, leader_id, members_id).as_found()
+            return JsonResponse({'status': 'OK', 'error': None} | users)
 
         return JsonResponse({
             'status': 'failed',
