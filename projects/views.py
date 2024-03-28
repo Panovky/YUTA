@@ -66,7 +66,7 @@ class ProjectsView(View):
             return JsonResponse(data=response_data)
 
         if action == 'create_project':
-            Project.objects.create_project(
+            Project.objects.create(
                 name=request.POST['project_name'].strip(),
                 description=request.POST['project_description'].strip(),
                 technical_task=request.FILES.get('project_technical_task'),
@@ -77,14 +77,14 @@ class ProjectsView(View):
             return redirect('projects')
 
         if action == 'edit_project':
-            Project.objects.get(id=request.POST['project_id']).update_project(
-                name=request.POST['project_name'].strip(),
-                description=request.POST['project_description'].strip(),
-                technical_task=request.FILES.get('project_technical_task'),
-                deadline=request.POST['project_deadline'],
-                status=request.POST['project_status'],
-                team_id=request.POST.get('project_team_id')
-            )
+            project = Project.objects.get(id=request.POST['project_id'])
+            project.name = request.POST['project_name'].strip()
+            project.description = request.POST['project_description'].strip()
+            project.technical_task = request.FILES.get('project_technical_task')
+            project.deadline = request.POST['project_deadline']
+            project.status = request.POST['project_status']
+            project.team_id = request.POST.get('project_team_id')
+            project.save()
             return redirect('projects')
 
         if action == 'get_project_info':

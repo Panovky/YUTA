@@ -335,7 +335,7 @@ class ProjectsView(APIView):
                         'error': 'invalid project team id'
                     })
 
-            Project.objects.create_project(
+            Project.objects.create(
                 name=request.data['project_name'].strip(),
                 description=request.data['project_description'].strip(),
                 technical_task=request.data.get('project_technical_task'),
@@ -380,14 +380,14 @@ class ProjectsView(APIView):
                         'error': 'invalid project team id'
                     })
 
-            Project.objects.get(id=project_id).update_project(
-                name=request.data['project_name'].strip(),
-                description=request.data['project_description'].strip(),
-                technical_task=request.data.get('project_technical_task'),
-                deadline=deadline,
-                status=status,
-                team_id=project_team_id
-            )
+            project = Project.objects.get(id=project_id)
+            project.name = request.data['project_name'].strip()
+            project.description = request.data['project_description'].strip()
+            project.technical_task = request.data.get('project_technical_task')
+            project.deadline = deadline
+            project.status = status
+            project.team_id = project_team_id
+            project.save()
 
             return JsonResponse({
                 'status': 'OK',

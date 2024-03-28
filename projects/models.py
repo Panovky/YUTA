@@ -1,9 +1,11 @@
 import datetime
+import re
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from YUTA.settings import MEDIA_ROOT
 from users.models import User
 from teams.models import Team
-from django.core.files.storage import FileSystemStorage
-from YUTA.settings import MEDIA_ROOT
+from transliterate import slugify
 
 
 STATUS_CHOICES = (
@@ -13,36 +15,32 @@ STATUS_CHOICES = (
 )
 
 
-class ProjectManager(models.Manager):
-    def create_project(self, name, description, technical_task, deadline, manager_id, team_id):
-        project = self.create(
-            name=name,
-            description=description,
-            deadline=deadline,
-            manager_id=manager_id,
-            team_id=team_id
-        )
-        if technical_task is not None:
-            fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-            file_name = f'technical_task_{project.id}.pdf'
-            fs.save(file_name, technical_task)
-            project.technical_task = f'projects_technical_tasks/{file_name}'
-            project.save()
-
-
 class Project(models.Model):
+    def get_technical_task_path(self, file_name):
+        fs = FileSystemStorage()
+        file_names = fs.listdir(path=f'{MEDIA_ROOT}\\projects_technical_tasks\\')[1]
+        slug = slugify(file_name[:-4])
+        file_name = f'{slug}.pdf'
+        if file_name not in file_names:
+            return f'projects_technical_tasks/{file_name}'
+        else:
+            pattern = f'{slug}-\\d+\\.pdf'
+            same_file_names = [file_name for file_name in file_names if re.fullmatch(pattern, file_name)]
+            if not same_file_names:
+                return f'projects_technical_tasks/{slug}-1.pdf'
+            versions = [int(file_name[:-4].replace(f'{slug}-', '')) for file_name in same_file_names]
+            return f'projects_technical_tasks/{slug}-{max(versions) + 1}.pdf'
+
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
     photo = models.ImageField(blank=True, upload_to='images/projects_photos', default='images/project_default.png')
     description = models.CharField(max_length=150)
-    technical_task = models.FileField(blank=True, null=True, upload_to='projects_technical_tasks',)
+    technical_task = models.FileField(blank=True, null=True, upload_to=get_technical_task_path,)
     creation_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='в работе')
     manager = models.ForeignKey(User, related_name='manager_projects', null=True, on_delete=models.SET_NULL)
     team = models.ForeignKey(Team, related_name='team_projects', blank=True, null=True, on_delete=models.SET_NULL)
-
-    objects = ProjectManager()
 
     class Meta:
         verbose_name = 'Проект'
@@ -87,21 +85,4 @@ class Project(models.Model):
             },
             'team': self.team.serialize_for_teams_view() if self.team else None
         }
-
-    def update_project(self, name, description, technical_task, deadline, status, team_id):
-        if technical_task is not None:
-            file_name = f'technical_task_{self.id}.pdf'
-            fs = FileSystemStorage(location=f'{MEDIA_ROOT}\\projects_technical_tasks')
-            if fs.exists(file_name):
-                fs.delete(file_name)
-            fs.save(file_name, technical_task)
-            technical_task = f'projects_technical_tasks/{file_name}'
-        self.name = name
-        self.description = description
-        self.technical_task = technical_task
-        self.deadline = deadline
-        self.status = status
-        self.team_id = team_id
-        self.save()
-
 
