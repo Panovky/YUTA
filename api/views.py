@@ -38,6 +38,19 @@ class AuthorizationView(APIView):
         })
 
 
+class SearchView(APIView):
+    def get(self, request):
+        if 'user_name' in request.query_params and len(request.query_params) == 1:
+            user_name = request.query_params['user_name']
+            users = User.objects.search(user_name).as_found()
+            return JsonResponse({'status': 'OK', 'error': None} | users)
+
+        return JsonResponse({
+            'status': 'failed',
+            'error': 'invalid request'
+        })
+
+
 class ProfileView(APIView):
     def get(self, request):
         if 'user_id' in request.query_params and len(request.query_params) == 1:
