@@ -16,24 +16,51 @@ STATUS_CHOICES = (
 
 
 class Project(models.Model):
+    def get_photo_path(self, file_name):
+        fs = FileSystemStorage()
+        file_names = fs.listdir(path=f'{MEDIA_ROOT}\\images\\projects_photos')[1]
+
+        extension = file_name[file_name.rfind('.') + 1:]
+        slug = slugify(file_name.replace(f'.{extension}', ''), language_code='ru')
+        file_name = f'{slug}.{extension}'
+
+        if file_name not in file_names:
+            return f'images/projects_photos/{file_name}'
+        else:
+            pattern = f'{slug}-\\d+\\.{extension}'
+            same_file_names = [file_name for file_name in file_names if re.fullmatch(pattern, file_name)]
+            if not same_file_names:
+                return f'images/projects_photos/{slug}-1.{extension}'
+            versions = [
+                int(file_name.replace(f'{slug}-', '').replace(f'.{extension}', ''))
+                for file_name in same_file_names
+            ]
+            return f'images/projects_photos/{slug}-{max(versions) + 1}.{extension}'
+
     def get_technical_task_path(self, file_name):
         fs = FileSystemStorage()
         file_names = fs.listdir(path=f'{MEDIA_ROOT}\\projects_technical_tasks\\')[1]
-        slug = slugify(file_name[:-4])
-        file_name = f'{slug}.pdf'
+
+        extension = file_name[file_name.rfind('.') + 1:]
+        slug = slugify(file_name.replace(f'.{extension}', ''), language_code='ru')
+        file_name = f'{slug}.{extension}'
+
         if file_name not in file_names:
             return f'projects_technical_tasks/{file_name}'
         else:
-            pattern = f'{slug}-\\d+\\.pdf'
+            pattern = f'{slug}-\\d+\\.{extension}'
             same_file_names = [file_name for file_name in file_names if re.fullmatch(pattern, file_name)]
             if not same_file_names:
-                return f'projects_technical_tasks/{slug}-1.pdf'
-            versions = [int(file_name[:-4].replace(f'{slug}-', '')) for file_name in same_file_names]
-            return f'projects_technical_tasks/{slug}-{max(versions) + 1}.pdf'
+                return f'projects_technical_tasks/{slug}-1.{extension}'
+            versions = [
+                int(file_name.replace(f'{slug}-', '').replace(f'.{extension}', ''))
+                for file_name in same_file_names
+            ]
+            return f'projects_technical_tasks/{slug}-{max(versions) + 1}.{extension}'
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
-    photo = models.ImageField(blank=True, upload_to='images/projects_photos', default='images/project_default.png')
+    photo = models.ImageField(blank=True, upload_to=get_photo_path, default='images/project_default.png')
     description = models.CharField(max_length=150)
     technical_task = models.FileField(blank=True, null=True, upload_to=get_technical_task_path,)
     creation_date = models.DateField(auto_now_add=True)
